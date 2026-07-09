@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedField - Medicine Search Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#006634",
+                        "on-surface": "#181d18",
+                        "surface-container-high": "#e5e9e2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f1f5ed",
+                        "on-surface-variant": "#3f4940",
+                        "secondary-container": "#d2e8d5",
+                        "outline": "#6f7a6f",
+                        "surface-container-highest": "#dfe4dc",
+                        "tertiary-fixed-dim": "#ffb2b8",
+                        "on-primary-fixed": "#00210d",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#8ce1a2",
+                        "inverse-surface": "#2d322d",
+                        "on-tertiary-fixed-variant": "#7c2b36",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-tertiary-fixed": "#40000e",
+                        "surface-container": "#ebefe8",
+                        "on-secondary-fixed-variant": "#384b3d",
+                        "inverse-on-surface": "#eef2eb",
+                        "outline-variant": "#bfc9bd",
+                        "surface-bright": "#f6fbf3",
+                        "on-tertiary-container": "#ffbfc3",
+                        "primary": "#004c25",
+                        "primary-fixed-dim": "#84d99a",
+                        "primary-fixed": "#9ff5b5",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b6ccba",
+                        "secondary": "#506354",
+                        "surface": "#f6fbf3",
+                        "on-error-container": "#93000a",
+                        "on-background": "#181d18",
+                        "on-secondary-container": "#55695a",
+                        "tertiary": "#742531",
+                        "surface-dim": "#d7dbd4",
+                        "background": "#f6fbf3",
+                        "tertiary-container": "#923c47",
+                        "secondary-fixed": "#d2e8d5",
+                        "surface-tint": "#0f6d3a",
+                        "surface-variant": "#dfe4dc",
+                        "inverse-primary": "#84d99a",
+                        "on-primary-fixed-variant": "#005229",
+                        "on-secondary-fixed": "#0d1f14",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "xl": "48px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Manrope"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Manrope"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-lg": ["Manrope"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Manrope"],
+                        "label-sm": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .custom-card-radius {
+            border-bottom-left-radius: 32px;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md antialiased pb-24 md:pb-0 md:pl-72 flex flex-col md:flex-row">
+<!-- Navigation Drawer (Desktop) -->
+<nav class="h-full w-72 fixed left-0 top-0 hidden md:flex flex-col bg-surface-container-low dark:bg-surface-container-high border-r border-outline-variant py-8 gap-2">
+<div class="px-6 mb-8 flex items-center gap-4">
+<img class="w-12 h-12 rounded-full object-cover bg-surface-variant" data-alt="A small circular avatar placeholder image showing a generic user silhouette or a subtle abstract shape in soft green and white tones, suitable for a medical app profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5K1F7alPlPKEtCfrfX0s6IKIU6Qoa7AeYph-EVIrnTu9ExKlm7LFCo51V3pYOfGvwfj27_IPxIsM3rYX2LiV_N0PXsTLy1WCqIBqYujwjrsdBLL9Nw08AiAa0y6vbuimfxf5Lbvf6EuJrmCY1s5840i8ABIQLRPHcKqO_eqOGMgMEKfs5TuvVVl36eY0ldc5EM2MrCYupO4BC000IUd6acs-MerHFLXecEwU601rzACg7fLjhozfQ"/>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary-container">Health Profile</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Verified Member</p>
+</div>
+</div>
+<a class="text-on-surface-variant dark:text-on-surface hover:bg-surface-container-highest ml-0 mr-4 px-6 py-3 rounded-r-full transition-all duration-200 ease-in-out flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md">Home</span>
+</a>
+<a class="bg-primary-container text-on-primary-container rounded-r-full font-bold ml-0 mr-4 px-6 py-3 transition-all duration-200 ease-in-out flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-body-md">Search</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface hover:bg-surface-container-highest ml-0 mr-4 px-6 py-3 rounded-r-full transition-all duration-200 ease-in-out flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">shopping_basket</span>
+<span class="font-body-md">My Cart</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface hover:bg-surface-container-highest ml-0 mr-4 px-6 py-3 rounded-r-full transition-all duration-200 ease-in-out flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md">Order History</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface hover:bg-surface-container-highest ml-0 mr-4 px-6 py-3 rounded-r-full transition-all duration-200 ease-in-out flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Account Settings</span>
+</a>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 w-full max-w-5xl mx-auto">
+<!-- Top App Bar (Mobile & Desktop sticky header) -->
+<header class="bg-surface-bright dark:bg-surface-dim w-full sticky top-0 z-40 border-b border-outline-variant dark:border-outline px-margin-mobile md:px-margin-desktop py-4 flex flex-col gap-4">
+<!-- Brand / Nav Row -->
+<div class="flex items-center justify-between">
+<button class="md:hidden text-primary dark:text-primary-fixed-dim active:scale-95 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed text-center flex-1 md:text-left">MedField</h1>
+<button class="text-primary dark:text-primary-fixed-dim hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors p-2 rounded-full active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<!-- Search & Filter Row -->
+<div class="flex items-center gap-3">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-12 pl-10 pr-4 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-on-surface outline-none transition-all" placeholder="Search medicines..." type="text" value="Paracetamol"/>
+</div>
+<button class="h-12 px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant flex items-center gap-2 hover:bg-surface-container transition-colors shrink-0">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-md hidden sm:inline">Filters</span>
+</button>
+</div>
+<!-- Quick Chips -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-4 py-1.5 rounded-full border border-primary text-primary font-label-md whitespace-nowrap bg-surface-container-lowest">All Results</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md whitespace-nowrap bg-surface-container-lowest hover:bg-surface-container">Prescription (Rx)</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md whitespace-nowrap bg-surface-container-lowest hover:bg-surface-container">OTC</button>
+</div>
+</header>
+<main class="p-margin-mobile md:p-margin-desktop pb-32">
+<p class="font-body-sm text-on-surface-variant mb-6">Showing 4 results for "Paracetamol"</p>
+<!-- Grid of Results -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+<!-- Medicine Card 1 -->
+<div class="bg-surface-container-lowest rounded-tr-lg rounded-tl-lg rounded-br-lg custom-card-radius border border-outline-variant overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+<div class="p-4 flex gap-4">
+<!-- Image placeholder -->
+<div class="w-24 h-24 rounded-lg bg-surface-variant shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-4xl text-outline-variant">medication</span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-sm text-on-surface line-clamp-1">Dolo 650 Tablet</h3>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-[10px] shrink-0">OTC</span>
+</div>
+<p class="font-body-sm text-on-surface-variant line-clamp-1">Paracetamol (650mg)</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="font-label-sm text-outline">Micro Labs Ltd</span>
+<span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+</div>
+</div>
+<div class="mt-3 flex items-end justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-on-surface">$1.20</span>
+<span class="font-body-sm text-outline-variant line-through">$1.50</span>
+</div>
+<span class="font-label-sm text-primary">Save 20%</span>
+</div>
+<!-- Stepper -->
+<div class="flex items-center border border-outline-variant rounded-lg bg-surface h-8">
+<button class="w-8 h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">remove</span>
+</button>
+<span class="w-8 text-center font-label-md text-on-surface">1</span>
+<button class="w-8 h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Medicine Card 2 -->
+<div class="bg-surface-container-lowest rounded-tr-lg rounded-tl-lg rounded-br-lg custom-card-radius border border-outline-variant overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+<div class="p-4 flex gap-4">
+<div class="w-24 h-24 rounded-lg bg-surface-variant shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-4xl text-outline-variant">vaccines</span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-sm text-on-surface line-clamp-1">Calpol 500mg</h3>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-[10px] shrink-0">Rx</span>
+</div>
+<p class="font-body-sm text-on-surface-variant line-clamp-1">Paracetamol (500mg)</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="font-label-sm text-outline">GSK Pharmaceuticals</span>
+<span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+</div>
+</div>
+<div class="mt-3 flex items-end justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-on-surface">$0.95</span>
+<span class="font-body-sm text-outline-variant line-through">$1.10</span>
+</div>
+<span class="font-label-sm text-primary">Save 14%</span>
+</div>
+<button class="h-8 px-4 bg-primary text-on-primary rounded-lg font-label-md hover:bg-primary-container transition-colors">
+                                    Add
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Example (Hidden by default for this view, but included in code) -->
+<div class="hidden mt-12 flex flex-col items-center justify-center text-center p-8 bg-surface-container-low rounded-tr-2xl rounded-tl-2xl rounded-br-2xl custom-card-radius border border-outline-variant border-dashed">
+<span class="material-symbols-outlined text-6xl text-outline-variant mb-4">search_off</span>
+<h3 class="font-headline-md text-on-surface mb-2">No medicines found</h3>
+<p class="font-body-md text-on-surface-variant max-w-md">We couldn't find any exact matches for "xyz123". Try checking the spelling or searching for a generic name or composition.</p>
+<button class="mt-6 px-6 py-2 bg-surface-container-lowest border border-outline text-on-surface rounded-lg font-label-md hover:bg-surface-container transition-colors">
+                    Clear Search
+                </button>
+</div>
+</main>
+</div>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe md:hidden bg-surface-container-lowest dark:bg-surface-container border-t border-outline-variant dark:border-outline shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-primary-container text-on-secondary-container dark:text-on-primary-container rounded-xl px-4 py-1 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label-sm text-label-sm mt-1 font-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-sm text-label-sm mt-1">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

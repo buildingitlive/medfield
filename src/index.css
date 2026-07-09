@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* Signature Asymmetric Bottom-Left Radius from MedField Design System */
+  .rounded-brand {
+    border-radius: 0.5rem 0.5rem 0.5rem 2rem;
+  }
+}
+
+@keyframes subtle-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: subtle-fade-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-fade-up-delay {
+  opacity: 0;
+  animation: subtle-fade-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s forwards;
+}
+
+/* Custom scrollbar clean styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #bfc9bd;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6f7a6f;
+}

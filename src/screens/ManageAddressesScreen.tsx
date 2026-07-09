@@ -1,0 +1,243 @@
+import React, { useState } from 'react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
+import type { DeliveryAddress } from '../types';
+
+interface ManageAddressesScreenProps {
+  addresses: DeliveryAddress[];
+  defaultAddressId: string;
+  onSelectDefault: (id: string) => void;
+  onAddAddress: (addr: Omit<DeliveryAddress, 'id'>) => void;
+}
+
+export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
+  addresses,
+  defaultAddressId,
+  onSelectDefault,
+  onAddAddress,
+}) => {
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newLabel, setNewLabel] = useState('Work');
+  const [newStreet, setNewStreet] = useState('');
+  const [newCity, setNewCity] = useState('');
+  const [newState, setNewState] = useState('');
+  const [newZip, setNewZip] = useState('');
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStreet || !newCity || !newState || !newZip) return;
+    onAddAddress({
+      label: newLabel,
+      street: newStreet,
+      city: newCity,
+      state: newState,
+      zip: newZip,
+      zipCode: newZip,
+      isDefault: false,
+    });
+    setNewStreet('');
+    setNewCity('');
+    setNewState('');
+    setNewZip('');
+    setShowAddForm(false);
+  };
+
+  return (
+    <main className="min-h-screen pb-28 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="mb-6">
+        <h1 className="font-heading text-2xl font-bold text-on-surface dark:text-zinc-100 mb-1">
+          Your Addresses
+        </h1>
+        <p className="text-xs text-on-surface-variant dark:text-zinc-400">
+          Manage secure cold-chain delivery locations and clinical drop-off zones
+        </p>
+      </div>
+
+      <div className="space-y-4 mb-6">
+        {addresses.map((addr) => {
+          const isSelected = addr.id === defaultAddressId || addr.isDefault;
+          return (
+            <div
+              key={addr.id}
+              onClick={() => onSelectDefault(addr.id)}
+              className={`p-5 rounded-md border transition-all cursor-pointer bg-surface-container-lowest dark:bg-zinc-900 ${
+                isSelected
+                  ? 'border-primary border-l-4 shadow-sm'
+                  : 'border-surface-variant dark:border-zinc-800 hover:border-outline'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                {/* Radio button indicator matching Reference Design */}
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 flex-shrink-0 ${
+                    isSelected ? 'border-primary' : 'border-outline-variant'
+                  }`}
+                >
+                  {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-sm text-on-surface dark:text-zinc-100">
+                      Sarah Jenkins
+                    </span>
+                    <span
+                      className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                        isSelected
+                          ? 'bg-secondary-container text-on-secondary-container'
+                          : 'bg-surface-container dark:bg-zinc-800 text-on-surface-variant'
+                      }`}
+                    >
+                      {addr.label}
+                    </span>
+                  </div>
+                  <p className="text-xs text-on-surface-variant leading-relaxed">
+                    {addr.street}
+                    <br />
+                    {addr.city}, {addr.state} {addr.zipCode}
+                    <br />
+                    Phone: (555) 123-4567
+                  </p>
+
+                  {/* Actions matching reference design */}
+                  <div className="mt-3 flex items-center gap-4 text-xs font-semibold">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // placeholder edit action
+                      }}
+                      className="inline-flex items-center gap-1 text-primary hover:underline"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                      <span>Edit</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // placeholder delete action
+                      }}
+                      className="inline-flex items-center gap-1 text-error hover:underline"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {!showAddForm ? (
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="w-full min-h-[48px] border-2 border-primary text-primary font-semibold text-xs rounded-md flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add New Address</span>
+        </button>
+      ) : (
+        <form
+          onSubmit={handleCreate}
+          className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant p-5 rounded-brand shadow-sm space-y-4"
+        >
+          <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
+            Register New Delivery Waypoint
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                Location Label
+              </label>
+              <input
+                type="text"
+                value={newLabel}
+                onChange={(e) => setNewLabel(e.target.value)}
+                placeholder="e.g. Clinical Lab 3"
+                className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                Street Address
+              </label>
+              <input
+                type="text"
+                value={newStreet}
+                onChange={(e) => setNewStreet(e.target.value)}
+                placeholder="100 Biotech Pkwy"
+                className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                City
+              </label>
+              <input
+                type="text"
+                value={newCity}
+                onChange={(e) => setNewCity(e.target.value)}
+                placeholder="San Francisco"
+                className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                  State
+                </label>
+                <input
+                  type="text"
+                  value={newState}
+                  onChange={(e) => setNewState(e.target.value)}
+                  placeholder="CA"
+                  className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                  ZIP Code
+                </label>
+                <input
+                  type="text"
+                  value={newZip}
+                  onChange={(e) => setNewZip(e.target.value)}
+                  placeholder="94107"
+                  className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setShowAddForm(false)}
+              className="px-4 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="min-h-[44px] px-6 rounded bg-primary-container text-on-primary text-xs font-semibold shadow"
+            >
+              Save Address
+            </button>
+          </div>
+        </form>
+      )}
+    </main>
+  );
+};

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Medicine Detail - MedField</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Manrope:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#006634",
+                      "on-surface": "#181d18",
+                      "surface-container-high": "#e5e9e2",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#f1f5ed",
+                      "on-surface-variant": "#3f4940",
+                      "secondary-container": "#d2e8d5",
+                      "outline": "#6f7a6f",
+                      "surface-container-highest": "#dfe4dc",
+                      "tertiary-fixed-dim": "#ffb2b8",
+                      "on-primary-fixed": "#00210d",
+                      "on-error": "#ffffff",
+                      "on-primary-container": "#8ce1a2",
+                      "inverse-surface": "#2d322d",
+                      "on-tertiary-fixed-variant": "#7c2b36",
+                      "tertiary-fixed": "#ffdadb",
+                      "on-tertiary-fixed": "#40000e",
+                      "surface-container": "#ebefe8",
+                      "on-secondary-fixed-variant": "#384b3d",
+                      "inverse-on-surface": "#eef2eb",
+                      "outline-variant": "#bfc9bd",
+                      "surface-bright": "#f6fbf3",
+                      "on-tertiary-container": "#ffbfc3",
+                      "primary": "#004c25",
+                      "primary-fixed-dim": "#84d99a",
+                      "primary-fixed": "#9ff5b5",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed-dim": "#b6ccba",
+                      "secondary": "#506354",
+                      "surface": "#f6fbf3",
+                      "on-error-container": "#93000a",
+                      "on-background": "#181d18",
+                      "on-secondary-container": "#55695a",
+                      "tertiary": "#742531",
+                      "surface-dim": "#d7dbd4",
+                      "background": "#f6fbf3",
+                      "tertiary-container": "#923c47",
+                      "secondary-fixed": "#d2e8d5",
+                      "surface-tint": "#0f6d3a",
+                      "surface-variant": "#dfe4dc",
+                      "inverse-primary": "#84d99a",
+                      "on-primary-fixed-variant": "#005229",
+                      "on-secondary-fixed": "#0d1f14",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px",
+                      "brand": "48px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "margin-desktop": "32px",
+                      "xl": "48px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "margin-mobile": "16px",
+                      "md": "16px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "label-md": ["Manrope"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "body-md": ["Manrope"],
+                      "headline-xl": ["Plus Jakarta Sans"],
+                      "body-lg": ["Manrope"],
+                      "headline-sm": ["Plus Jakarta Sans"],
+                      "body-sm": ["Manrope"],
+                      "label-sm": ["Manrope"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F6FAF7; /* Level 0 Canvas */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom Brand Radius */
+        .rounded-bl-brand {
+            border-bottom-left-radius: 48px;
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        
+        /* Accordion transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-btn.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col relative pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface-bright dark:bg-surface-dim text-primary dark:text-primary-fixed-dim font-headline-sm text-headline-sm w-full sticky top-0 z-40 border-b border-outline-variant dark:border-outline flat no shadows flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16">
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-95 text-on-surface-variant dark:text-outline-variant rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed flex-1 text-center font-bold tracking-tight">MedField</div>
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-95 text-on-surface-variant dark:text-outline-variant rounded-full">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-7xl mx-auto md:px-margin-desktop">
+<!-- Product Image Section (Tinted BG) -->
+<div class="w-full bg-surface-container-low md:rounded-b-2xl md:mt-4 p-8 flex items-center justify-center relative overflow-hidden">
+<!-- Decorative organic background element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-y-1/2 translate-x-1/4"></div>
+<img alt="Medicine Box" class="w-64 h-64 object-contain z-10 relative drop-shadow-xl" data-alt="A clean, highly detailed, well-lit studio photography shot of a modern pharmaceutical medicine box standing upright. The packaging is predominantly white with subtle primary green accents. It rests on a pristine light green surface (Level 0 canvas color). Soft, diffused overhead lighting casts a gentle, professional shadow, evoking a sense of clinical reliability and organic warmth. High resolution, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1zO6IXOVncdrWgDroSzBHCWJfCOEsuX1upgroJJO7VYqyy9pidUAt83TKAmx9RPz1yrkkzQgEDL0omMwugszdEeZl70QzfxQJhzFO6Yn6DdvPTXoic8tOq2cQCb2TeRX8hk8SPM3MSxfBEnz5nIdLqQlWhlNqpMeHyq6jlLMRz091hTXDnU0B2bx2akXvev4_WoHT6kjsrvImBXylcgLaKYx282Llf59gbkGSk-TXMA7Xfu2SYhgL"/>
+<!-- Tags/Badges overlay -->
+<div class="absolute top-4 left-4 flex flex-col gap-2 z-20">
+<span class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified">verified</span>
+                    Rx Required
+                </span>
+</div>
+</div>
+<!-- Product Info Canvas -->
+<div class="bg-surface-container-lowest rounded-bl-brand md:rounded-bl-none rounded-br-2xl md:rounded-2xl -mt-6 md:mt-6 z-10 relative px-margin-mobile py-8 shadow-sm border border-outline-variant/30">
+<!-- Header Area -->
+<div class="flex justify-between items-start mb-2">
+<div class="pr-4">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-1">Amoxicillin 500mg</h1>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>By PharmaLife Inc.</span>
+<span class="material-symbols-outlined fill text-primary text-[18px]" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+</div>
+</div>
+</div>
+<!-- Composition & Pack Details -->
+<div class="my-6 p-4 bg-surface-container-low rounded-xl border border-outline-variant/50">
+<div class="flex items-start gap-3 mb-3">
+<span class="material-symbols-outlined text-outline mt-0.5" data-icon="science">science</span>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Composition</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Amoxicillin Trihydrate (500mg)</span>
+</div>
+</div>
+<div class="h-px w-full bg-outline-variant/30 my-3"></div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-outline mt-0.5" data-icon="medication">medication</span>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Pack Size</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">15 Capsules / Strip</span>
+</div>
+</div>
+</div>
+<!-- Pricing Section -->
+<div class="flex items-end justify-between my-8">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-body-md text-body-md text-outline line-through">MRP ₹150.00</span>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full">Save ₹25.00</span>
+</div>
+<div class="font-headline-xl text-headline-xl text-primary font-bold">
+                        ₹125.00
+                    </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Inclusive of all taxes</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-primary font-label-md text-label-md flex items-center gap-1 bg-surface-bright px-3 py-1 rounded-full border border-primary/20">
+<span class="material-symbols-outlined fill text-[16px]" data-icon="check_circle">check_circle</span>
+                        In Stock
+                    </span>
+</div>
+</div>
+<!-- FAQ Accordion -->
+<div class="mt-8 border-t border-outline-variant/30 pt-6">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Product Information</h2>
+<div class="flex flex-col gap-2">
+<!-- Accordion Item 1 -->
+<div class="border border-outline-variant/50 rounded-lg overflow-hidden bg-surface-bright">
+<button class="accordion-btn w-full flex justify-between items-center p-4 text-left focus:outline-none hover:bg-surface-container-low transition-colors" onclick="toggleAccordion(this)">
+<span class="font-label-md text-label-md text-on-surface">Uses &amp; Benefits</span>
+<span class="material-symbols-outlined accordion-icon text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</button>
+<div class="accordion-content bg-surface-container-lowest">
+<div class="p-4 pt-0 font-body-sm text-body-sm text-on-surface-variant">
+                                Amoxicillin is a penicillin antibiotic used to treat various bacterial infections, including respiratory tract infections, urinary tract infections, and skin infections. It works by stopping the growth of bacteria.
+                            </div>
+</div>
+</div>
+<!-- Accordion Item 2 -->
+<div class="border border-outline-variant/50 rounded-lg overflow-hidden bg-surface-bright">
+<button class="accordion-btn w-full flex justify-between items-center p-4 text-left focus:outline-none hover:bg-surface-container-low transition-colors" onclick="toggleAccordion(this)">
+<span class="font-label-md text-label-md text-on-surface">Directions for Use</span>
+<span class="material-symbols-outlined accordion-icon text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</button>
+<div class="accordion-content bg-surface-container-lowest">
+<div class="p-4 pt-0 font-body-sm text-body-sm text-on-surface-variant">
+                                Take this medication by mouth with or without food as directed by your doctor, usually every 8 or 12 hours. The dosage is based on your medical condition and response to treatment.
+                            </div>
+</div>
+</div>
+<!-- Accordion Item 3 -->
+<div class="border border-outline-variant/50 rounded-lg overflow-hidden bg-surface-bright">
+<button class="accordion-btn w-full flex justify-between items-center p-4 text-left focus:outline-none hover:bg-surface-container-low transition-colors" onclick="toggleAccordion(this)">
+<span class="font-label-md text-label-md text-on-surface">Side Effects</span>
+<span class="material-symbols-outlined accordion-icon text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</button>
+<div class="accordion-content bg-surface-container-lowest">
+<div class="p-4 pt-0 font-body-sm text-body-sm text-on-surface-variant">
+                                Common side effects may include nausea, vomiting, diarrhea, or rash. If any of these effects last or get worse, tell your doctor or pharmacist promptly.
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky "Add to Cart" Bottom Bar (Transactional / Task-Focused screen, so standard nav is suppressed) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant/30 px-margin-mobile py-4 safe-bottom z-50 shadow-[0_-8px_24px_rgba(24,29,24,0.05)]">
+<div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+<div class="flex-1">
+<div class="font-headline-sm text-headline-sm text-primary font-bold">₹125.00</div>
+<a class="font-label-sm text-label-sm text-primary-fixed-dim underline decoration-primary/30" href="#">View Cart</a>
+</div>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-8 py-4 rounded-lg flex-1 flex justify-center items-center gap-2 active:scale-95 transition-all shadow-md">
+<span class="material-symbols-outlined text-[20px]" data-icon="shopping_cart">shopping_cart</span>
+                Add to Cart
+            </button>
+</div>
+</div>
+<script>
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const isOpen = btn.classList.contains('open');
+            
+            // Close all
+            document.querySelectorAll('.accordion-btn').forEach(b => {
+                b.classList.remove('open');
+                b.nextElementSibling.classList.remove('open');
+            });
+
+            // Open clicked if it wasn't open
+            if (!isOpen) {
+                btn.classList.add('open');
+                content.classList.add('open');
+            }
+        }
+    </script>
+</body></html>
