@@ -19,7 +19,8 @@ npm run dev
 npm run build
 ```
 
-## Architecture & UI Screens
+## Features & UI Architecture
+- **PWA Installation Modal (`InstallAppPopup.tsx`)**: Prompts users to install the PWA on Android/Chrome or iOS Safari with step-by-step instructions.
 - **`/` (Home)**: Asymmetric Bento CTAs, mobile-first address selector, delivery banner, reorder carousel, and trust strip.
 - **`/search`**: Catalog directory with live search, price sorting, and inline quantity stepper (`- 1 +`).
 - **`/medicine/:id`**: Product formulation detail with composition specs and sticky Add-to-Cart bar.
@@ -27,3 +28,9 @@ npm run build
 - **`/cart` & `/checkout`**: Cart review with delivery estimate and checkout with structured delivery address and payment methods.
 - **`/orders` & `/orders/:id`**: Ongoing vs Past order tabs and real-time cold-chain courier tracking.
 - **`/profile`, `/addresses`, `/settings`, `/prescription-upload`**: Full clinical member management suite.
+
+## Supabase Integration
+- **Auth**: Fully integrated Supabase OTP / Magic Link flow via `AuthContext`.
+- **Database**: 9 tables with Row-Level Security (RLS) policies defined in `supabase/schema.sql`.
+- **Hooks**: Data-fetching wrapped in robust custom React hooks (`useProducts`, `useCart`, `useAddresses`, `useOrders`, `useFavorites`) with optimistic updates and caching.
+- **Storage**: Prescription image upload directly to Supabase Storage bucket (`prescriptions`).

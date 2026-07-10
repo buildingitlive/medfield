@@ -12,18 +12,26 @@ import {
   Lock,
   Headphones,
   Plus,
+  Loader2,
 } from 'lucide-react';
-import type { MedicineProduct } from '../types';
-import { mockProducts } from '../data/mockData';
+import type { Product } from '../types/database';
+import { useProducts } from '../hooks/useProducts';
+import { useAddresses } from '../hooks/useAddresses';
 import { VerifiedMark } from '../components/VerifiedMark';
 
 interface HomeScreenProps {
   onNavigate: (route: string) => void;
-  onAddToCart: (product: MedicineProduct) => void;
+  onAddToCart: (product: Product) => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  
+  const { products, loading } = useProducts({
+    category: selectedCategory === 'ALL' ? undefined : selectedCategory,
+  });
+  
+  const { defaultAddress } = useAddresses();
 
   const categories = [
     'ALL',
@@ -34,20 +42,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
     'Diabetes Care',
   ];
 
-  const reorderItems = mockProducts.slice(0, 4);
-
-  const displayedProducts =
-    selectedCategory === 'ALL'
-      ? mockProducts
-      : mockProducts.filter((p) =>
-          p.category?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-          p.name.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-          p.genericName.toLowerCase().includes(selectedCategory.toLowerCase())
-        );
+  const reorderItems = products.slice(0, 4);
+  const displayedProducts = products;
 
   return (
     <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
-      {/* Address Selector Sub-header matching Reference Design */}
+      {/* Address Selector Sub-header */}
       <div
         onClick={() => onNavigate('/addresses')}
         className="bg-surface dark:bg-zinc-900 border-b border-surface-variant dark:border-zinc-800 px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2.5 cursor-pointer hover:bg-surface-container-lowest transition-colors"
@@ -58,13 +58,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
             Delivering to
           </span>
           <span className="text-xs font-bold text-on-surface dark:text-zinc-100 flex items-center gap-1">
-            1420 Medical Parkway, Suite 200 <ChevronDown className="w-3.5 h-3.5" />
+            {defaultAddress ? (
+              <>{defaultAddress.street}, {defaultAddress.city}</>
+            ) : (
+              'Select Delivery Address'
+            )}
+            <ChevronDown className="w-3.5 h-3.5" />
           </span>
         </div>
       </div>
 
       <div className="px-4 sm:px-6 lg:px-8 py-5 space-y-6">
-        {/* Delivery Banner matching Reference Design */}
+        {/* Delivery Banner */}
         <div className="bg-primary-container text-on-primary-container rounded-brand p-4 flex items-start sm:items-center gap-3.5 shadow-sm border border-primary/20">
           <Truck className="w-7 h-7 flex-shrink-0 mt-0.5 sm:mt-0" />
           <div className="flex-1">
@@ -77,7 +82,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
           </div>
         </div>
 
-        {/* Search Input Bar matching Reference Design */}
+        {/* Search Input Bar */}
         <div
           onClick={() => onNavigate('/search')}
           className="relative group cursor-pointer"
@@ -92,9 +97,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
           <Mic className="w-5 h-5 absolute right-4 top-3.5 text-primary pointer-events-none" />
         </div>
 
-        {/* Asymmetric CTA Bento Grid matching Reference Design */}
+        {/* Asymmetric CTA Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Upload Prescription Card */}
           <button
             onClick={() => onNavigate('/prescription-upload')}
             className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 flex flex-col gap-4 text-left shadow-sm hover:shadow transition-all relative overflow-hidden group"
@@ -116,7 +120,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
             </div>
           </button>
 
-          {/* Search Medicines Card */}
           <button
             onClick={() => onNavigate('/search')}
             className="bg-primary text-on-primary rounded-brand p-6 flex flex-col gap-4 text-left shadow-sm hover:shadow transition-all relative overflow-hidden group"
@@ -139,7 +142,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
           </button>
         </div>
 
-        {/* Category Chips matching Reference Design */}
+        {/* Category Chips */}
         <div className="space-y-2.5">
           <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
             Categories
@@ -161,125 +164,135 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
           </div>
         </div>
 
-        {/* Reorder Routine Horizontal Carousel matching Reference Design */}
-        <section className="space-y-3 pt-1">
-          <div className="flex items-center justify-between">
-            <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
-              Reorder Routine
-            </h2>
-            <button
-              onClick={() => onNavigate('/orders')}
-              className="text-xs font-semibold text-primary hover:underline"
-            >
-              View All
-            </button>
+        {loading ? (
+          <div className="py-12 flex justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-
-          <div className="flex overflow-x-auto no-scrollbar gap-4 pb-2">
-            {reorderItems.map((product) => (
-              <div
-                key={`reorder-${product.id}`}
-                onClick={() => onNavigate(`/medicine/${product.id}`)}
-                className="min-w-[165px] w-[165px] sm:min-w-[190px] sm:w-[190px] bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-3 flex flex-col shadow-sm cursor-pointer hover:border-primary transition-all relative"
-              >
-                {product.requiresPrescription && (
-                  <span className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-                    Rx Req.
-                  </span>
-                )}
-                <div className="w-full aspect-square bg-surface-container-low dark:bg-zinc-800 rounded mb-2.5 overflow-hidden flex items-center justify-center p-2">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="w-full h-full object-cover rounded"
-                  />
-                </div>
-                <h3 className="font-semibold text-xs text-on-surface dark:text-zinc-100 truncate">
-                  {product.name}
-                </h3>
-                <div className="flex items-center gap-1 text-[11px] text-on-surface-variant mb-3">
-                  <span>{product.dosage}</span>
-                  <VerifiedMark size={13} />
-                </div>
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="font-bold text-xs text-on-surface dark:text-zinc-100">
-                    ${product.price.toFixed(2)}
-                  </span>
+        ) : (
+          <>
+            {/* Reorder Routine Horizontal Carousel */}
+            {reorderItems.length > 0 && (
+              <section className="space-y-3 pt-1">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
+                    Reorder Routine
+                  </h2>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(product);
-                    }}
-                    className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors"
+                    onClick={() => onNavigate('/orders')}
+                    className="text-xs font-semibold text-primary hover:underline"
                   >
-                    <Plus className="w-4 h-4" />
+                    View All
                   </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Featured Botanical Catalog Grid */}
-        <section className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
-            <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
-              {selectedCategory === 'ALL'
-                ? 'Verified Field Assays'
-                : `${selectedCategory} Formulations`}
-            </h2>
-            <span className="text-xs text-on-surface-variant">
-              {displayedProducts.length} verified items
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {displayedProducts.map((product) => (
-              <div
-                key={product.id}
-                onClick={() => onNavigate(`/medicine/${product.id}`)}
-                className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 shadow-sm hover:shadow flex flex-col justify-between cursor-pointer transition-all"
-              >
-                <div>
-                  <div className="w-full h-36 bg-surface-container-low dark:bg-zinc-800 rounded overflow-hidden mb-3">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-primary-container mb-0.5">
-                    <span>{product.grower.name}</span>
-                    <VerifiedMark size={14} />
-                  </div>
-                  <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-1">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-on-surface-variant line-clamp-1">
-                    {product.genericName} • {product.dosage}
-                  </p>
+                <div className="flex overflow-x-auto no-scrollbar gap-4 pb-2">
+                  {reorderItems.map((product) => (
+                    <div
+                      key={`reorder-${product.id}`}
+                      onClick={() => onNavigate(`/medicine/${product.id}`)}
+                      className="min-w-[165px] w-[165px] sm:min-w-[190px] sm:w-[190px] bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-3 flex flex-col shadow-sm cursor-pointer hover:border-primary transition-all relative"
+                    >
+                      {product.requires_prescription && (
+                        <span className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                          Rx Req.
+                        </span>
+                      )}
+                      <div className="w-full aspect-square bg-surface-container-low dark:bg-zinc-800 rounded mb-2.5 overflow-hidden flex items-center justify-center p-2">
+                        <img
+                          src={product.image_url || ''}
+                          alt={product.name}
+                          className="w-full h-full object-cover rounded"
+                        />
+                      </div>
+                      <h3 className="font-semibold text-xs text-on-surface dark:text-zinc-100 truncate">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center gap-1 text-[11px] text-on-surface-variant mb-3">
+                        <span>{product.dosage}</span>
+                        <VerifiedMark size={13} />
+                      </div>
+                      <div className="mt-auto flex items-center justify-between">
+                        <span className="font-bold text-xs text-on-surface dark:text-zinc-100">
+                          ₹{product.price.toFixed(2)}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAddToCart(product);
+                          }}
+                          className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </section>
+            )}
 
-                <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 flex items-center justify-between">
-                  <span className="font-bold text-sm text-primary-container dark:text-emerald-400">
-                    ${product.price.toFixed(2)}
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(product);
-                    }}
-                    className="min-h-[36px] px-3.5 rounded bg-primary-container hover:bg-primary text-on-primary text-xs font-semibold shadow transition-all"
+            {/* Featured Botanical Catalog Grid */}
+            <section className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
+                  {selectedCategory === 'ALL'
+                    ? 'Verified Field Assays'
+                    : `${selectedCategory} Formulations`}
+                </h2>
+                <span className="text-xs text-on-surface-variant">
+                  {displayedProducts.length} verified items
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {displayedProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    onClick={() => onNavigate(`/medicine/${product.id}`)}
+                    className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 shadow-sm hover:shadow flex flex-col justify-between cursor-pointer transition-all"
                   >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+                    <div>
+                      <div className="w-full h-36 bg-surface-container-low dark:bg-zinc-800 rounded overflow-hidden mb-3">
+                        <img
+                          src={product.image_url || ''}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1 text-[11px] font-semibold text-primary-container mb-0.5">
+                        <span>{product.grower_name || 'Verified Supplier'}</span>
+                        <VerifiedMark size={14} />
+                      </div>
+                      <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-1">
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant line-clamp-1">
+                        {product.generic_name} • {product.dosage}
+                      </p>
+                    </div>
 
-        {/* Trust Strip matching Reference Design */}
+                    <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 flex items-center justify-between">
+                      <span className="font-bold text-sm text-primary-container dark:text-emerald-400">
+                        ₹{product.price.toFixed(2)}
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAddToCart(product);
+                        }}
+                        className="min-h-[36px] px-3.5 rounded bg-primary-container hover:bg-primary text-on-primary text-xs font-semibold shadow transition-all"
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+
+        {/* Trust Strip */}
         <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 flex flex-col sm:flex-row justify-around items-center gap-4 mt-6">
           <div className="flex items-center gap-2 text-on-surface-variant">
             <ShieldCheck className="w-5 h-5 text-primary" />

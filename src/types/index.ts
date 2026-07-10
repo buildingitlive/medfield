@@ -31,6 +31,8 @@ export interface CartItem {
 
 export interface Address {
   id: string;
+  recipientName?: string;
+  phone?: string;
   label: string;
   street: string;
   city: string;

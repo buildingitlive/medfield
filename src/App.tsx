@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { DesktopSidebar } from './components/DesktopSidebar';
 import { ToastNotification } from './components/ToastNotification';
+import { InstallAppPopup } from './components/InstallAppPopup';
 import { SplashScreen } from './screens/SplashScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
 import { AuthScreen } from './screens/AuthScreen';
@@ -17,21 +19,27 @@ import { PrescriptionUploadScreen } from './screens/PrescriptionUploadScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { ManageAddressesScreen } from './screens/ManageAddressesScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
-import type { CartItem, MedicineProduct, DeliveryAddress } from './types';
-import { mockProducts, mockOrders, mockAddresses } from './data/mockData';
+import { useCart } from './hooks/useCart';
+import { Loader2 } from 'lucide-react';
 
-export default function App() {
+function AppContent() {
+  const { user, loading: authLoading } = useAuth();
+  const { cartCount, addToCart } = useCart();
+  
+  // App State
   const [route, setRoute] = useState<string>('/splash');
-  const [cart, setCart] = useState<CartItem[]>([
-    { product: mockProducts[0], quantity: 1 },
-  ]);
+  const [history, setHistory] = useState<string[]>([]);
   const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [addresses, setAddresses] = useState<DeliveryAddress[]>(mockAddresses);
-  const [defaultAddressId, setDefaultAddressId] = useState<string>(mockAddresses[0]?.id || '');
-
-  // Toast Notification state
   const [toast, setToast] = useState<{ message: string; subtitle?: string } | null>(null);
 
+  // Auto-skip splash/onboarding if user is logged in
+  useEffect(() => {
+    if (!authLoading && user && (route === '/splash' || route === '/login' || route === '/onboarding')) {
+      setRoute('/');
+    }
+  }, [user, authLoading, route]);
+
+  // Dark Mode side effect
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -51,56 +59,39 @@ export default function App() {
 
   const handleNavigate = (newRoute: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (newRoute === 'BACK' || newRoute === '-1' || (typeof newRoute === 'number' && newRoute === -1)) {
+      if (history.length > 0) {
+        const prev = history[history.length - 1];
+        setHistory((curr) => curr.slice(0, -1));
+        setRoute(prev || '/');
+      } else {
+        setRoute('/');
+      }
+      return;
+    }
+    setHistory((curr) => [...curr, route]);
     setRoute(newRoute);
   };
 
-  const handleAddToCart = (product: MedicineProduct) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { product, quantity: 1 }];
-    });
-    showToast('Added to Cart', product.name);
-  };
+  // ─── Auth Guard ──────────────────────────────────────────────────────────
+  const protectedRoutes = ['/cart', '/checkout', '/orders', '/profile', '/addresses', '/settings', '/prescription-upload'];
+  const isProtectedRoute = protectedRoutes.some((r) => route === r || route.startsWith(`${r}/`));
 
-  const handleUpdateCartQuantity = (productId: string, quantity: number) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
+  if (authLoading && route !== '/splash') {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
     );
-  };
+  }
 
-  const handleRemoveCartItem = (productId: string) => {
-    setCart((prev) => prev.filter((item) => item.product.id !== productId));
-  };
+  if (!user && isProtectedRoute && !authLoading) {
+    // Redirect to login if trying to access a protected route
+    setTimeout(() => handleNavigate('/login'), 0);
+    return null; // prevent render flash
+  }
 
-  const handlePlaceOrder = () => {
-    setCart([]);
-    showToast('Order Placed Successfully!', 'Check order status in Tracking');
-    handleNavigate('/orders');
-  };
-
-  const handleAddAddress = (addr: Omit<DeliveryAddress, 'id'>) => {
-    const newAddr: DeliveryAddress = {
-      ...addr,
-      id: `addr-${Date.now()}`,
-    };
-    setAddresses((prev) => [...prev, newAddr]);
-    if (newAddr.isDefault || !defaultAddressId) {
-      setDefaultAddressId(newAddr.id);
-    }
-    showToast('Address Saved', `${newAddr.label} — ${newAddr.street}`);
-  };
-
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
+  // ─── Screen Router ───────────────────────────────────────────────────────
   const renderScreen = () => {
     if (route === '/splash') {
       return <SplashScreen onNavigate={handleNavigate} />;
@@ -112,28 +103,34 @@ export default function App() {
       return <AuthScreen onLoginSuccess={() => handleNavigate('/')} />;
     }
     if (route === '/') {
-      return <HomeScreen onNavigate={handleNavigate} onAddToCart={handleAddToCart} />;
+      return (
+        <HomeScreen
+          onNavigate={handleNavigate}
+          onAddToCart={(p) => { addToCart(p.id, 1); showToast('Added to Cart', p.name); }}
+        />
+      );
     }
     if (route === '/search') {
-      return <SearchScreen onNavigate={handleNavigate} onAddToCart={handleAddToCart} />;
+      return (
+        <SearchScreen
+          onNavigate={handleNavigate}
+          onAddToCart={(p) => { addToCart(p.id, 1); showToast('Added to Cart', p.name); }}
+        />
+      );
     }
     if (route.startsWith('/medicine/')) {
       const id = route.replace('/medicine/', '');
-      const foundProduct = mockProducts.find((p) => p.id === id) || mockProducts[0];
       return (
         <MedicineDetailScreen
-          product={foundProduct}
+          productId={id}
           onNavigate={handleNavigate}
-          onAddToCart={handleAddToCart}
+          onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }}
         />
       );
     }
     if (route === '/cart') {
       return (
         <CartScreen
-          cart={cart}
-          onUpdateQuantity={handleUpdateCartQuantity}
-          onRemoveItem={handleRemoveCartItem}
           onNavigate={handleNavigate}
         />
       );
@@ -141,19 +138,16 @@ export default function App() {
     if (route === '/checkout') {
       return (
         <CheckoutScreen
-          cart={cart}
-          onPlaceOrder={handlePlaceOrder}
           onNavigate={handleNavigate}
         />
       );
     }
     if (route === '/orders') {
-      return <OrdersScreen orders={mockOrders} onNavigate={handleNavigate} />;
+      return <OrdersScreen onNavigate={handleNavigate} />;
     }
     if (route.startsWith('/orders/')) {
       const id = route.replace('/orders/', '');
-      const foundOrder = mockOrders.find((o) => o.id === id) || mockOrders[0];
-      return <OrderTrackingScreen order={foundOrder} onNavigate={handleNavigate} />;
+      return <OrderTrackingScreen orderId={id} onNavigate={handleNavigate} />;
     }
     if (route === '/prescription-upload') {
       return <PrescriptionUploadScreen onNavigate={handleNavigate} />;
@@ -162,14 +156,7 @@ export default function App() {
       return <ProfileScreen onNavigate={handleNavigate} />;
     }
     if (route === '/addresses') {
-      return (
-        <ManageAddressesScreen
-          addresses={addresses}
-          defaultAddressId={defaultAddressId}
-          onSelectDefault={setDefaultAddressId}
-          onAddAddress={handleAddAddress}
-        />
-      );
+      return <ManageAddressesScreen onNavigate={handleNavigate} />;
     }
     if (route === '/settings') {
       return (
@@ -180,12 +167,11 @@ export default function App() {
       );
     }
 
-    return <HomeScreen onNavigate={handleNavigate} onAddToCart={handleAddToCart} />;
+    // 404 Fallback
+    return <HomeScreen onNavigate={handleNavigate} onAddToCart={(p) => { addToCart(p.id, 1); showToast('Added to Cart', p.name); }} />;
   };
 
-  const isStandaloneScreen = ['/splash', '/onboarding', '/login', '/otp', '/register'].includes(
-    route
-  );
+  const isStandaloneScreen = ['/splash', '/onboarding', '/login', '/otp', '/register'].includes(route);
 
   return (
     <div className="min-h-screen bg-surface dark:bg-zinc-950 text-on-surface dark:text-zinc-100 flex flex-col font-sans transition-colors duration-200">
@@ -223,6 +209,16 @@ export default function App() {
         subtitle={toast?.subtitle}
         onViewCart={() => handleNavigate('/cart')}
       />
+
+      <InstallAppPopup />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

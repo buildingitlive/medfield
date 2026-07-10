@@ -1,25 +1,19 @@
 import React from 'react';
 import { Trash2, ArrowRight, ShoppingBag, Truck } from 'lucide-react';
-import type { CartItem } from '../types';
+import { useCart } from '../hooks/useCart';
 
 interface CartScreenProps {
-  cart: CartItem[];
-  onUpdateQuantity: (productId: string, quantity: number) => void;
-  onRemoveItem: (productId: string) => void;
   onNavigate: (route: string) => void;
 }
 
 export const CartScreen: React.FC<CartScreenProps> = ({
-  cart,
-  onUpdateQuantity,
-  onRemoveItem,
   onNavigate,
 }) => {
-  const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { items: cart, updateQuantity, removeItem, subtotal } = useCart();
   const coldChainShipping = cart.length > 0 ? 12.00 : 0;
   const total = subtotal + coldChainShipping;
 
-  const requiresPrescription = cart.some((i) => i.product.requiresPrescription);
+  const requiresPrescription = cart.some((i) => i.product.requires_prescription);
 
   return (
     <main className="min-h-screen pb-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -52,7 +46,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={product.imageUrl}
+                    src={product.image_url}
                     alt={product.name}
                     className="w-16 h-16 rounded object-cover flex-shrink-0"
                   />
@@ -61,9 +55,9 @@ export const CartScreen: React.FC<CartScreenProps> = ({
                       {product.name}
                     </h2>
                     <p className="text-xs text-on-surface-variant">
-                      {product.dosage} • ${product.price.toFixed(2)} unit
+                      {product.dosage} • ₹{product.price.toFixed(2)} unit
                     </p>
-                    {product.requiresPrescription && (
+                    {product.requires_prescription && (
                       <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-tertiary-container text-on-tertiary">
                         Prescription Required
                       </span>
@@ -74,21 +68,21 @@ export const CartScreen: React.FC<CartScreenProps> = ({
                 <div className="flex items-center gap-3">
                   <div className="flex items-center border border-outline-variant rounded">
                     <button
-                      onClick={() => onUpdateQuantity(product.id, Math.max(1, quantity - 1))}
+                      onClick={() => updateQuantity(product.id, Math.max(1, quantity - 1))}
                       className="w-8 h-8 flex items-center justify-center font-bold text-on-surface-variant"
                     >
                       -
                     </button>
                     <span className="w-8 text-center text-xs font-semibold">{quantity}</span>
                     <button
-                      onClick={() => onUpdateQuantity(product.id, quantity + 1)}
+                      onClick={() => updateQuantity(product.id, quantity + 1)}
                       className="w-8 h-8 flex items-center justify-center font-bold text-on-surface-variant"
                     >
                       +
                     </button>
                   </div>
                   <button
-                    onClick={() => onRemoveItem(product.id)}
+                    onClick={() => removeItem(product.id)}
                     aria-label="Remove item"
                     className="min-h-[44px] min-w-[44px] flex items-center justify-center text-error hover:bg-error-container/20 rounded"
                   >
@@ -117,13 +111,13 @@ export const CartScreen: React.FC<CartScreenProps> = ({
               <div className="flex justify-between">
                 <span>Formulation Subtotal</span>
                 <span className="font-semibold text-on-surface dark:text-zinc-100">
-                  ${subtotal.toFixed(2)}
+                  ₹{subtotal.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Cold Chain Logistics</span>
                 <span className="font-semibold text-on-surface dark:text-zinc-100">
-                  ${coldChainShipping.toFixed(2)}
+                  ₹{coldChainShipping.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -133,7 +127,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({
                 Total Due
               </span>
               <span className="font-bold text-xl text-primary-container dark:text-emerald-400">
-                ${total.toFixed(2)}
+                ₹{total.toFixed(2)}
               </span>
             </div>
 

@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
-import type { DeliveryAddress } from '../types';
+import { Plus, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { useAddresses } from '../hooks/useAddresses';
 
 interface ManageAddressesScreenProps {
-  addresses: DeliveryAddress[];
-  defaultAddressId: string;
-  onSelectDefault: (id: string) => void;
-  onAddAddress: (addr: Omit<DeliveryAddress, 'id'>) => void;
+  onNavigate?: (route: string) => void;
 }
 
-export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
-  addresses,
-  defaultAddressId,
-  onSelectDefault,
-  onAddAddress,
-}) => {
+export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () => {
+  const { addresses, defaultAddress, loading, addAddress, deleteAddress, setDefault } = useAddresses();
+  const defaultAddressId = defaultAddress?.id;
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newLabel, setNewLabel] = useState('Work');
+  const [newRecipientName, setNewRecipientName] = useState('Sarah Jenkins');
+  const [newPhone, setNewPhone] = useState('');
+  const [newLabel, setNewLabel] = useState('Home');
   const [newStreet, setNewStreet] = useState('');
   const [newCity, setNewCity] = useState('');
   const [newState, setNewState] = useState('');
   const [newZip, setNewZip] = useState('');
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newStreet || !newCity || !newState || !newZip) return;
-    onAddAddress({
+    
+    await addAddress({
+      recipient_name: newRecipientName || 'Customer Address',
+      phone: newPhone || '+1 (555) 000-0000',
       label: newLabel,
       street: newStreet,
       city: newCity,
       state: newState,
       zip: newZip,
-      zipCode: newZip,
-      isDefault: false,
+      is_default: false,
     });
+
+    setNewPhone('');
     setNewStreet('');
     setNewCity('');
     setNewState('');
@@ -53,12 +53,16 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
       </div>
 
       <div className="space-y-4 mb-6">
-        {addresses.map((addr) => {
-          const isSelected = addr.id === defaultAddressId || addr.isDefault;
+        {loading ? (
+          <div className="p-12 flex justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : addresses.map((addr) => {
+          const isSelected = addr.id === defaultAddressId || addr.is_default;
           return (
             <div
               key={addr.id}
-              onClick={() => onSelectDefault(addr.id)}
+              onClick={() => setDefault(addr.id)}
               className={`p-5 rounded-md border transition-all cursor-pointer bg-surface-container-lowest dark:bg-zinc-900 ${
                 isSelected
                   ? 'border-primary border-l-4 shadow-sm'
@@ -78,7 +82,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-semibold text-sm text-on-surface dark:text-zinc-100">
-                      Sarah Jenkins
+                      {addr.recipient_name || 'Customer Address'}
                     </span>
                     <span
                       className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
@@ -93,9 +97,9 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
                   <p className="text-xs text-on-surface-variant leading-relaxed">
                     {addr.street}
                     <br />
-                    {addr.city}, {addr.state} {addr.zipCode}
+                    {addr.city}, {addr.state} {addr.zip}
                     <br />
-                    Phone: (555) 123-4567
+                    Phone: {addr.phone || '+1 (555) 123-4567'}
                   </p>
 
                   {/* Actions matching reference design */}
@@ -114,9 +118,9 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
 
                     <button
                       type="button"
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.stopPropagation();
-                        // placeholder delete action
+                        await deleteAddress(addr.id);
                       }}
                       className="inline-flex items-center gap-1 text-error hover:underline"
                     >
@@ -151,13 +155,41 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                Recipient / Contact Name
+              </label>
+              <input
+                type="text"
+                value={newRecipientName}
+                onChange={(e) => setNewRecipientName(e.target.value)}
+                placeholder="e.g. Sarah Jenkins"
+                className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-on-surface-variant mb-1">
                 Location Label
               </label>
               <input
                 type="text"
                 value={newLabel}
                 onChange={(e) => setNewLabel(e.target.value)}
-                placeholder="e.g. Clinical Lab 3"
+                placeholder="e.g. Home, Work Office"
+                className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
+                required
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-semibold text-on-surface-variant mb-1">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={newPhone}
+                onChange={(e) => setNewPhone(e.target.value)}
+                placeholder="e.g. +1 (555) 234-5678"
                 className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                 required
               />
@@ -207,7 +239,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = ({
               </div>
               <div>
                 <label className="block text-xs font-semibold text-on-surface-variant mb-1">
-                  ZIP Code
+                  PIN Code
                 </label>
                 <input
                   type="text"

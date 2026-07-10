@@ -18,7 +18,8 @@
 8. **Prescription Upload (`/prescription-upload`)**: 3-step progress indicator (`1 Upload -> 2 Review -> 3 Confirmed`), Clarity Checklist (`Well-lit and easily readable`), and sticky bottom Submit button.
 9. **Onboarding (`/onboarding`)**: Full-bleed circular medical hero illustrations per slide.
 
-## 3. Responsive Navigation & Micro-Interactions
+## 3. Responsive Navigation, PWA Prompt & Micro-Interactions
 - **Mobile Viewport**: Persistent bottom navigation bar (`BottomNav.tsx`).
 - **Desktop Viewport (`lg+`)**: Dedicated fixed left navigation drawer (`DesktopSidebar.tsx`) displaying profile summary and navigation items.
+- **PWA Installation Prompt Modal (`InstallAppPopup.tsx`)**: Frosted glassmorphism modal (`useInstallPrompt.ts`) detecting iOS Safari 3-step instructions or native Chrome/Edge `beforeinstallprompt` trigger.
 - **Floating Toast Feedback (`ToastNotification.tsx`)**: Auto-dismissing floating visual confirmations on cart additions and order submissions.

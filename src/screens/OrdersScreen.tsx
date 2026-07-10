@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
-import { Package, Truck, RotateCcw, Eye } from 'lucide-react';
-import type { Order } from '../types';
+import { Package, Truck, RotateCcw, Eye, Loader2 } from 'lucide-react';
+import { useOrders } from '../hooks/useOrders';
 
 interface OrdersScreenProps {
-  orders: Order[];
   onNavigate: (route: string) => void;
 }
 
-export const OrdersScreen: React.FC<OrdersScreenProps> = ({ orders, onNavigate }) => {
+export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onNavigate }) => {
+  const { ongoingOrders, pastOrders, loading } = useOrders();
   const [activeTab, setActiveTab] = useState<'ONGOING' | 'PAST'>('ONGOING');
-
-  // Categorize orders into ongoing vs past
-  const ongoingOrders = orders.filter((o) => o.status !== 'Delivered');
-  const pastOrders = orders.filter((o) => o.status === 'Delivered');
 
   const displayedOrders = activeTab === 'ONGOING' ? ongoingOrders : pastOrders;
 
@@ -52,7 +48,11 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ orders, onNavigate }
       </div>
 
       <div className="space-y-4">
-        {displayedOrders.length === 0 ? (
+        {loading ? (
+          <div className="p-12 flex justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : displayedOrders.length === 0 ? (
           <div className="p-12 text-center bg-surface-container-lowest dark:bg-zinc-900 rounded-brand border border-surface-variant">
             <Package className="w-10 h-10 text-outline-variant mx-auto mb-2" />
             <p className="text-sm font-semibold text-on-surface">
@@ -83,14 +83,14 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ orders, onNavigate }
                       </p>
                       <p className="text-xs text-on-surface-variant mt-0.5">
                         {isOngoing
-                          ? `Estimated arrival: ${order.estimatedDelivery}`
-                          : `Delivered on: ${order.date}`}
+                          ? `Estimated arrival: ${order.estimated_delivery || 'Pending'}`
+                          : `Delivered on: ${new Date(order.created_at).toLocaleDateString()}`}
                       </p>
                     </div>
                   </div>
 
                   <span className="text-lg font-bold text-primary-container dark:text-emerald-400">
-                    ${order.total.toFixed(2)}
+                    ₹{order.total.toFixed(2)}
                   </span>
                 </div>
 

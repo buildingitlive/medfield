@@ -113,8 +113,10 @@ export const mockProducts: MedicineProduct[] = [
 export const mockAddresses: Address[] = [
   {
     id: 'addr-1',
-    label: 'Primary Dispensary / Clinic',
-    street: '450 Green Meadow Parkway, Suite 210',
+    recipientName: 'Sarah Jenkins',
+    phone: '+1 (555) 234-5678',
+    label: 'Home Delivery',
+    street: '1420 Medical Parkway, Suite 200',
     city: 'San Francisco',
     state: 'CA',
     zip: '94107',
@@ -122,7 +124,9 @@ export const mockAddresses: Address[] = [
   },
   {
     id: 'addr-2',
-    label: 'Home Delivery Address',
+    recipientName: 'Sarah Jenkins',
+    phone: '+1 (555) 876-5432',
+    label: 'Work Office',
     street: '128 Forest Hills Avenue',
     city: 'Palo Alto',
     state: 'CA',

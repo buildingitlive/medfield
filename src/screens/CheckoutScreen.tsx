@@ -9,26 +9,54 @@ import {
   ChevronUp,
   ChevronDown,
   ArrowRight,
+  Loader2,
 } from 'lucide-react';
-import type { CartItem } from '../types';
+import { useCart } from '../hooks/useCart';
+import { useAddresses } from '../hooks/useAddresses';
+import { useOrders } from '../hooks/useOrders';
+import type { PaymentMethod } from '../types/database';
 
 interface CheckoutScreenProps {
-  cart: CartItem[];
-  onPlaceOrder: () => void;
   onNavigate: (route: string) => void;
 }
 
 export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
-  cart,
-  onPlaceOrder,
   onNavigate,
 }) => {
-  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'QR'>('COD');
-  const [summaryOpen, setSummaryOpen] = useState(true);
+  const { items: cart, subtotal, clearCart } = useCart();
+  const { defaultAddress } = useAddresses();
+  const { placeOrder } = useOrders();
 
-  const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('COD');
+  const [summaryOpen, setSummaryOpen] = useState(true);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const deliveryFee = cart.length > 0 ? 5.00 : 0;
   const total = subtotal + deliveryFee;
+
+  const handlePlaceOrder = async () => {
+    if (cart.length === 0 || !defaultAddress) return;
+    
+    setIsPlacingOrder(true);
+    setErrorMsg(null);
+
+    const { error } = await placeOrder({
+      cartItems: cart,
+      address: defaultAddress,
+      paymentMethod,
+      deliveryFee,
+    });
+
+    setIsPlacingOrder(false);
+
+    if (error) {
+      setErrorMsg(error);
+    } else {
+      await clearCart();
+      onNavigate('/orders');
+    }
+  };
 
   return (
     <main className="min-h-screen pb-32 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
@@ -45,8 +73,14 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
         </h1>
       </div>
 
+      {errorMsg && (
+        <div className="w-full mb-4 p-3 rounded-md bg-error-container/30 border border-error/20 text-xs text-error font-semibold text-center">
+          {errorMsg}
+        </div>
+      )}
+
       <div className="space-y-4">
-        {/* Delivery Address Card matching Reference Design */}
+        {/* Delivery Address Card */}
         <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-5 shadow-sm">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2 font-bold text-sm text-on-surface dark:text-zinc-100">
@@ -61,14 +95,26 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
             </button>
           </div>
           <div className="pl-6 text-xs text-on-surface-variant leading-relaxed">
-            <p className="font-semibold text-on-surface dark:text-zinc-100 mb-0.5">Jane Doe</p>
-            <p>123 Health Ave, Apt 4B</p>
-            <p>Wellness City, ST 12345</p>
-            <p className="mt-1">+1 (555) 123-4567</p>
+            {defaultAddress ? (
+              <>
+                <p className="font-semibold text-on-surface dark:text-zinc-100 mb-0.5">
+                  {defaultAddress.recipient_name} • {defaultAddress.label}
+                </p>
+                <p>{defaultAddress.street}</p>
+                <p>
+                  {defaultAddress.city}, {defaultAddress.state} {defaultAddress.zip}
+                </p>
+                <p className="mt-1">
+                  {defaultAddress.phone || 'No phone provided'}
+                </p>
+              </>
+            ) : (
+              <p className="text-error font-semibold py-2">Please add a delivery address to continue.</p>
+            )}
           </div>
         </section>
 
-        {/* Delivery Time Card matching Reference Design */}
+        {/* Delivery Time Card */}
         <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-5 shadow-sm">
           <div className="flex items-center gap-2 font-bold text-sm text-on-surface dark:text-zinc-100 mb-3">
             <Truck className="w-4 h-4 text-primary" />
@@ -80,7 +126,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
           </div>
         </section>
 
-        {/* Payment Method Section matching Reference Design */}
+        {/* Payment Method Section */}
         <section className="space-y-3">
           <div className="flex items-center gap-2 font-bold text-sm text-on-surface dark:text-zinc-100">
             <CreditCard className="w-4 h-4 text-primary" />
@@ -113,7 +159,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
           >
             <QrCode className="w-6 h-6 text-primary" />
             <span className="text-xs font-semibold text-on-surface dark:text-zinc-100">
-              Scan &amp; Pay QR on Delivery
+              Scan & Pay QR on Delivery
             </span>
           </button>
         </section>
@@ -134,13 +180,13 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
               <div className="flex justify-between">
                 <span>Item Total ({cart.reduce((sum, i) => sum + i.quantity, 0)} Items)</span>
                 <span className="font-semibold text-on-surface dark:text-zinc-100">
-                  ${subtotal.toFixed(2)}
+                  ₹{subtotal.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
                 <span className="font-semibold text-on-surface dark:text-zinc-100">
-                  ${deliveryFee.toFixed(2)}
+                  ₹{deliveryFee.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -148,22 +194,28 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
         </section>
       </div>
 
-      {/* Sticky Place Order Bottom Bar matching Reference Design */}
+      {/* Sticky Place Order Bottom Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-zinc-900 border-t border-surface-variant dark:border-zinc-800 p-4 pb-safe z-40 shadow-lg">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
           <div>
             <span className="text-xs text-on-surface-variant block">Amount Payable</span>
             <span className="text-2xl font-bold text-on-surface dark:text-zinc-100">
-              ${total.toFixed(2)}
+              ₹{total.toFixed(2)}
             </span>
           </div>
           <button
-            onClick={onPlaceOrder}
-            disabled={cart.length === 0}
+            onClick={handlePlaceOrder}
+            disabled={cart.length === 0 || !defaultAddress || isPlacingOrder}
             className="min-h-[48px] px-8 rounded-md bg-primary hover:bg-primary-container text-on-primary font-semibold text-sm shadow flex items-center gap-2 transition-all disabled:opacity-50"
           >
-            <span>Place Order</span>
-            <ArrowRight className="w-4 h-4" />
+            {isPlacingOrder ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                <span>Place Order</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </div>
       </div>

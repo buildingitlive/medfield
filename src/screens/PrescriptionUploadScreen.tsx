@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { UploadCloud, CheckCircle2, X, Send, HelpCircle, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 interface PrescriptionUploadScreenProps {
   onNavigate: (route: string) => void;
@@ -8,24 +10,55 @@ interface PrescriptionUploadScreenProps {
 export const PrescriptionUploadScreen: React.FC<PrescriptionUploadScreenProps> = ({
   onNavigate,
 }) => {
+  const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
+      setErrorMsg(null);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile) return;
+    if (!selectedFile || !user) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMsg(null);
+
+    const fileExt = selectedFile.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `${user.id}/${fileName}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('prescriptions')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) throw uploadError;
+
+      supabase.storage
+        .from('prescriptions')
+        .getPublicUrl(filePath); // Actually it's a private bucket, but we'll store the path instead
+
+      const { error: dbError } = await supabase.from('prescriptions').insert({
+        user_id: user.id,
+        file_url: filePath,
+        file_name: selectedFile.name,
+        status: 'pending',
+      } as any);
+
+      if (dbError) throw dbError;
+
       setSubmitted(true);
-    }, 1200);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to upload prescription');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -33,8 +66,9 @@ export const PrescriptionUploadScreen: React.FC<PrescriptionUploadScreenProps> =
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
         <button
-          onClick={() => onNavigate(-1 as any)}
-          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface hover:bg-surface-container rounded-full"
+          onClick={() => onNavigate('BACK')}
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface hover:bg-surface-container rounded-full transition-colors"
+          aria-label="Go back"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -73,6 +107,12 @@ export const PrescriptionUploadScreen: React.FC<PrescriptionUploadScreenProps> =
           Please provide a clear image of your valid prescription to proceed with your order.
         </p>
       </div>
+
+      {errorMsg && (
+        <div className="mb-6 p-3 rounded-md bg-error-container/30 border border-error/20 text-xs text-error font-semibold text-center">
+          {errorMsg}
+        </div>
+      )}
 
       {!submitted ? (
         <form onSubmit={handleSubmit} className="space-y-6">

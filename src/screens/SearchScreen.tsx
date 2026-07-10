@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Search, ArrowUpDown } from 'lucide-react';
-import type { MedicineProduct } from '../types';
-import { mockProducts } from '../data/mockData';
+import { Search, ArrowUpDown, Loader2 } from 'lucide-react';
+import type { Product } from '../types/database';
+import { useProducts } from '../hooks/useProducts';
 import { VerifiedMark } from '../components/VerifiedMark';
 
 interface SearchScreenProps {
   onNavigate: (route: string) => void;
-  onAddToCart: (product: MedicineProduct) => void;
+  onAddToCart: (product: Product) => void;
 }
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToCart }) => {
@@ -30,25 +30,12 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
     });
   };
 
-  const filteredProducts = mockProducts
-    .filter((product) => {
-      const matchesQuery =
-        product.name.toLowerCase().includes(query.toLowerCase()) ||
-        product.genericName.toLowerCase().includes(query.toLowerCase());
-      const matchesType =
-        filterType === 'ALL' ||
-        (filterType === 'RX' && product.requiresPrescription) ||
-        (filterType === 'OTC' && !product.requiresPrescription);
-      const matchesCategory =
-        selectedCategory === 'ALL' || product.category === selectedCategory;
-
-      return matchesQuery && matchesType && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'PRICE_ASC') return a.price - b.price;
-      if (sortBy === 'PRICE_DESC') return b.price - a.price;
-      return 0;
-    });
+  const { products: filteredProducts, loading } = useProducts({
+    search: query,
+    category: selectedCategory === 'ALL' ? undefined : selectedCategory,
+    filterType,
+    sortBy,
+  });
 
   return (
     <main className="min-h-screen pb-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -124,7 +111,11 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
 
       {/* Results List */}
       <div className="space-y-4">
-        {filteredProducts.length === 0 ? (
+        {loading ? (
+          <div className="p-12 flex justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="p-12 text-center bg-surface-container-lowest dark:bg-zinc-900 rounded-brand border border-surface-variant">
             <p className="text-sm font-semibold text-on-surface">No matching medications found</p>
             <p className="text-xs text-on-surface-variant mt-1">
@@ -144,7 +135,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
               >
                 <div className="flex items-start gap-4">
                   <img
-                    src={product.imageUrl}
+                    src={product.image_url || ''}
                     alt={product.name}
                     className="w-20 h-20 rounded object-cover flex-shrink-0 bg-surface-container"
                   />
@@ -154,7 +145,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
                       <span className="font-semibold text-sm text-on-surface dark:text-zinc-100">
                         {product.name}
                       </span>
-                      {product.requiresPrescription && (
+                      {product.requires_prescription && (
                         <span className="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full">
                           Rx Required
                         </span>
@@ -162,11 +153,11 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
                     </div>
 
                     <p className="text-xs text-on-surface-variant mb-1.5">
-                      {product.genericName} • {product.dosage}
+                      {product.generic_name} • {product.dosage}
                     </p>
 
                     <div className="flex items-center gap-1.5 text-xs text-primary-container">
-                      <span className="font-semibold">{product.grower.name}</span>
+                      <span className="font-semibold">{product.grower_name || 'Verified Supplier'}</span>
                       <VerifiedMark size={14} />
                     </div>
                   </div>
@@ -177,14 +168,14 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
                   <div className="text-left sm:text-right">
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-on-surface-variant line-through">
-                        ${originalPrice.toFixed(2)}
+                        ₹{originalPrice.toFixed(2)}
                       </span>
                       <span className="text-[11px] font-bold text-on-primary bg-primary px-1.5 py-0.5 rounded">
                         Save 20%
                       </span>
                     </div>
                     <span className="text-lg font-bold text-primary-container dark:text-emerald-400">
-                      ${product.price.toFixed(2)}
+                      ₹{product.price.toFixed(2)}
                     </span>
                   </div>
 
