@@ -55,7 +55,7 @@ export const InstallAppPopup: React.FC = () => {
               Install MedField App
             </h2>
             <p className="text-xs text-on-surface-variant dark:text-zinc-400 mb-6 leading-relaxed">
-              Install MedField on your device for instant access, offline medication tracking &amp; expedited cold-chain notifications.
+              Install MedField on your device for instant access, offline medication tracking &amp; expedited delivery updates.
             </p>
 
             {isIOS ? (

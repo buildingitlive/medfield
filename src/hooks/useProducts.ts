@@ -23,7 +23,6 @@ function getCachedProducts(): Product[] {
 interface UseProductsOptions {
   search?: string;
   category?: string;
-  filterType?: 'ALL' | 'OTC' | 'RX';
   sortBy?: 'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC';
 }
 
@@ -71,7 +70,7 @@ export function useProducts(options: UseProductsOptions = {}) {
   // Apply client-side filtering/sorting
   const filteredProducts = products
     .filter((p) => {
-      const { search, category, filterType } = options;
+      const { search, category } = options;
 
       if (search) {
         const q = search.toLowerCase();
@@ -86,9 +85,6 @@ export function useProducts(options: UseProductsOptions = {}) {
       if (category && category !== 'ALL' && p.category !== category) {
         return false;
       }
-
-      if (filterType === 'RX' && !p.requires_prescription) return false;
-      if (filterType === 'OTC' && p.requires_prescription) return false;
 
       return true;
     })

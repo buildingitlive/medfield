@@ -6,12 +6,11 @@ import { VerifiedMark } from '../components/VerifiedMark';
 
 interface SearchScreenProps {
   onNavigate: (route: string) => void;
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (product: Product, quantity: number) => void;
 }
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToCart }) => {
   const [query, setQuery] = useState('');
-  const [filterType, setFilterType] = useState<'ALL' | 'OTC' | 'RX'>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC'>('POPULAR');
 
@@ -33,7 +32,6 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
   const { products: filteredProducts, loading } = useProducts({
     search: query,
     category: selectedCategory === 'ALL' ? undefined : selectedCategory,
-    filterType,
     sortBy,
   });
 
@@ -60,23 +58,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
         />
       </div>
 
-      {/* Type Filter & Sort Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2">
-          {(['ALL', 'OTC', 'RX'] as const).map((type) => (
-            <button
-              key={type}
-              onClick={() => setFilterType(type)}
-              className={`min-h-[36px] px-3.5 rounded text-xs font-semibold transition-colors ${
-                filterType === type
-                  ? 'bg-primary text-on-primary font-bold shadow-sm'
-                  : 'bg-surface-container dark:bg-zinc-800 text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              {type === 'ALL' ? 'All Items' : type === 'OTC' ? 'OTC Only' : 'Prescription (Rx)'}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-3 mb-4">
 
         <div className="flex items-center gap-2">
           <ArrowUpDown className="w-4 h-4 text-on-surface-variant" />
@@ -145,11 +127,6 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
                       <span className="font-semibold text-sm text-on-surface dark:text-zinc-100">
                         {product.name}
                       </span>
-                      {product.requires_prescription && (
-                        <span className="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full">
-                          Rx Required
-                        </span>
-                      )}
                     </div>
 
                     <p className="text-xs text-on-surface-variant mb-1.5">
@@ -207,9 +184,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
                     <button
                       type="button"
                       onClick={() => {
-                        for (let i = 0; i < qty; i++) {
-                          onAddToCart(product);
-                        }
+                        onAddToCart(product, qty);
                       }}
                       className="min-h-[36px] px-4 rounded bg-primary text-on-primary text-xs font-semibold shadow hover:bg-primary-container transition-all"
                     >

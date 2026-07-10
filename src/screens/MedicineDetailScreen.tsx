@@ -55,11 +55,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
-          {product.requires_prescription && (
-            <span className="bg-primary text-on-primary text-[11px] font-bold px-3 py-1 rounded-full">
-              RX REQUIRED
-            </span>
-          )}
+
           <button
             onClick={() => {
               if (navigator.share) {

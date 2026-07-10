@@ -107,19 +107,19 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
           <div className="flex items-center gap-3.5">
             <img
               src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-              alt="Alex Mercer"
+              alt="Amit Verma"
               className="w-12 h-12 rounded-full object-cover"
             />
             <div>
               <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100">
-                Alex Mercer
+                Amit Verma
               </h3>
               <p className="text-xs text-on-surface-variant">MedField Courier</p>
             </div>
           </div>
 
           <a
-            href="tel:+15550001234"
+            href="tel:+919876500123"
             className="w-11 h-11 rounded-full bg-primary text-on-primary flex items-center justify-center shadow hover:bg-primary-container transition-colors"
           >
             <Phone className="w-5 h-5" />

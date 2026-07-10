@@ -21,7 +21,7 @@ import { VerifiedMark } from '../components/VerifiedMark';
 
 interface HomeScreenProps {
   onNavigate: (route: string) => void;
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (product: Product, quantity?: number) => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart }) => {
@@ -192,11 +192,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                       onClick={() => onNavigate(`/medicine/${product.id}`)}
                       className="min-w-[165px] w-[165px] sm:min-w-[190px] sm:w-[190px] bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-3 flex flex-col shadow-sm cursor-pointer hover:border-primary transition-all relative"
                     >
-                      {product.requires_prescription && (
-                        <span className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-                          Rx Req.
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
+                          Verified
                         </span>
-                      )}
+                      </div>
                       <div className="w-full aspect-square bg-surface-container-low dark:bg-zinc-800 rounded mb-2.5 overflow-hidden flex items-center justify-center p-2">
                         <img
                           src={product.image_url || ''}
@@ -236,7 +236,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
                   {selectedCategory === 'ALL'
-                    ? 'Verified Field Assays'
+                    ? 'Popular Medicines'
                     : `${selectedCategory} Formulations`}
                 </h2>
                 <span className="text-xs text-on-surface-variant">
@@ -280,7 +280,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                           e.stopPropagation();
                           onAddToCart(product);
                         }}
-                        className="min-h-[36px] px-3.5 rounded bg-primary-container hover:bg-primary text-on-primary text-xs font-semibold shadow transition-all"
+                        className="min-h-[36px] px-3.5 rounded bg-primary hover:bg-primary/90 text-on-primary text-xs font-semibold shadow transition-all"
                       >
                         Add to Cart
                       </button>

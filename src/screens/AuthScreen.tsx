@@ -79,7 +79,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
           <p className="text-sm text-on-surface-variant dark:text-zinc-400 mb-6 text-center">
             {mode === 'LOGIN'
               ? 'Sign in to access your MedField account'
-              : 'Join MedField for verified field-to-pharmacy delivery'}
+              : 'Join MedField for verified medicine delivery across India'}
           </p>
 
           {/* Error Alert */}
@@ -107,7 +107,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Sarah Jenkins"
+                  placeholder="Rahul Sharma"
                   required
                   className="w-full min-h-[48px] bg-surface-container-low dark:bg-zinc-800 border border-outline-variant dark:border-zinc-700 rounded-md px-4 text-sm text-on-surface dark:text-zinc-100 focus:outline-none focus:border-primary transition-all"
                 />
@@ -151,7 +151,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="(555) 000-0000"
+                    placeholder="98765 43210"
                     className="w-full min-h-[48px] bg-surface-container-low dark:bg-zinc-800 border border-outline-variant dark:border-zinc-700 rounded-md pl-11 pr-4 text-sm text-on-surface dark:text-zinc-100 focus:outline-none focus:border-primary transition-all"
                   />
                 </div>

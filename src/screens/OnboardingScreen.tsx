@@ -24,7 +24,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
         'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80',
     },
     {
-      title: 'Verified Cold-Chain Delivery',
+      title: 'Fast & Secure Delivery',
       description:
         'Temperature-controlled dispatch ensures maximum assay potency upon arrival.',
       imageUrl:

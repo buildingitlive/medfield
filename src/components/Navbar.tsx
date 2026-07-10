@@ -1,6 +1,5 @@
 import React from 'react';
-import { Search, ShoppingBag, Moon, Sun, ShieldCheck, User } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { Search, ShoppingBag, Moon, Sun, ShieldCheck } from 'lucide-react';
 
 interface NavbarProps {
   currentRoute: string;
@@ -17,7 +16,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   darkMode,
   onToggleDarkMode,
 }) => {
-  const { profile } = useAuth();
   // Suppress header on splash, onboarding, and auth flows
   const suppressedRoutes = ['/splash', '/onboarding', '/login', '/otp', '/register'];
   if (suppressedRoutes.includes(currentRoute)) {
@@ -34,31 +32,31 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <img
             src="/logo.png"
-            alt="MedField — Field-to-Pharmacy System"
+            alt="MedField — Verified Indian Pharmacy"
             className="h-9 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider bg-secondary-container dark:bg-emerald-950/60 text-on-secondary-container dark:text-emerald-300 px-2.5 py-0.5 rounded-full border border-secondary/20">
             <ShieldCheck className="w-3 h-3 text-primary-container" />
-            Verified Field Sourcing
+            100% Genuine Medicines
           </span>
         </div>
 
         {/* Action Controls (Min 48px touch targets) */}
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Search Shortcut */}
+          {/* Search Shortcut - Hidden on Mobile */}
           <button
             onClick={() => onNavigate('/search')}
             aria-label="Search pharmaceutical catalog"
-            className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-colors"
+            className="hidden sm:flex min-h-[48px] min-w-[48px] items-center justify-center rounded-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-colors"
           >
             <Search className="w-5 h-5" />
           </button>
 
-          {/* Cart Shortcut with Badge */}
+          {/* Cart Shortcut with Badge - Hidden on Mobile */}
           <button
             onClick={() => onNavigate('/cart')}
             aria-label="View shopping cart"
-            className="relative min-h-[48px] min-w-[48px] flex items-center justify-center rounded-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-colors"
+            className="hidden sm:flex relative min-h-[48px] min-w-[48px] items-center justify-center rounded-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-colors"
           >
             <ShoppingBag className="w-5 h-5" />
             {cartCount > 0 && (
@@ -68,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Dark / Light Mode Toggle */}
+          {/* Dark / Light Mode Toggle - Always Visible */}
           <button
             onClick={onToggleDarkMode}
             aria-label="Toggle light or dark theme"
@@ -77,20 +75,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
           </button>
 
-          {/* User Profile (Mobile/Tablet only, DesktopSidebar handles lg+) */}
-          <button
-            onClick={() => onNavigate('/profile')}
-            aria-label="User profile"
-            className="lg:hidden ml-1 flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-bold text-sm overflow-hidden"
-          >
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover" />
-            ) : profile?.name ? (
-              profile.name.charAt(0).toUpperCase()
-            ) : (
-              <User className="w-4 h-4 text-on-primary-container" />
-            )}
-          </button>
+          {/* User Profile - Hidden on mobile entirely now, DesktopSidebar handles lg+ */}
+          {/* Originally this was lg:hidden sm:flex, but user wants it hidden on mobile too. Let's hide it below lg since BottomNav has it on mobile, DesktopSidebar has it on Desktop. */}
+          {/* Wait, the DesktopSidebar handles it on lg+. On md, it's missing if we hide it? But the user explicitly said: "also the profile, just keep the theme button". */}
         </div>
       </div>
     </header>

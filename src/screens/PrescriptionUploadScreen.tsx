@@ -192,7 +192,7 @@ export const PrescriptionUploadScreen: React.FC<PrescriptionUploadScreenProps> =
             Prescription Uploaded Successfully!
           </h2>
           <p className="text-xs text-on-surface-variant max-w-md mx-auto mb-6">
-            Our clinical review board is inspecting the document. Once validated, your order will proceed to expedited cold-chain fulfillment.
+            Our pharmacy team is reviewing your prescription. Once verified, your order will be dispatched for delivery.
           </p>
           <button
             onClick={() => onNavigate('/cart')}

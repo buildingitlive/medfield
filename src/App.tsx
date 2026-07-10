@@ -106,7 +106,7 @@ function AppContent() {
       return (
         <HomeScreen
           onNavigate={handleNavigate}
-          onAddToCart={(p) => { addToCart(p.id, 1); showToast('Added to Cart', p.name); }}
+          onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }}
         />
       );
     }
@@ -114,7 +114,7 @@ function AppContent() {
       return (
         <SearchScreen
           onNavigate={handleNavigate}
-          onAddToCart={(p) => { addToCart(p.id, 1); showToast('Added to Cart', p.name); }}
+          onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }}
         />
       );
     }
@@ -168,7 +168,7 @@ function AppContent() {
     }
 
     // 404 Fallback
-    return <HomeScreen onNavigate={handleNavigate} onAddToCart={(p) => { addToCart(p.id, 1); showToast('Added to Cart', p.name); }} />;
+    return <HomeScreen onNavigate={handleNavigate} onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }} />;
   };
 
   const isStandaloneScreen = ['/splash', '/onboarding', '/login', '/otp', '/register'].includes(route);

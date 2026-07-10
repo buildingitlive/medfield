@@ -13,15 +13,13 @@ export const CartScreen: React.FC<CartScreenProps> = ({
   const coldChainShipping = cart.length > 0 ? 12.00 : 0;
   const total = subtotal + coldChainShipping;
 
-  const requiresPrescription = cart.some((i) => i.product.requires_prescription);
-
   return (
     <main className="min-h-screen pb-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
       <h1 className="font-heading text-2xl font-bold text-on-surface dark:text-zinc-100 mb-1">
         Your Cart
       </h1>
       <p className="text-xs text-on-surface-variant dark:text-zinc-400 mb-6">
-        {cart.reduce((sum, item) => sum + item.quantity, 0)} items selected for cold chain dispatch
+        {cart.reduce((sum, item) => sum + item.quantity, 0)} items ready for delivery
       </p>
 
       {cart.length === 0 ? (
@@ -39,55 +37,74 @@ export const CartScreen: React.FC<CartScreenProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items List */}
           <div className="lg:col-span-2 space-y-4">
-            {cart.map(({ product, quantity }) => (
+            {cart.map(({ id, product, quantity }) => (
               <div
                 key={product.id}
-                className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 p-4 rounded-md shadow-sm flex items-center justify-between gap-4"
+                className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-md shadow-sm overflow-hidden"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex gap-3 p-3">
+                  {/* Product Image */}
                   <img
                     src={product.image_url}
                     alt={product.name}
-                    className="w-16 h-16 rounded object-cover flex-shrink-0"
+                    className="w-[72px] h-[72px] rounded-md object-cover flex-shrink-0 bg-surface-container"
                   />
-                  <div>
-                    <h2 className="font-semibold text-sm text-on-surface dark:text-zinc-100">
+
+                  {/* Product Info */}
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-semibold text-sm text-on-surface dark:text-zinc-100 leading-tight line-clamp-1">
                       {product.name}
                     </h2>
-                    <p className="text-xs text-on-surface-variant">
-                      {product.dosage} • ₹{product.price.toFixed(2)} unit
+                    <p className="text-[11px] text-on-surface-variant mt-0.5 line-clamp-1">
+                      {product.generic_name}
                     </p>
-                    {product.requires_prescription && (
-                      <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-tertiary-container text-on-tertiary">
-                        Prescription Required
-                      </span>
-                    )}
+                    <p className="text-[11px] text-on-surface-variant">
+                      {product.dosage}
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center border border-outline-variant rounded">
+                {/* Bottom row: Price + Quantity Controls */}
+                <div className="flex items-center justify-between px-3 pb-3 pt-0">
+                  <span className="font-bold text-sm text-primary-container dark:text-emerald-400">
+                    ₹{(product.price * quantity).toFixed(2)}
+                    {quantity > 1 && (
+                      <span className="text-[10px] font-normal text-on-surface-variant ml-1">
+                        (₹{product.price.toFixed(0)} × {quantity})
+                      </span>
+                    )}
+                  </span>
+
+                  <div className="flex items-center border border-outline-variant dark:border-zinc-700 rounded-md overflow-hidden">
+                    {/* Delete/Minus button */}
                     <button
-                      onClick={() => updateQuantity(product.id, Math.max(1, quantity - 1))}
-                      className="w-8 h-8 flex items-center justify-center font-bold text-on-surface-variant"
+                      onClick={() => {
+                        if (quantity <= 1) {
+                          removeItem(id);
+                        } else {
+                          updateQuantity(id, quantity - 1);
+                        }
+                      }}
+                      className="w-9 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors"
                     >
-                      -
+                      {quantity <= 1 ? (
+                        <Trash2 className="w-3.5 h-3.5 text-error" />
+                      ) : (
+                        <span className="font-bold text-sm">−</span>
+                      )}
                     </button>
-                    <span className="w-8 text-center text-xs font-semibold">{quantity}</span>
+
+                    <span className="w-9 text-center text-xs font-bold text-on-surface dark:text-zinc-100 border-x border-outline-variant dark:border-zinc-700 h-9 flex items-center justify-center">
+                      {quantity}
+                    </span>
+
                     <button
-                      onClick={() => updateQuantity(product.id, quantity + 1)}
-                      className="w-8 h-8 flex items-center justify-center font-bold text-on-surface-variant"
+                      onClick={() => updateQuantity(id, quantity + 1)}
+                      className="w-9 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors"
                     >
-                      +
+                      <span className="font-bold text-sm">+</span>
                     </button>
                   </div>
-                  <button
-                    onClick={() => removeItem(product.id)}
-                    aria-label="Remove item"
-                    className="min-h-[44px] min-w-[44px] flex items-center justify-center text-error hover:bg-error-container/20 rounded"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
                 </div>
               </div>
             ))}
@@ -115,7 +132,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Cold Chain Logistics</span>
+                <span>Delivery Charges</span>
                 <span className="font-semibold text-on-surface dark:text-zinc-100">
                   ₹{coldChainShipping.toFixed(2)}
                 </span>
@@ -131,16 +148,9 @@ export const CartScreen: React.FC<CartScreenProps> = ({
               </span>
             </div>
 
-            {requiresPrescription && (
-              <div className="bg-tertiary-container/30 border border-tertiary/20 p-3 rounded text-xs mb-4">
-                <span className="font-semibold block text-tertiary">Prescription Check Required</span>
-                Prescriptions must be verified prior to courier dispatch.
-              </div>
-            )}
-
             <button
               onClick={() => onNavigate('/checkout')}
-              className="w-full min-h-[48px] bg-primary-container hover:bg-primary text-on-primary font-semibold rounded-md flex items-center justify-center gap-2 shadow transition-all"
+              className="w-full min-h-[48px] bg-primary hover:bg-primary/90 text-on-primary font-semibold rounded-md flex items-center justify-center gap-2 shadow transition-all"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4" />

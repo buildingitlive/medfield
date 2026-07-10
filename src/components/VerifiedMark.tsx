@@ -9,7 +9,7 @@ interface VerifiedMarkProps {
 export const VerifiedMark: React.FC<VerifiedMarkProps> = ({
   size = 18,
   className = '',
-  tooltip = 'Verified Field-to-Pharmacy Pharmaceutical Certification',
+  tooltip = '100% Genuine Pharmacy Certification',
 }) => {
   return (
     <span

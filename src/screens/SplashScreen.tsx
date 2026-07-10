@@ -29,7 +29,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onNavigate }) => {
         {/* Verification Pill Badge */}
         <div className="mb-8 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container dark:bg-zinc-900 border border-outline-variant/40 text-xs font-semibold text-on-surface-variant dark:text-zinc-400">
           <ShieldCheck className="w-4 h-4 text-primary-container" />
-          <span>Verified Field-to-Pharmacy Chain</span>
+          <span>Verified Genuine Medicines</span>
         </div>
 
         {/* Interactive Entry Action (min 48px touch safe zone) */}

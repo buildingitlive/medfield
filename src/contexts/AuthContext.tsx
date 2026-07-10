@@ -59,14 +59,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ── Fetch profile from Supabase ──
-  const fetchProfile = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
+  const fetchProfile = useCallback(async (userId: string, email?: string) => {
+    let { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
 
-    if (!error && data) {
+    // If profile is missing (406 or no data), auto-create it to prevent FK constraint failures on addresses/orders
+    if (!data) {
+      console.log('Profile missing, auto-creating...');
+      const { data: newProfile, error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          id: userId,
+          name: email ? email.split('@')[0] : 'User',
+          member_tier: 'standard',
+        } as any)
+        .select()
+        .maybeSingle();
+      
+      if (!insertError && newProfile) {
+        data = newProfile;
+      }
+    }
+
+    if (data) {
       setProfile(data);
       cacheToStorage(CACHE_PROFILE, data);
     }
@@ -86,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setSession(currentSession);
           setUser(currentSession.user);
           cacheToStorage(CACHE_USER, currentSession.user);
-          await fetchProfile(currentSession.user.id);
+          await fetchProfile(currentSession.user.id, currentSession.user.email);
         } else {
           // Offline fallback: use cached user
           const cachedUser = readFromStorage<User>(CACHE_USER);
@@ -118,7 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (newSession?.user) {
           cacheToStorage(CACHE_USER, newSession.user);
-          await fetchProfile(newSession.user.id);
+          await fetchProfile(newSession.user.id, newSession.user.email);
         } else if (event === 'SIGNED_OUT') {
           setProfile(null);
           localStorage.removeItem(CACHE_PROFILE);
@@ -166,7 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Non-fatal: user is created, profile can be retried
       }
 
-      await fetchProfile(data.user.id);
+      await fetchProfile(data.user.id, email);
     }
 
     return { error: null };
@@ -205,14 +223,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) return { error: error.message };
 
-    await fetchProfile(user.id);
+    await fetchProfile(user.id, user.email);
     return { error: null };
   }, [user, fetchProfile]);
 
   // ── Refresh Profile ──
   const refreshProfile = useCallback(async () => {
     if (user) {
-      await fetchProfile(user.id);
+      await fetchProfile(user.id, user.email);
     }
   }, [user, fetchProfile]);
 

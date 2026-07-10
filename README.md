@@ -29,8 +29,14 @@ npm run build
 - **`/orders` & `/orders/:id`**: Ongoing vs Past order tabs and real-time cold-chain courier tracking.
 - **`/profile`, `/addresses`, `/settings`, `/prescription-upload`**: Full clinical member management suite.
 
-## Supabase Integration
+## Supabase & Live Backend Integration
 - **Auth**: Fully integrated Supabase OTP / Magic Link flow via `AuthContext`.
 - **Database**: 9 tables with Row-Level Security (RLS) policies defined in `supabase/schema.sql`.
+- **India Catalog Seed**: 15 top Indian clinical medicines (Dolo 650, Azithral, Pan-D, Shelcal, Augmentin, etc.) seeded via `supabase/seed.sql`.
 - **Hooks**: Data-fetching wrapped in robust custom React hooks (`useProducts`, `useCart`, `useAddresses`, `useOrders`, `useFavorites`) with optimistic updates and caching.
 - **Storage**: Prescription image upload directly to Supabase Storage bucket (`prescriptions`).
+
+## Localization & Production Deployment
+- **India Localization**: All prices formatted in Indian Rupees (`₹`), with PIN Code structured address verification and India-friendly COD & QR payment support.
+- **Dynamic Theme System**: CSS custom properties for semantic colors (`on-surface-variant`, `outline`, etc.) ensuring crisp contrast across Light and Dark themes.
+- **Production Deployment**: Live and deployed on Vercel.

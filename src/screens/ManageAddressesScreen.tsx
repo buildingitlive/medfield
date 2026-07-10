@@ -10,7 +10,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
   const { addresses, defaultAddress, loading, addAddress, deleteAddress, setDefault } = useAddresses();
   const defaultAddressId = defaultAddress?.id;
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newRecipientName, setNewRecipientName] = useState('Sarah Jenkins');
+  const [newRecipientName, setNewRecipientName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [newLabel, setNewLabel] = useState('Home');
   const [newStreet, setNewStreet] = useState('');
@@ -24,7 +24,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
     
     await addAddress({
       recipient_name: newRecipientName || 'Customer Address',
-      phone: newPhone || '+1 (555) 000-0000',
+      phone: newPhone || '+91 00000 00000',
       label: newLabel,
       street: newStreet,
       city: newCity,
@@ -48,7 +48,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
           Your Addresses
         </h1>
         <p className="text-xs text-on-surface-variant dark:text-zinc-400">
-          Manage secure cold-chain delivery locations and clinical drop-off zones
+          Manage your saved delivery addresses for medicine orders
         </p>
       </div>
 
@@ -99,7 +99,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                     <br />
                     {addr.city}, {addr.state} {addr.zip}
                     <br />
-                    Phone: {addr.phone || '+1 (555) 123-4567'}
+                    Phone: {addr.phone || '+91 00000 00000'}
                   </p>
 
                   {/* Actions matching reference design */}
@@ -149,7 +149,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
           className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant p-5 rounded-brand shadow-sm space-y-4"
         >
           <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
-            Register New Delivery Waypoint
+            Add New Delivery Address
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -161,7 +161,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                 type="text"
                 value={newRecipientName}
                 onChange={(e) => setNewRecipientName(e.target.value)}
-                placeholder="e.g. Sarah Jenkins"
+                placeholder="e.g. Rahul Sharma"
                 className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                 required
               />
@@ -189,7 +189,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                 type="tel"
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
-                placeholder="e.g. +1 (555) 234-5678"
+                placeholder="e.g. +91 98765 43210"
                 className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                 required
               />
@@ -203,7 +203,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                 type="text"
                 value={newStreet}
                 onChange={(e) => setNewStreet(e.target.value)}
-                placeholder="100 Biotech Pkwy"
+                placeholder="B-12, Sector 62"
                 className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                 required
               />
@@ -217,7 +217,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                 type="text"
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}
-                placeholder="San Francisco"
+                placeholder="Noida"
                 className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                 required
               />
@@ -232,7 +232,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                   type="text"
                   value={newState}
                   onChange={(e) => setNewState(e.target.value)}
-                  placeholder="CA"
+                  placeholder="Uttar Pradesh"
                   className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                   required
                 />
@@ -245,7 +245,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                   type="text"
                   value={newZip}
                   onChange={(e) => setNewZip(e.target.value)}
-                  placeholder="94107"
+                  placeholder="201301"
                   className="w-full min-h-[44px] px-3 rounded border border-outline-variant bg-surface dark:bg-zinc-800 text-xs"
                   required
                 />

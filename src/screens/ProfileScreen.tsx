@@ -17,8 +17,14 @@ interface ProfileScreenProps {
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
-  const { profile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   
+  // Derive display values — fall back to auth user metadata when profile row is missing
+  const displayName = profile?.name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
+  const displayPhone = profile?.phone || user?.user_metadata?.phone || null;
+  const displayAvatar = profile?.avatar_url || null;
+  const displayTier = profile?.member_tier || 'standard';
+
   const menuItems = [
     {
       label: 'Saved Addresses',
@@ -57,7 +63,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
     onNavigate('/login');
   };
 
-  if (!profile) return null;
+  if (!user) return null;
 
   return (
     <main className="min-h-screen pb-28 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -65,10 +71,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
       <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 mb-6 shadow-sm flex items-center gap-4 relative">
         <div className="relative">
           <div className="w-20 h-20 rounded-full border-2 border-surface-container flex items-center justify-center bg-primary-container text-on-primary-container font-bold text-3xl overflow-hidden">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover" />
+            {displayAvatar ? (
+              <img src={displayAvatar} alt={displayName} className="w-full h-full object-cover" />
             ) : (
-              profile.name.charAt(0).toUpperCase()
+              displayName.charAt(0).toUpperCase()
             )}
           </div>
           <button className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shadow hover:scale-105 transition-transform">
@@ -78,13 +84,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
 
         <div>
           <h1 className="font-heading text-xl font-bold text-on-surface dark:text-zinc-100">
-            {profile.name}
+            {displayName}
           </h1>
-          {profile.phone && (
-            <p className="text-xs text-on-surface-variant mb-2.5">{profile.phone}</p>
+          {displayPhone && (
+            <p className="text-xs text-on-surface-variant mb-2.5">{displayPhone}</p>
           )}
           <span className="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold capitalize mt-1">
-            {profile.member_tier} Member
+            {displayTier} Member
           </span>
         </div>
       </div>
