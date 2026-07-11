@@ -103,7 +103,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
             <button
               key={`menu-${idx}`}
               onClick={() => {
-                if (item.route !== '#') onNavigate(item.route);
+                if (item.route !== '#') {
+                  if (item.route.startsWith('tel:')) {
+                    window.location.href = item.route;
+                  } else {
+                    onNavigate(item.route);
+                  }
+                }
               }}
               className="w-full min-h-[56px] bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-md px-5 py-4 flex items-center justify-between hover:border-primary transition-all shadow-sm"
             >
