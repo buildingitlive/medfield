@@ -306,7 +306,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
           <div className="hidden sm:block w-px h-6 bg-outline-variant" />
           <div className="flex items-center gap-2 text-on-surface-variant">
             <Headphones className="w-5 h-5 text-primary" />
-            <span className="text-xs font-semibold">24/7 Pharmacist</span>
+            <span className="text-xs font-semibold">24/7 Support (9389407550)</span>
           </div>
         </section>
       </div>

@@ -47,9 +47,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
       route: '#',
     },
     {
-      label: 'Help & Support',
+      label: 'Help & Support (9389407550)',
       icon: HelpCircle,
-      route: '#',
+      route: 'tel:9389407550',
     },
     {
       label: 'About MedField',

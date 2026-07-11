@@ -143,9 +143,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                   Phone Number <span className="text-on-surface-variant/60">(optional)</span>
                 </label>
                 <div className="relative flex items-center w-full">
-                  <span className="absolute left-3.5 text-sm font-semibold text-on-surface-variant select-none">
-                    +1
-                  </span>
+                  <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 text-on-surface-variant font-semibold border-r border-outline-variant/30">
+                    +91
+                  </div>
                   <input
                     id="phone"
                     type="tel"
