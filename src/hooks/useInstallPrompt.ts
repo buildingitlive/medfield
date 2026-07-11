@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-// Shared across hook instances
+// Module-level variable shared across all hook instances
 let deferredPrompt: any = null;
 
 const DISMISS_KEY = 'medfield_install_dismissed';
@@ -17,7 +17,7 @@ function setDismissed(): void {
   try {
     sessionStorage.setItem(DISMISS_KEY, 'true');
   } catch {
-    // Ignore storage errors
+    // Storage full or blocked — ignore
   }
 }
 
@@ -38,10 +38,8 @@ export function useInstallPrompt() {
   const [isIOS, setIsIOS] = useState(false);
   const [dismissed, setDismissedState] = useState(isDismissed);
 
-  // Allow previewing the modal on localhost even before native event fires
-  const [previewMode, setPreviewMode] = useState(false);
-
   useEffect(() => {
+    // Already running as installed PWA — nothing to show
     if (getIsStandalone()) {
       setIsInstalled(true);
       return;
@@ -64,20 +62,9 @@ export function useInstallPrompt() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
     window.addEventListener('appinstalled', handleAppInstalled);
 
+    // If event already fired before hook mounted
     if (deferredPrompt) {
       setIsInstallable(true);
-    } else {
-      // Auto-preview install modal after 2 seconds for demonstration on localhost if not installed/dismissed
-      const timer = setTimeout(() => {
-        if (!getIsStandalone() && !isDismissed()) {
-          setPreviewMode(true);
-        }
-      }, 2000);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-        window.removeEventListener('appinstalled', handleAppInstalled);
-      };
     }
 
     return () => {
@@ -87,10 +74,7 @@ export function useInstallPrompt() {
   }, []);
 
   const promptInstall = useCallback(async (): Promise<boolean> => {
-    if (!deferredPrompt) {
-      // If in preview mode without native prompt, simulate dismissal or instructions
-      return false;
-    }
+    if (!deferredPrompt) return false;
     try {
       deferredPrompt.prompt();
       const result = await deferredPrompt.userChoice;
@@ -108,10 +92,12 @@ export function useInstallPrompt() {
   const dismiss = useCallback(() => {
     setDismissed();
     setDismissedState(true);
-    setPreviewMode(false);
   }, []);
 
-  const shouldShowPopup = !isInstalled && !dismissed && (isInstallable || previewMode);
+  // Show the popup if:
+  // - Not already installed as PWA
+  // - Not dismissed this session
+  const shouldShowPopup = !isInstalled && !dismissed;
 
   return {
     isInstallable,
