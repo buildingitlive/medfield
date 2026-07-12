@@ -8,7 +8,8 @@ interface OrderTrackingScreenProps {
 }
 
 export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderId, onNavigate }) => {
-  const { orders, loading } = useOrders();
+  const { orders, loading, cancelOrder } = useOrders();
+  const [isCancelling, setIsCancelling] = React.useState(false);
   
   if (loading) {
     return (
@@ -155,6 +156,30 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
           <span className="text-primary-container dark:text-emerald-400">₹{order.total.toFixed(2)}</span>
         </div>
       </div>
+      {/* Cancellation Section */}
+      {order.status === 'Order Placed' && !(order as any).assigned_partner_id && (
+        <div className="mt-6">
+          <button 
+            onClick={async () => {
+              setIsCancelling(true);
+              const success = await cancelOrder?.(order.id);
+              setIsCancelling(false);
+              if (success) onNavigate('/orders');
+            }}
+            disabled={isCancelling}
+            className="w-full p-4 rounded-md border border-error/50 text-error text-sm font-bold bg-error/5 hover:bg-error/10 transition-colors disabled:opacity-50 flex justify-center items-center gap-2"
+          >
+            {isCancelling && <Loader2 className="w-4 h-4 animate-spin" />}
+            Cancel Order
+          </button>
+        </div>
+      )}
+      
+      {order.status !== 'Order Placed' && order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+        <div className="mt-6 text-center text-xs text-on-surface-variant font-medium bg-surface-container-lowest p-4 rounded-brand border border-surface-variant">
+          Your order is being processed. To cancel, please <a href="tel:+919876500123" className="text-primary font-bold underline">Call Help Number</a>
+        </div>
+      )}
     </main>
   );
 };

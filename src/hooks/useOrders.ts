@@ -143,15 +143,31 @@ export function useOrders() {
     [user, fetchOrders]
   );
 
-  const ongoingOrders = orders.filter((o) => o.status !== 'Delivered');
-  const pastOrders = orders.filter((o) => o.status === 'Delivered');
+  const cancelOrder = useCallback(
+    async (orderId: string): Promise<boolean> => {
+      if (!user) return false;
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'Cancelled' })
+        .eq('id', orderId)
+        .eq('user_id', user.id);
+      
+      if (!error) {
+        await fetchOrders();
+        return true;
+      }
+      return false;
+    },
+    [user, fetchOrders]
+  );
 
   return {
     orders,
-    ongoingOrders,
-    pastOrders,
+    ongoingOrders: orders.filter((o) => o.status !== 'Delivered' && o.status !== 'Cancelled'),
+    pastOrders: orders.filter((o) => o.status === 'Delivered' || o.status === 'Cancelled'),
     loading,
-    placeOrder,
     refetch: fetchOrders,
+    placeOrder,
+    cancelOrder,
   };
 }

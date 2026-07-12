@@ -18,15 +18,34 @@ import type { Product } from '../types/database';
 import { useProducts } from '../hooks/useProducts';
 import { useAddresses } from '../hooks/useAddresses';
 import { VerifiedMark } from '../components/VerifiedMark';
+import { supabase } from '../lib/supabase';
 
 interface HomeScreenProps {
   onNavigate: (route: string) => void;
   onAddToCart: (product: Product, quantity?: number) => void;
 }
 
+function getContrastColor(hexColor: string | null): string {
+  if (!hexColor) return '#000000';
+  if (!/^#([0-9A-F]{3}){1,2}$/i.test(hexColor)) return '#000000';
+  
+  let hex = hexColor.slice(1);
+  if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+  
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#ffffff';
+}
+
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [bannerSlide, setBannerSlide] = useState(0);
+  const [banners, setBanners] = useState<any[]>([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
   
   const { products, loading } = useProducts({
     category: selectedCategory === 'ALL' ? undefined : selectedCategory,
@@ -46,14 +65,28 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
   const reorderItems = products.slice(0, 4);
   const displayedProducts = products;
 
-  // Auto-rotate banner slides
-  const BANNER_COUNT = 2;
+  // Fetch active banners
   React.useEffect(() => {
+    const fetchBanners = async () => {
+      setBannersLoading(true);
+      const { data } = await supabase.from('banners').select('*').eq('is_active', true).order('position', { ascending: true });
+      if (data) {
+        setBanners(data);
+      }
+      setBannersLoading(false);
+    };
+    fetchBanners();
+  }, []);
+
+  const BANNER_COUNT = banners.length > 0 ? banners.length : 2;
+  
+  React.useEffect(() => {
+    if (BANNER_COUNT === 0) return;
     const timer = setInterval(() => {
       setBannerSlide((prev) => (prev + 1) % BANNER_COUNT);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [BANNER_COUNT]);
 
   return (
     <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
@@ -80,38 +113,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
 
       <div className="px-4 sm:px-6 lg:px-8 py-5 space-y-6">
         {/* Banner Slider */}
-        <div className="relative overflow-hidden rounded-brand">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${bannerSlide * 100}%)` }}
-          >
-            {/* Slide 1 — Delivery Info */}
-            <div className="w-full flex-shrink-0 bg-primary-container text-on-primary-container p-4 flex items-start sm:items-center gap-3.5">
-              <Truck className="w-7 h-7 flex-shrink-0 mt-0.5 sm:mt-0" />
-              <div className="flex-1">
-                <p className="text-xs sm:text-sm font-bold mb-0.5">
-                  Order before 6:00 PM for delivery today
-                </p>
-                <p className="text-xs opacity-90">
-                  Available for select clinical prescriptions in your area.
-                </p>
-              </div>
-            </div>
-
-            {/* Slide 2 — Flat 15% Off */}
-            <div className="w-full flex-shrink-0 bg-primary text-on-primary p-4 flex items-center gap-4">
-              <span className="text-3xl font-extrabold flex-shrink-0 leading-none">15%</span>
-              <div className="flex-1">
-                <p className="text-sm font-bold">
-                  Flat 15% off on the final bill
-                </p>
-                <p className="text-xs opacity-80 mt-0.5">
-                  No coupons required. No false marketing. Just discount.
-                </p>
-              </div>
+        {bannersLoading ? (
+          <div className="w-full h-24 bg-surface-variant animate-pulse rounded-brand"></div>
+        ) : banners.length > 0 ? (
+          <div className="relative overflow-hidden rounded-brand">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${bannerSlide * 100}%)` }}
+            >
+              {banners.map((banner) => (
+                <div key={banner.id} className="w-full flex-shrink-0 p-4 flex items-center gap-4" style={{ backgroundColor: banner.bg_color, color: getContrastColor(banner.bg_color) }}>
+                  {banner.image_url ? (
+                    <img src={banner.image_url} alt="" className="w-12 h-12 object-contain flex-shrink-0" />
+                  ) : (
+                    <div className="w-10 h-10 flex-shrink-0 flex justify-center items-center">
+                      <Truck className="w-7 h-7" />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <p className="text-sm font-bold">{banner.title}</p>
+                    <p className="text-xs opacity-90 mt-0.5">{banner.subtitle}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        ) : null}
 
         {/* Search Input Bar */}
         <div

@@ -4,7 +4,6 @@ import {
   Home,
   Truck,
   CreditCard,
-  QrCode,
   CheckCircle2,
   ChevronUp,
   ChevronDown,
@@ -27,7 +26,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
   const { defaultAddress } = useAddresses();
   const { placeOrder } = useOrders();
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('COD');
+  const [paymentMethod] = useState<PaymentMethod>('COD');
   const [summaryOpen, setSummaryOpen] = useState(true);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -135,31 +134,11 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
 
           <button
             type="button"
-            onClick={() => setPaymentMethod('COD')}
-            className={`w-full p-4 rounded-md border text-center transition-all flex flex-col items-center gap-2 bg-surface-container-lowest dark:bg-zinc-900 ${
-              paymentMethod === 'COD'
-                ? 'border-primary border-2 shadow-sm'
-                : 'border-surface-variant dark:border-zinc-800 hover:border-outline'
-            }`}
+            className="w-full p-4 rounded-md border text-center flex flex-col items-center gap-2 bg-surface-container-lowest dark:bg-zinc-900 border-primary border-2 shadow-sm"
           >
             <CreditCard className="w-6 h-6 text-primary" />
             <span className="text-xs font-semibold text-on-surface dark:text-zinc-100">
               Cash / Card on Delivery
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setPaymentMethod('QR')}
-            className={`w-full p-4 rounded-md border text-center transition-all flex flex-col items-center gap-2 bg-surface-container-lowest dark:bg-zinc-900 ${
-              paymentMethod === 'QR'
-                ? 'border-primary border-2 shadow-sm'
-                : 'border-surface-variant dark:border-zinc-800 hover:border-outline'
-            }`}
-          >
-            <QrCode className="w-6 h-6 text-primary" />
-            <span className="text-xs font-semibold text-on-surface dark:text-zinc-100">
-              Scan & Pay QR on Delivery
             </span>
           </button>
         </section>

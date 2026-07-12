@@ -12,7 +12,8 @@ export type OrderStatus =
   | 'Verified by Pharmacy'
   | 'Dispatched from Field Warehouse'
   | 'Out for Delivery'
-  | 'Delivered';
+  | 'Delivered'
+  | 'Cancelled';
 export type PrescriptionStatus = 'pending' | 'verified' | 'rejected';
 export type MemberTier = 'standard' | 'premium' | 'clinical';
 export type PaymentMethod = 'COD' | 'QR';
