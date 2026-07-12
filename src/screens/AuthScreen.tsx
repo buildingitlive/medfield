@@ -140,7 +140,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                   htmlFor="phone"
                   className="block text-xs font-semibold text-on-surface-variant mb-1.5 ml-1"
                 >
-                  Phone Number <span className="text-on-surface-variant/60">(optional)</span>
+                  Phone Number
                 </label>
                 <div className="relative flex items-center w-full">
                   <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 text-on-surface-variant font-semibold border-r border-outline-variant/30">
@@ -152,6 +152,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="98765 43210"
+                    required
                     className="w-full min-h-[48px] bg-surface-container-low dark:bg-zinc-800 border border-outline-variant dark:border-zinc-700 rounded-md pl-[60px] pr-4 text-sm text-on-surface dark:text-zinc-100 focus:outline-none focus:border-primary transition-all"
                   />
                 </div>
