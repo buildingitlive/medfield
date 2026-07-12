@@ -44,7 +44,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
   const mrpPrice = (product.mrp || product.price).toFixed(2);
 
   return (
-    <main className="min-h-screen pb-32 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+    <main className="min-h-screen pb-44 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
         <button
@@ -163,7 +163,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
       </div>
 
       {/* Sticky Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-zinc-900 border-t border-surface-variant dark:border-zinc-800 p-4 pb-safe z-40 shadow-lg">
+      <div className="fixed bottom-16 lg:bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-zinc-900 border-t border-surface-variant dark:border-zinc-800 p-4 pb-safe z-40 shadow-lg">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
           <div>
             <span className="text-lg font-bold text-primary-container dark:text-emerald-400 block">

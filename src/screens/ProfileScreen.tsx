@@ -27,6 +27,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
 
   const menuItems = [
     {
+      label: 'Edit Profile',
+      icon: Edit2,
+      route: '/profile/edit',
+    },
+    {
       label: 'Saved Addresses',
       icon: MapPin,
       route: '/addresses',
@@ -77,7 +82,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
               displayName.charAt(0).toUpperCase()
             )}
           </div>
-          <button className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shadow hover:scale-105 transition-transform">
+          <button
+            onClick={() => onNavigate('/profile/edit')}
+            className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shadow hover:scale-105 transition-transform"
+          >
             <Edit2 className="w-3.5 h-3.5" />
           </button>
         </div>

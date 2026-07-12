@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedField Portal - Banners &amp; Partners</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "error": "#ba1a1a",
+                            "on-error-container": "#93000a",
+                            "primary-fixed-dim": "#91d78a",
+                            "secondary-fixed-dim": "#4edea3",
+                            "tertiary-container": "#495167",
+                            "primary-fixed": "#acf4a4",
+                            "on-surface": "#0b1c30",
+                            "surface-dim": "#cbdbf5",
+                            "surface-container": "#e5eeff",
+                            "on-secondary-fixed": "#002113",
+                            "on-surface-variant": "#41493e",
+                            "primary": "#00450d",
+                            "on-primary-container": "#90d689",
+                            "surface": "#f8f9ff",
+                            "surface-container-highest": "#d3e4fe",
+                            "outline": "#717a6d",
+                            "on-secondary": "#ffffff",
+                            "tertiary-fixed": "#dae2fd",
+                            "surface-container-lowest": "#ffffff",
+                            "surface-variant": "#d3e4fe",
+                            "on-secondary-fixed-variant": "#005236",
+                            "tertiary": "#333a4f",
+                            "outline-variant": "#c0c9bb",
+                            "error-container": "#ffdad6",
+                            "background": "#f8f9ff",
+                            "inverse-primary": "#91d78a",
+                            "on-secondary-container": "#00714d",
+                            "secondary-container": "#6cf8bb",
+                            "surface-bright": "#f8f9ff",
+                            "surface-tint": "#2a6b2c",
+                            "surface-container-high": "#dce9ff",
+                            "inverse-surface": "#213145",
+                            "on-tertiary-container": "#bdc4de",
+                            "primary-container": "#1b5e20",
+                            "on-primary": "#ffffff",
+                            "on-tertiary-fixed": "#131b2e",
+                            "on-primary-fixed": "#002203",
+                            "secondary-fixed": "#6ffbbe",
+                            "surface-container-low": "#eff4ff",
+                            "on-background": "#0b1c30",
+                            "on-tertiary": "#ffffff",
+                            "on-primary-fixed-variant": "#0c5216",
+                            "secondary": "#006c49",
+                            "tertiary-fixed-dim": "#bec6e0",
+                            "inverse-on-surface": "#eaf1ff",
+                            "on-error": "#ffffff",
+                            "on-tertiary-fixed-variant": "#3f465c"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "xl": "32px",
+                            "lg": "24px",
+                            "margin": "32px",
+                            "max_width": "1440px",
+                            "md": "16px",
+                            "base": "4px",
+                            "xs": "4px",
+                            "sm": "8px",
+                            "gutter": "24px"
+                    },
+                    "fontFamily": {
+                            "display-lg": [
+                                    "Inter"
+                            ],
+                            "body-sm": [
+                                    "Inter"
+                            ],
+                            "headline-md": [
+                                    "Inter"
+                            ],
+                            "body-md": [
+                                    "Inter"
+                            ],
+                            "id-code": [
+                                    "JetBrains Mono"
+                            ],
+                            "headline-sm": [
+                                    "Inter"
+                            ],
+                            "body-lg": [
+                                    "Inter"
+                            ],
+                            "headline-lg": [
+                                    "Inter"
+                            ],
+                            "label-md": [
+                                    "Inter"
+                            ]
+                    },
+                    "fontSize": {
+                            "display-lg": [
+                                    "48px",
+                                    {
+                                            "lineHeight": "56px",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "body-sm": [
+                                    "14px",
+                                    {
+                                            "lineHeight": "20px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "headline-md": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "32px",
+                                            "letterSpacing": "-0.01em",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "body-md": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "24px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "id-code": [
+                                    "13px",
+                                    {
+                                            "lineHeight": "16px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "headline-sm": [
+                                    "20px",
+                                    {
+                                            "lineHeight": "28px",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "body-lg": [
+                                    "18px",
+                                    {
+                                            "lineHeight": "28px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "headline-lg": [
+                                    "32px",
+                                    {
+                                            "lineHeight": "40px",
+                                            "letterSpacing": "-0.01em",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "label-md": [
+                                    "12px",
+                                    {
+                                            "lineHeight": "16px",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "600"
+                                    }
+                            ]
+                    }
+            },
+                },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container-low');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+        
+        .drag-handle {
+            cursor: grab;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        /* Tab switching logic */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="font-body-md text-body-md min-h-screen flex">
+<!-- SideNavBar (from JSON) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-[#0F172A] shadow-lg text-secondary-fixed flex flex-col h-full py-lg z-50 hidden md:flex">
+<div class="px-lg mb-xl">
+<h1 class="text-headline-sm font-headline-lg tracking-tight text-white mb-2">MedField Portal</h1>
+<div class="flex items-center gap-sm">
+<img alt="MedField Admin Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional headshot avatar of an administrator for a medical portal, shown against a neutral modern background. Clean corporate style, crisp lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-4_FJtKI6IPxBEBtpfavQbEyMU7ULTEKY42d8kJbUmOfoJ29_iUuL8WxldR0VC0CWhqdTomMUXejen4V5j2qxAeWGZjgzYD3Ex1eBM5DAg95IxRpHOjmP2BslZLWCZowmy8_Dpjwj4ThDnowAaOd_G4XCP-F9Hc7-l8W66KCMg0TC04Kt2GsY5zOJhfpLth7R_kg46ue_47Z1i_EHHuVaWkvpkeRWbcqWDPhiOX0_RCNldSu78DHN"/>
+<div>
+<div class="font-label-md text-label-md text-white">MedField Admin</div>
+<div class="font-body-sm text-body-sm text-on-tertiary-container">System Administrator</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined font-[300]">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined font-[300]">shopping_cart</span>
+<span class="font-label-md text-label-md">Orders</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined font-[300]">group</span>
+<span class="font-label-md text-label-md">Users</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined font-[300]">inventory_2</span>
+<span class="font-label-md text-label-md">Products</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-tertiary-container text-secondary-fixed border-l-4 border-secondary-fixed rounded-r" href="#" id="nav-banners">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">view_carousel</span>
+<span class="font-label-md text-label-md">Banners</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#" id="nav-partners">
+<span class="material-symbols-outlined font-[300]">handshake</span>
+<span class="font-label-md text-label-md">Partners</span>
+</a>
+</nav>
+<div class="px-lg mt-auto mb-lg">
+<button class="w-full py-2 bg-secondary text-on-secondary rounded-lg font-label-md text-label-md hover:bg-secondary/90 transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">add</span>
+                New Entry
+            </button>
+</div>
+<div class="px-sm mt-auto border-t border-tertiary/30 pt-sm">
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined font-[300]">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined font-[300]">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-[260px] flex flex-col min-h-screen">
+<!-- TopNavBar (from JSON) -->
+<header class="flex justify-between items-center w-full h-16 px-lg sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-lg">
+<!-- Mobile menu button -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-primary dark:text-primary-fixed md:hidden">MedField Portal</div>
+<div class="hidden md:flex gap-md border-b-2 border-transparent">
+<button class="text-primary font-semibold border-b-2 border-primary pb-1 px-2" id="tab-btn-banners" onclick="switchTab('banners')">Banners</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors pb-1 px-2" id="tab-btn-partners" onclick="switchTab('partners')">Partners</button>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-8 pr-4 py-1.5 bg-surface-container-low border-outline-variant rounded-full text-body-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none w-64 transition-all" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">settings</span></button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">help_outline</span></button>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<img alt="Admin User Profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A clean, minimalist abstract geometric pattern representing medical data points, suitable for an admin profile background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq7VK7Hmvsb6esTipm3t9_MyXZxeW0mEqBQq8ohkMXZMWOOBXvwjFxoKEUgjfFdyt3ph23LlsIpKUuppsUci5Ci1kWBz9HI8T0HY2SWPhQVKgRR-PI1GYGQzOzaT1fRb52sDXHivqlYPpi-c9OtWe6YqXnc4IGPoAhcWfffpKcobRmERyjxSng2Hj3LgI-QNQk0Za2CT3CYYjhc6O4pwNjr7D4jHMpOtjg0qvCp5I5fQBr-l3jUvQ2"/>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 p-md md:p-lg lg:p-xl">
+<!-- BANNERS VIEW -->
+<div class="tab-content active max-w-[1000px] mx-auto" id="view-banners">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Banners Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage promotional and informational banners displayed on the main portal.</p>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Create Banner
+                    </button>
+</div>
+<!-- Banner List -->
+<div class="space-y-sm bg-surface-container-lowest rounded-xl p-sm shadow-[0_4px_12px_rgba(15,23,42,0.03)] border border-surface-container-highest">
+<!-- Banner Item 1 -->
+<div class="flex items-center gap-md p-md bg-surface rounded-lg border border-outline-variant/50 hover:shadow-md hover:-translate-y-[1px] transition-all group">
+<div class="drag-handle text-outline hover:text-on-surface p-1">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="w-32 h-20 rounded-md overflow-hidden shrink-0 bg-surface-container-low relative">
+<img class="w-full h-full object-cover" data-alt="A wide horizontal banner design featuring an abstract medical cross motif in soft emerald green and blue gradients. Clean, corporate, modern clinical style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBD2wSNBIcoddPfGlFBF0C8JMaMkFKrur6vm5DPkokyxvHSi6MiRF-D-CXeT1KdtX5EJtdDXTiJE-eylSz7OsXH6Ets8XfwbmHh_ShWbxJlBRysJVubtGSMhDVOoKK5ExPrkfc8iRTHp5PdGzz3ID-Fu4XdL2hiLcJoHCJScHrzhZa8k2gKeC7KCKx9S6nL-BagowTkUIm9aS83DZpqZvTiAkwJ39IZB9JuNnhkIhGM1Vd-SGr01RWE"/>
+<div class="absolute inset-0 border border-outline/10 rounded-md"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Q3 Equipment Sale</h3>
+<span class="px-2 py-0.5 bg-primary-container text-on-primary-container rounded font-label-md text-[10px] uppercase tracking-wider">Active</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mb-2">Targeting all North American clinics. Ends Sep 30.</p>
+<div class="flex gap-4 font-id-code text-id-code text-outline">
+<span>Impressions: 45.2k</span>
+<span>CTR: 3.1%</span>
+</div>
+</div>
+<div class="flex items-center gap-lg pl-md border-l border-outline-variant/30">
+<div class="flex flex-col items-center gap-1">
+<span class="font-label-md text-[10px] text-on-surface-variant uppercase">Status</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-surface-container"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-1.5 text-outline hover:text-error transition-colors rounded hover:bg-error-container"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
+</div>
+<!-- Banner Item 2 -->
+<div class="flex items-center gap-md p-md bg-surface rounded-lg border border-outline-variant/50 hover:shadow-md hover:-translate-y-[1px] transition-all group">
+<div class="drag-handle text-outline hover:text-on-surface p-1">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="w-32 h-20 rounded-md overflow-hidden shrink-0 bg-surface-container-low relative">
+<div class="w-full h-full bg-secondary-container flex items-center justify-center">
+<span class="font-headline-sm text-on-secondary-container text-center px-2">New Policy</span>
+</div>
+<div class="absolute inset-0 border border-outline/10 rounded-md"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Compliance Update 2024</h3>
+<span class="px-2 py-0.5 bg-surface-variant text-on-surface-variant rounded font-label-md text-[10px] uppercase tracking-wider">Scheduled</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mb-2">Mandatory reading for all internal users. Starts Oct 1.</p>
+<div class="flex gap-4 font-id-code text-id-code text-outline">
+<span>Target: Internal</span>
+<span>Type: Alert</span>
+</div>
+</div>
+<div class="flex items-center gap-lg pl-md border-l border-outline-variant/30">
+<div class="flex flex-col items-center gap-1">
+<span class="font-label-md text-[10px] text-on-surface-variant uppercase">Status</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 text-outline hover:text-primary transition-colors rounded hover:bg-surface-container"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-1.5 text-outline hover:text-error transition-colors rounded hover:bg-error-container"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- PARTNERS VIEW -->
+<div class="tab-content max-w-[1440px] mx-auto" id="view-partners">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Partner Network</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage regional distributors and logistics partners.</p>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Create Partner
+                    </button>
+</div>
+<!-- Filters/Controls -->
+<div class="flex gap-sm mb-lg">
+<select class="bg-surface border-outline-variant rounded-md font-body-sm text-body-sm py-1.5 pl-3 pr-8 focus:border-secondary focus:ring-1 focus:ring-secondary">
+<option>All Regions</option>
+<option>North</option>
+<option>South</option>
+<option>East</option>
+<option>West</option>
+</select>
+<select class="bg-surface border-outline-variant rounded-md font-body-sm text-body-sm py-1.5 pl-3 pr-8 focus:border-secondary focus:ring-1 focus:ring-secondary">
+<option>Status: All</option>
+<option>Active</option>
+<option>Review</option>
+</select>
+</div>
+<!-- Partner Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
+<!-- Partner Card 1 -->
+<div class="bg-surface rounded-xl p-lg border border-outline-variant/40 shadow-[0_4px_20px_rgba(15,23,42,0.04)] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 transition-all">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary font-headline-md">
+                                    AP
+                                </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Apex Medical Supply</h3>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span class="font-body-sm text-body-sm">North Region</span>
+</div>
+</div>
+</div>
+<span class="px-2 py-1 bg-primary-container/20 text-primary-container rounded font-label-md text-[10px] uppercase tracking-wider border border-primary-container/30">Active</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mb-lg">
+<div class="bg-surface-container-lowest p-sm rounded-lg border border-outline-variant/30">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Orders Assigned</div>
+<div class="font-headline-md text-headline-md text-on-surface">1,248</div>
+</div>
+<div class="bg-surface-container-lowest p-sm rounded-lg border border-outline-variant/30">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Total Sales (YTD)</div>
+<div class="font-headline-md text-headline-md text-on-surface">$4.2M</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 border border-outline-variant rounded text-on-surface font-label-md hover:bg-surface-container transition-colors">View Details</button>
+<button class="flex-1 py-1.5 bg-secondary-container text-on-secondary-container rounded font-label-md hover:bg-secondary-container/80 transition-colors">Assign Order</button>
+</div>
+</div>
+<!-- Partner Card 2 -->
+<div class="bg-surface rounded-xl p-lg border border-outline-variant/40 shadow-[0_4px_20px_rgba(15,23,42,0.04)] hover:shadow-[0_8px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 transition-all">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary font-headline-md">
+                                    SL
+                                </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">SouthWest Logistics</h3>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span class="font-body-sm text-body-sm">South Region</span>
+</div>
+</div>
+</div>
+<span class="px-2 py-1 bg-surface-variant text-on-surface-variant rounded font-label-md text-[10px] uppercase tracking-wider border border-outline-variant/50">Under Review</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mb-lg">
+<div class="bg-surface-container-lowest p-sm rounded-lg border border-outline-variant/30">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Orders Assigned</div>
+<div class="font-headline-md text-headline-md text-on-surface">342</div>
+</div>
+<div class="bg-surface-container-lowest p-sm rounded-lg border border-outline-variant/30">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Total Sales (YTD)</div>
+<div class="font-headline-md text-headline-md text-on-surface">$890k</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 border border-outline-variant rounded text-on-surface font-label-md hover:bg-surface-container transition-colors">View Details</button>
+<button class="flex-1 py-1.5 bg-surface-container text-on-surface-variant rounded font-label-md hover:bg-surface-variant transition-colors" disabled="">Assign Order</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function switchTab(tabId) {
+            // Hide all views
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Show target view
+            document.getElementById('view-' + tabId).classList.add('active');
+            
+            // Update Top Nav visual state (mobile/desktop hybrid)
+            document.getElementById('tab-btn-banners').className = tabId === 'banners' 
+                ? 'text-primary font-semibold border-b-2 border-primary pb-1 px-2' 
+                : 'text-on-surface-variant hover:text-primary transition-colors pb-1 px-2';
+            document.getElementById('tab-btn-partners').className = tabId === 'partners' 
+                ? 'text-primary font-semibold border-b-2 border-primary pb-1 px-2' 
+                : 'text-on-surface-variant hover:text-primary transition-colors pb-1 px-2';
+
+            // Update Side Nav visual state
+            const baseInactive = "flex items-center gap-md px-md py-sm text-on-tertiary-container hover:bg-tertiary-container/50 transition-colors rounded";
+            const baseActive = "flex items-center gap-md px-md py-sm bg-tertiary-container text-secondary-fixed border-l-4 border-secondary-fixed rounded-r";
+            
+            if(tabId === 'banners') {
+                document.getElementById('nav-banners').className = baseActive;
+                document.getElementById('nav-banners').querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+                
+                document.getElementById('nav-partners').className = baseInactive;
+                document.getElementById('nav-partners').querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+            } else {
+                document.getElementById('nav-partners').className = baseActive;
+                document.getElementById('nav-partners').querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+                
+                document.getElementById('nav-banners').className = baseInactive;
+                document.getElementById('nav-banners').querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+            }
+        }
+    </script>
+</body></html>

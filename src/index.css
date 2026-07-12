@@ -120,3 +120,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #6f7a6f;
 }
+
+/* Hide scrollbar but keep scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

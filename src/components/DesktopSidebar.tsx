@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, ShoppingCart, Receipt, User, ShieldCheck } from 'lucide-react';
+import { Home, Search, ShoppingCart, Receipt, User, ShieldCheck, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface DesktopSidebarProps {
@@ -26,6 +26,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     { label: 'My Cart', route: '/cart', icon: ShoppingCart, count: cartCount },
     { label: 'Order History', route: '/orders', icon: Receipt },
     { label: 'Clinical Profile', route: '/profile', icon: User },
+    { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true },
   ];
 
   return (
@@ -58,25 +59,25 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
       {/* Navigation Menu */}
       <nav className="flex flex-col gap-1.5 flex-1 pr-4">
         {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive =
-            currentRoute === item.route ||
-            (item.route !== '/' && currentRoute.startsWith(item.route));
-
+          const isActive = currentRoute === item.route;
           return (
             <button
-              key={item.route}
+              key={item.label}
               onClick={() => onNavigate(item.route)}
-              className={`w-full py-3 px-6 rounded-r-full flex items-center justify-between text-xs font-semibold transition-all ${
-                isActive
-                  ? 'bg-primary-container text-on-primary font-bold shadow-sm'
-                  : 'text-on-surface-variant hover:bg-surface-container dark:hover:bg-zinc-800 hover:text-on-surface'
-              }`}
+              className={`flex items-center gap-3 w-full ml-0 mr-4 px-6 py-3 rounded-r-full transition-all duration-200 ease-in-out font-heading text-sm font-semibold
+                ${
+                  isActive
+                    ? 'bg-primary-container text-on-primary-container'
+                    : item.highlight
+                    ? 'bg-primary/10 text-primary hover:bg-primary/20'
+                    : 'text-on-surface-variant dark:text-zinc-400 hover:bg-surface-container-highest dark:hover:bg-zinc-800'
+                }
+              `}
             >
-              <div className="flex items-center gap-3">
-                <Icon className="w-4 h-4" />
-                <span>{item.label}</span>
-              </div>
+              <item.icon
+                className={`w-5 h-5 ${isActive ? 'text-on-primary-container' : item.highlight ? 'text-primary' : 'text-on-surface-variant dark:text-zinc-400'}`}
+              />
+              <span className="flex-1 text-left">{item.label}</span>
               {item.count !== undefined && item.count > 0 && (
                 <span
                   className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${

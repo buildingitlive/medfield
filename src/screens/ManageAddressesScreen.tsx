@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Loader2, Navigation } from 'lucide-react';
 import { useAddresses } from '../hooks/useAddresses';
 
 interface ManageAddressesScreenProps {
@@ -17,6 +17,44 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
   const [newCity, setNewCity] = useState('');
   const [newState, setNewState] = useState('');
   const [newZip, setNewZip] = useState('');
+  const [locating, setLocating] = useState(false);
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1`,
+          );
+          const data = await res.json();
+          const addr = data.address || {};
+
+          setNewStreet(
+            [addr.road, addr.neighbourhood, addr.suburb].filter(Boolean).join(', ') || data.display_name?.split(',').slice(0, 2).join(',') || '',
+          );
+          setNewCity(addr.city || addr.town || addr.village || addr.county || '');
+          setNewState(addr.state || '');
+          setNewZip(addr.postcode || '');
+        } catch {
+          alert('Could not fetch address from your location. Please enter manually.');
+        } finally {
+          setLocating(false);
+        }
+      },
+      () => {
+        alert('Location access denied. Please allow location permission and try again.');
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,6 +189,21 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
           <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
             Add New Delivery Address
           </h2>
+
+          {/* Use Current Location */}
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            disabled={locating}
+            className="w-full min-h-[44px] border border-primary text-primary font-semibold text-xs rounded-md flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors disabled:opacity-60"
+          >
+            {locating ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Navigation className="w-4 h-4" />
+            )}
+            <span>{locating ? 'Detecting location...' : 'Use Current Location'}</span>
+          </button>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, ArrowUpDown, Loader2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, ArrowUpDown, ChevronDown, Check, Loader2 } from 'lucide-react';
 import type { Product } from '../types/database';
 import { useProducts } from '../hooks/useProducts';
 import { VerifiedMark } from '../components/VerifiedMark';
@@ -13,11 +13,37 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC'>('POPULAR');
+  const [sortOpen, setSortOpen] = useState(false);
 
   // Track quantities locally for the inline stepper
   const [quantities, setQuantities] = useState<Record<string, number>>({});
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  // Auto-focus the search input on mount
+  useEffect(() => {
+    searchInputRef.current?.focus();
+  }, []);
+
+  // Close sort dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const categories = ['ALL', 'Botanical', 'Cardiac', 'Immunology', 'Wellness'];
+
+  const sortOptions: { value: 'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC'; label: string }[] = [
+    { value: 'POPULAR', label: 'Featured' },
+    { value: 'PRICE_ASC', label: 'Price: Low to High' },
+    { value: 'PRICE_DESC', label: 'Price: High to Low' },
+  ];
 
   const getQuantity = (productId: string) => quantities[productId] || 1;
 
@@ -50,6 +76,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
       <div className="relative mb-4">
         <Search className="w-5 h-5 absolute left-4 top-3.5 text-on-surface-variant" />
         <input
+          ref={searchInputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -60,17 +87,38 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-3 mb-4">
 
-        <div className="flex items-center gap-2">
-          <ArrowUpDown className="w-4 h-4 text-on-surface-variant" />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-surface-container-lowest dark:bg-zinc-900 border border-outline-variant dark:border-zinc-800 rounded text-xs font-semibold text-on-surface dark:text-zinc-100 px-3 py-1.5 focus:outline-none"
+        {/* Custom Sort Dropdown */}
+        <div className="relative" ref={sortRef}>
+          <button
+            onClick={() => setSortOpen(!sortOpen)}
+            className="flex items-center gap-2 bg-surface-container-lowest dark:bg-zinc-900 border border-outline-variant dark:border-zinc-800 rounded-md px-3 py-2 text-xs font-semibold text-on-surface dark:text-zinc-100 hover:border-primary transition-colors"
           >
-            <option value="POPULAR">Sort: Featured</option>
-            <option value="PRICE_ASC">Price: Low to High</option>
-            <option value="PRICE_DESC">Price: High to Low</option>
-          </select>
+            <ArrowUpDown className="w-3.5 h-3.5 text-on-surface-variant" />
+            <span>Sort: {sortOptions.find((o) => o.value === sortBy)?.label}</span>
+            <ChevronDown className={`w-3.5 h-3.5 text-on-surface-variant transition-transform ${sortOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {sortOpen && (
+            <div className="absolute left-0 top-full mt-1.5 w-48 bg-surface-container-lowest dark:bg-zinc-900 border border-outline-variant dark:border-zinc-800 rounded-md shadow-lg z-30 overflow-hidden">
+              {[...sortOptions].sort((a, b) => (a.value === sortBy ? -1 : b.value === sortBy ? 1 : 0)).map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    setSortBy(opt.value);
+                    setSortOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-xs font-semibold text-left flex items-center justify-between transition-colors ${
+                    sortBy === opt.value
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-on-surface dark:text-zinc-100 hover:bg-surface-container dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {sortBy === opt.value && <Check className="w-3.5 h-3.5" />}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

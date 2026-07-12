@@ -26,6 +26,7 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [bannerSlide, setBannerSlide] = useState(0);
   
   const { products, loading } = useProducts({
     category: selectedCategory === 'ALL' ? undefined : selectedCategory,
@@ -44,6 +45,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
 
   const reorderItems = products.slice(0, 4);
   const displayedProducts = products;
+
+  // Auto-rotate banner slides
+  const BANNER_COUNT = 2;
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setBannerSlide((prev) => (prev + 1) % BANNER_COUNT);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
@@ -69,16 +79,37 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
       </div>
 
       <div className="px-4 sm:px-6 lg:px-8 py-5 space-y-6">
-        {/* Delivery Banner */}
-        <div className="bg-primary-container text-on-primary-container rounded-brand p-4 flex items-start sm:items-center gap-3.5 shadow-sm border border-primary/20">
-          <Truck className="w-7 h-7 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <div className="flex-1">
-            <p className="text-xs sm:text-sm font-bold mb-0.5">
-              Order before 6:00 PM for delivery today
-            </p>
-            <p className="text-xs opacity-90">
-              Available for select clinical prescriptions in your area.
-            </p>
+        {/* Banner Slider */}
+        <div className="relative overflow-hidden rounded-brand">
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${bannerSlide * 100}%)` }}
+          >
+            {/* Slide 1 — Delivery Info */}
+            <div className="w-full flex-shrink-0 bg-primary-container text-on-primary-container p-4 flex items-start sm:items-center gap-3.5">
+              <Truck className="w-7 h-7 flex-shrink-0 mt-0.5 sm:mt-0" />
+              <div className="flex-1">
+                <p className="text-xs sm:text-sm font-bold mb-0.5">
+                  Order before 6:00 PM for delivery today
+                </p>
+                <p className="text-xs opacity-90">
+                  Available for select clinical prescriptions in your area.
+                </p>
+              </div>
+            </div>
+
+            {/* Slide 2 — Flat 15% Off */}
+            <div className="w-full flex-shrink-0 bg-primary text-on-primary p-4 flex items-center gap-4">
+              <span className="text-3xl font-extrabold flex-shrink-0 leading-none">15%</span>
+              <div className="flex-1">
+                <p className="text-sm font-bold">
+                  Flat 15% off on the final bill
+                </p>
+                <p className="text-xs opacity-80 mt-0.5">
+                  No coupons required. No false marketing. Just discount.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

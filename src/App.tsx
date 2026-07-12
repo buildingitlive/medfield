@@ -17,8 +17,11 @@ import { OrdersScreen } from './screens/OrdersScreen';
 import { OrderTrackingScreen } from './screens/OrderTrackingScreen';
 import { PrescriptionUploadScreen } from './screens/PrescriptionUploadScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
+import { ProfileEditScreen } from './screens/ProfileEditScreen';
 import { ManageAddressesScreen } from './screens/ManageAddressesScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { NotificationsScreen } from './screens/NotificationsScreen';
+import { OrderSuccessScreen } from './screens/OrderSuccessScreen';
 import { useCart } from './hooks/useCart';
 import { Loader2 } from 'lucide-react';
 
@@ -155,8 +158,18 @@ function AppContent() {
     if (route === '/profile') {
       return <ProfileScreen onNavigate={handleNavigate} />;
     }
+    if (route === '/profile/edit') {
+      return <ProfileEditScreen onNavigate={handleNavigate} />;
+    }
     if (route === '/addresses') {
       return <ManageAddressesScreen onNavigate={handleNavigate} />;
+    }
+    if (route === '/notifications') {
+      return <NotificationsScreen onNavigate={handleNavigate} />;
+    }
+    if (route.startsWith('/order-success/')) {
+      const id = route.replace('/order-success/', '');
+      return <OrderSuccessScreen orderId={id} onNavigate={handleNavigate} />;
     }
     if (route === '/settings') {
       return (
