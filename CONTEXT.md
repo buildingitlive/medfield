@@ -22,5 +22,6 @@ MedField is a progressive web application (PWA) delivering verified clinical-gra
 
 ## Next Phase / Ongoing Maintenance
 - **Post-Launch Enhancements**:
+  - **Geofencing & Smart Dispatch**: Integrate Geolocation API to capture precise coordinates during checkout and map them against partner locations to auto-tag regional zones (e.g., North, South) for optimized delivery routing.
   - Monitoring live Supabase analytics & Vercel deployment metrics.
   - Ongoing PWA manifest optimization for app store submissions.

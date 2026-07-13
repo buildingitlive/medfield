@@ -23,3 +23,7 @@
 - **Desktop Viewport (`lg+`)**: Dedicated fixed left navigation drawer (`DesktopSidebar.tsx`) displaying profile summary and navigation items.
 - **PWA Installation Prompt Modal (`InstallAppPopup.tsx`)**: Frosted glassmorphism modal (`useInstallPrompt.ts`) detecting iOS Safari 3-step instructions or native Chrome/Edge `beforeinstallprompt` trigger.
 - **Floating Toast Feedback (`ToastNotification.tsx`)**: Auto-dismissing floating visual confirmations on cart additions and order submissions.
+
+## 4. Upcoming Geolocation & Mapping Features
+- **Smart Address Capture**: Modals for parsing Google Maps sharing links and utilizing the native HTML5 Geolocation API (`navigator.geolocation`) to auto-fill latitude/longitude.
+- **Geofence Zone Tags**: Admin UI styling for zone categorization (e.g. `North`, `South`) utilizing localized color pills for high-contrast routing visualization.
