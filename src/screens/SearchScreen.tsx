@@ -155,7 +155,8 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
         ) : (
           filteredProducts.map((product) => {
             const qty = getQuantity(product.id);
-            const originalPrice = product.price * 1.2;
+            const originalPrice = product.mrp > product.price ? product.mrp : product.price;
+            const discountPercent = originalPrice > product.price ? Math.round(((originalPrice - product.price) / originalPrice) * 100) : 0;
 
             return (
               <div
@@ -190,16 +191,18 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
 
                 <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-surface-variant">
                   {/* Pricing matching Reference Design */}
-                  <div className="text-left sm:text-right">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-on-surface-variant line-through">
-                        ₹{originalPrice.toFixed(2)}
-                      </span>
-                      <span className="text-[11px] font-bold text-on-primary bg-primary px-1.5 py-0.5 rounded">
-                        Save 20%
-                      </span>
-                    </div>
-                    <span className="text-lg font-bold text-primary-container dark:text-emerald-400">
+                    <div className="flex flex-col items-end">
+                      {originalPrice > product.price && (
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="text-[10px] line-through text-on-surface-variant">
+                            ₹{originalPrice.toFixed(2)}
+                          </span>
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-primary text-on-primary rounded text-[10px]">
+                            Save {discountPercent}%
+                          </span>
+                        </div>
+                      )}
+                      <span className="font-bold text-sm text-primary-container dark:text-emerald-400">
                       ₹{product.price.toFixed(2)}
                     </span>
                   </div>

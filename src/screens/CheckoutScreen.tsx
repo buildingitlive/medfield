@@ -31,7 +31,8 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const deliveryFee = cart.length > 0 ? 5.00 : 0;
+  const visualDeliveryFee = cart.length > 0 ? 50.00 : 0;
+  const deliveryFee = 0; // Actual DB submitted fee
   const total = subtotal + deliveryFee;
 
   const handlePlaceOrder = async () => {
@@ -164,9 +165,14 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
               </div>
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
-                <span className="font-semibold text-on-surface dark:text-zinc-100">
-                  ₹{deliveryFee.toFixed(2)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-on-surface-variant line-through text-[10px]">
+                    ₹{visualDeliveryFee.toFixed(2)}
+                  </span>
+                  <span className="font-semibold text-primary">
+                    FREE
+                  </span>
+                </div>
               </div>
             </div>
           )}

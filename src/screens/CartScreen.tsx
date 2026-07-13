@@ -10,7 +10,8 @@ export const CartScreen: React.FC<CartScreenProps> = ({
   onNavigate,
 }) => {
   const { items: cart, updateQuantity, removeItem, subtotal } = useCart();
-  const coldChainShipping = cart.length > 0 ? 12.00 : 0;
+  const visualDeliveryFee = cart.length > 0 ? 50.00 : 0;
+  const coldChainShipping = 0;
   const total = subtotal + coldChainShipping;
 
   return (
@@ -133,9 +134,14 @@ export const CartScreen: React.FC<CartScreenProps> = ({
               </div>
               <div className="flex justify-between">
                 <span>Delivery Charges</span>
-                <span className="font-semibold text-on-surface dark:text-zinc-100">
-                  ₹{coldChainShipping.toFixed(2)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-on-surface-variant line-through text-[10px]">
+                    ₹{visualDeliveryFee.toFixed(2)}
+                  </span>
+                  <span className="font-semibold text-primary">
+                    FREE
+                  </span>
+                </div>
               </div>
             </div>
 
