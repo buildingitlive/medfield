@@ -166,7 +166,7 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate, onAddToC
               >
                 <div className="flex items-start gap-4">
                   <img
-                    src={product.image_url || ''}
+                    src={product.image_url || undefined}
                     alt={product.name}
                     className="w-20 h-20 rounded object-cover flex-shrink-0 bg-surface-container"
                   />

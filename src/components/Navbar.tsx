@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, ShoppingBag, Moon, Sun, ShieldCheck, Bell } from 'lucide-react';
+import { useNotifications } from '../hooks/useNotifications';
 
 interface NavbarProps {
   currentRoute: string;
@@ -16,6 +17,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   darkMode,
   onToggleDarkMode,
 }) => {
+  const { unreadCount } = useNotifications();
+
   // Suppress header on splash, onboarding, and auth flows
   const suppressedRoutes = ['/splash', '/onboarding', '/login', '/otp', '/register'];
   if (suppressedRoutes.includes(currentRoute)) {
@@ -73,7 +76,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="relative min-h-[48px] min-w-[48px] flex items-center justify-center rounded-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-colors"
           >
             <Bell className="w-5 h-5" />
-            <span className="absolute top-2.5 right-2.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-primary border-2 border-surface-container-lowest dark:border-zinc-900 shadow"></span>
+            {unreadCount > 0 && (
+              <span className="absolute top-2.5 right-2.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-error border-2 border-surface-container-lowest dark:border-zinc-900 shadow animate-pulse"></span>
+            )}
           </button>
 
           {/* Dark / Light Mode Toggle - Always Visible */}

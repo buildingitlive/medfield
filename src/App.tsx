@@ -25,20 +25,60 @@ import { OrderSuccessScreen } from './screens/OrderSuccessScreen';
 import { useCart } from './hooks/useCart';
 import { Loader2 } from 'lucide-react';
 
+function getRoute(): string {
+  const path = window.location.pathname;
+  if (
+    [
+      '/',
+      '/splash',
+      '/onboarding',
+      '/login',
+      '/otp',
+      '/register',
+      '/search',
+      '/cart',
+      '/checkout',
+      '/orders',
+      '/prescription-upload',
+      '/profile',
+      '/profile/edit',
+      '/addresses',
+      '/notifications',
+      '/settings',
+    ].includes(path) ||
+    path.startsWith('/medicine/') ||
+    path.startsWith('/orders/') ||
+    path.startsWith('/order-success/')
+  ) {
+    return path;
+  }
+  return '/splash';
+}
+
 function AppContent() {
   const { user, loading: authLoading } = useAuth();
   const { cartCount, addToCart } = useCart();
   
   // App State
-  const [route, setRoute] = useState<string>('/splash');
+  const [route, setRoute] = useState<string>(getRoute);
   const [history, setHistory] = useState<string[]>([]);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; subtitle?: string } | null>(null);
+
+  // Handle browser / hardware back and forward button
+  useEffect(() => {
+    const handlePopState = () => {
+      setRoute(getRoute());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Auto-skip splash/onboarding if user is logged in
   useEffect(() => {
     if (!authLoading && user && (route === '/splash' || route === '/login' || route === '/onboarding')) {
       setRoute('/');
+      window.history.replaceState({}, '', '/');
     }
   }, [user, authLoading, route]);
 
@@ -63,17 +103,24 @@ function AppContent() {
   const handleNavigate = (newRoute: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (newRoute === 'BACK' || newRoute === '-1' || (typeof newRoute === 'number' && newRoute === -1)) {
-      if (history.length > 0) {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else if (history.length > 0) {
         const prev = history[history.length - 1];
         setHistory((curr) => curr.slice(0, -1));
         setRoute(prev || '/');
+        window.history.pushState({}, '', prev || '/');
       } else {
         setRoute('/');
+        window.history.pushState({}, '', '/');
       }
       return;
     }
-    setHistory((curr) => [...curr, route]);
-    setRoute(newRoute);
+    if (newRoute !== route) {
+      setHistory((curr) => [...curr, route]);
+      window.history.pushState({}, '', newRoute);
+      setRoute(newRoute);
+    }
   };
 
   // ─── Auth Guard ──────────────────────────────────────────────────────────

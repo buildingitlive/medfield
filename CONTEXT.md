@@ -25,3 +25,17 @@ MedField is a progressive web application (PWA) delivering verified clinical-gra
   - **Geofencing & Smart Dispatch**: Integrate Geolocation API to capture precise coordinates during checkout and map them against partner locations to auto-tag regional zones (e.g., North, South) for optimized delivery routing.
   - Monitoring live Supabase analytics & Vercel deployment metrics.
   - Ongoing PWA manifest optimization for app store submissions.
+
+## Recent Updates
+- **Pricing & Discounts**: Implemented accurate MRP display pulling from the database (`product.mrp`), and added a visual-only delivery fee discount (₹50 crossed out to FREE) in the PWA for marketing, while keeping actual `delivery_fee` cleanly as 0 in the backend.
+- **Admin Layout**: Locked global app widths to prevent mobile horizontal scroll overflow (`overflow-x: hidden`).
+- **Revenue Tracking**: Updated admin Dashboard revenue calculation to use `updated_at` to correctly attribute revenue to the day orders are delivered.
+- **Form Fixes**: Ensured `image_url` handles empty string inputs safely when inserting new products to avoid NOT NULL constraint violations.
+
+## Production Checklist
+- [x] Ensure PWA `manifest.json` and service workers are correctly caching assets.
+- [x] Verify all RLS policies (Products, Orders, Profiles, Partners) are correctly applied in the live Supabase SQL editor.
+- [x] Ensure the `updated_at` column and its auto-update trigger function are active on the `orders` table.
+- [x] Run full end-to-end user flows (Login -> Add to Cart -> Checkout -> Admin tracking).
+- [x] Validate cross-browser responsive design (Desktop, Tablet, Mobile) without horizontal overflows.
+- [x] Test production build step (`npm run build`) runs without TypeScript or Rolldown errors.

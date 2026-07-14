@@ -135,7 +135,29 @@ export function useOrders() {
         step_order: 1,
       } as any);
 
-      // 4. Refresh orders list
+      // 4. Emit order placed notifications (for Admin and Customer)
+      const shortId = order.id.split('-')[0];
+      await supabase.from('notifications').insert([
+        {
+          recipient_type: 'admin',
+          title: `New Order Placed #${shortId} 📦`,
+          description: `New order placed by customer for ₹${total.toLocaleString('en-IN')}.`,
+          type: 'order_placed',
+          link: '/orders',
+          is_read: false,
+        },
+        {
+          recipient_type: 'user',
+          recipient_id: user.id,
+          title: 'Order Placed Successfully! ✅',
+          description: `Your order #${shortId} has been received and is undergoing clinical verification.`,
+          type: 'order_placed',
+          link: '/orders',
+          is_read: false,
+        },
+      ]);
+
+      // 5. Refresh orders list
       await fetchOrders();
 
       return { orderId: order.id, error: null };

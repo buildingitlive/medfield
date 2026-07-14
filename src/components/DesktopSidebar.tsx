@@ -1,6 +1,7 @@
 import React from 'react';
 import { Home, Search, ShoppingCart, Receipt, User, ShieldCheck, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotifications } from '../hooks/useNotifications';
 
 interface DesktopSidebarProps {
   currentRoute: string;
@@ -14,6 +15,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   cartCount,
 }) => {
   const { user, profile } = useAuth();
+  const { unreadCount } = useNotifications();
 
   // Derive display values — graceful fallback when profile row is missing
   const displayName = profile?.name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
@@ -26,7 +28,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     { label: 'My Cart', route: '/cart', icon: ShoppingCart, count: cartCount },
     { label: 'Order History', route: '/orders', icon: Receipt },
     { label: 'Clinical Profile', route: '/profile', icon: User },
-    { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true },
+    { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true, count: unreadCount > 0 ? unreadCount : undefined },
   ];
 
   return (

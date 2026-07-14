@@ -7,6 +7,8 @@ import {
   FileText,
   Pill,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ArrowRight,
   ShieldCheck,
   Lock,
@@ -46,6 +48,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
   const [bannerSlide, setBannerSlide] = useState(0);
   const [banners, setBanners] = useState<any[]>([]);
   const [bannersLoading, setBannersLoading] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
   
   const { products, loading } = useProducts({
     category: selectedCategory === 'ALL' ? undefined : selectedCategory,
@@ -81,12 +86,48 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
   const BANNER_COUNT = banners.length > 0 ? banners.length : 2;
   
   React.useEffect(() => {
-    if (BANNER_COUNT === 0) return;
+    if (BANNER_COUNT <= 1 || isPaused) return;
     const timer = setInterval(() => {
       setBannerSlide((prev) => (prev + 1) % BANNER_COUNT);
     }, 4000);
     return () => clearInterval(timer);
-  }, [BANNER_COUNT]);
+  }, [BANNER_COUNT, isPaused]);
+
+  const nextBanner = () => {
+    setBannerSlide((prev) => (prev + 1) % BANNER_COUNT);
+  };
+
+  const prevBanner = () => {
+    setBannerSlide((prev) => (prev - 1 + BANNER_COUNT) % BANNER_COUNT);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    setIsPaused(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) {
+      setIsPaused(false);
+      return;
+    }
+    const distance = touchStartX - touchEndX;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && BANNER_COUNT > 1) {
+      nextBanner();
+    } if (isRightSwipe && BANNER_COUNT > 1) {
+      prevBanner();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+    setIsPaused(false);
+  };
 
   return (
     <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
@@ -116,7 +157,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
         {bannersLoading ? (
           <div className="w-full h-24 bg-surface-variant animate-pulse rounded-brand"></div>
         ) : banners.length > 0 ? (
-          <div className="relative overflow-hidden rounded-brand">
+          <div 
+            className="relative overflow-hidden rounded-brand group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${bannerSlide * 100}%)` }}
@@ -137,6 +185,40 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                 </div>
               ))}
             </div>
+
+            {/* Left / Right Navigation Arrows (Visible when more than 1 banner) */}
+            {BANNER_COUNT > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); prevBanner(); }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Previous Banner"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); nextBanner(); }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Next Banner"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+
+                {/* Bottom Navigation Dots */}
+                <div className="absolute bottom-1.5 left-0 right-0 flex items-center justify-center gap-1.5 pointer-events-none">
+                  {banners.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={(e) => { e.stopPropagation(); setBannerSlide(index); }}
+                      className={`h-1.5 rounded-full transition-all pointer-events-auto ${
+                        index === bannerSlide ? 'w-4 bg-white shadow-sm' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                      }`}
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         ) : null}
 
@@ -257,7 +339,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                       </div>
                       <div className="w-full aspect-square bg-surface-container-low dark:bg-zinc-800 rounded mb-2.5 overflow-hidden flex items-center justify-center p-2">
                         <img
-                          src={product.image_url || ''}
+                          src={product.image_url || undefined}
                           alt={product.name}
                           className="w-full h-full object-cover rounded"
                         />
@@ -312,7 +394,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                     <div>
                       <div className="w-full h-36 bg-surface-container-low dark:bg-zinc-800 rounded overflow-hidden mb-3">
                         <img
-                          src={product.image_url || ''}
+                          src={product.image_url || undefined}
                           alt={product.name}
                           className="w-full h-full object-cover"
                         />

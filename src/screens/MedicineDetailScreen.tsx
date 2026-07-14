@@ -73,7 +73,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
       {/* Hero Image Card */}
       <div className="w-full h-72 sm:h-96 bg-surface-container-low dark:bg-zinc-900 rounded-brand overflow-hidden mb-6 flex items-center justify-center border border-surface-variant relative shadow-sm">
         <img
-          src={product.image_url || ''}
+          src={product.image_url || undefined}
           alt={product.name}
           className="w-full h-full object-cover"
         />
