@@ -20,14 +20,20 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   const displayAvatar = profile?.avatar_url || null;
   const displayTier = profile?.member_tier || 'standard';
 
-  const navItems = [
-    { label: 'Home', route: '/', icon: Home },
-    { label: 'Pharmacy Catalog', route: '/search', icon: Search },
-    { label: 'Prescriptions', route: '/prescriptions', icon: ClipboardList },
-    { label: 'Order History', route: '/orders', icon: Receipt },
-    { label: 'Clinical Profile', route: '/profile', icon: User },
-    { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true, count: unreadCount > 0 ? unreadCount : undefined },
-  ];
+  const navItems = user
+    ? [
+        { label: 'Home', route: '/', icon: Home },
+        { label: 'Pharmacy Catalog', route: '/search', icon: Search },
+        { label: 'Prescriptions', route: '/prescriptions', icon: ClipboardList },
+        { label: 'Order History', route: '/orders', icon: Receipt },
+        { label: 'Clinical Profile', route: '/profile', icon: User },
+        { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true, count: unreadCount > 0 ? unreadCount : undefined },
+      ]
+    : [
+        { label: 'Home', route: '/', icon: Home },
+        { label: 'Pharmacy Catalog', route: '/search', icon: Search },
+        { label: 'Sign In', route: '/login', icon: User },
+      ];
 
   return (
     <aside className="hidden lg:flex flex-col w-72 h-[calc(100vh-4rem)] fixed left-0 top-16 bg-surface-container-low dark:bg-zinc-900 border-r border-outline-variant dark:border-zinc-800 py-6 z-30 overflow-y-auto">
