@@ -151,10 +151,29 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
             );
           })}
         </div>
-        <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 flex justify-between items-center text-sm font-bold text-on-surface">
-          <span>Total</span>
-          <span className="text-primary-container dark:text-emerald-400">₹{order.total.toFixed(2)}</span>
-        </div>
+        {order.discount_percent > 0 ? (
+          <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 space-y-2">
+            <div className="flex justify-between items-center text-sm text-on-surface-variant">
+              <span>MRP</span>
+              <span className="line-through">₹{(order.total / (1 - order.discount_percent / 100)).toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm font-semibold text-primary">
+              <span>Discount</span>
+              <span>{order.discount_percent}% OFF</span>
+            </div>
+            <div className="flex justify-between items-center text-base font-bold text-on-surface pt-2 border-t border-surface-variant/50">
+              <span>Total</span>
+              <span className="text-primary-container dark:text-emerald-400">₹{order.total.toFixed(2)}</span>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 flex justify-between items-center text-sm font-bold text-on-surface">
+            <span>Total</span>
+            <span className="text-primary-container dark:text-emerald-400">
+              {order.total > 0 ? `₹${order.total.toFixed(2)}` : 'Pending'}
+            </span>
+          </div>
+        )}
       </div>
       {/* Cancellation Section */}
       {order.status === 'Order Placed' && !(order as any).assigned_partner_id && (

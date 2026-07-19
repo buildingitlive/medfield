@@ -1,16 +1,14 @@
 import React from 'react';
-import { Home, Search, ShoppingBag, PackageCheck, User } from 'lucide-react';
+import { Home, Search, ClipboardList, PackageCheck, User } from 'lucide-react';
 
 interface BottomNavProps {
   currentRoute: string;
   onNavigate: (route: string) => void;
-  cartCount: number;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
   currentRoute,
   onNavigate,
-  cartCount,
 }) => {
   // Suppress bottom bar on splash, onboarding, and auth flows
   const suppressedRoutes = ['/splash', '/onboarding', '/login', '/otp', '/register'];
@@ -21,7 +19,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   const navItems = [
     { label: 'Home', route: '/', icon: Home },
     { label: 'Catalog', route: '/search', icon: Search },
-    { label: 'Cart', route: '/cart', icon: ShoppingBag, badge: cartCount },
+    { label: 'Rx History', route: '/prescriptions', icon: ClipboardList },
     { label: 'Orders', route: '/orders', icon: PackageCheck },
     { label: 'Profile', route: '/profile', icon: User },
   ];
@@ -48,11 +46,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             >
               <div className="relative">
                 <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : ''}`} />
-                {item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary px-1">
-                    {item.badge}
-                  </span>
-                )}
               </div>
               <span className="text-[11px] mt-1">{item.label}</span>
             </button>

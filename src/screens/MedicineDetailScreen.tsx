@@ -1,19 +1,17 @@
 import React from 'react';
-import { ArrowLeft, ShieldCheck, Share2, CheckCircle2, ShoppingCart, Loader2 } from 'lucide-react';
-import type { Product } from '../types/database';
+import { ArrowLeft, ShieldCheck, Share2, CheckCircle2, Pill, Loader2 } from 'lucide-react';
+
 import { useProducts } from '../hooks/useProducts';
 import { VerifiedMark } from '../components/VerifiedMark';
 
 interface MedicineDetailScreenProps {
   productId: string;
   onNavigate: (route: string) => void;
-  onAddToCart: (product: Product) => void;
 }
 
 export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
   productId,
   onNavigate,
-  onAddToCart,
 }) => {
   const { products, loading } = useProducts();
   
@@ -170,19 +168,19 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
               ₹{product.price.toFixed(2)}
             </span>
             <button
-              onClick={() => onNavigate('/cart')}
+              onClick={() => onNavigate('/prescriptions')}
               className="text-xs text-primary hover:underline font-semibold"
             >
-              View Cart
+              My Prescriptions
             </button>
           </div>
           <button
-            onClick={() => onAddToCart(product)}
+            onClick={() => onNavigate('/place-order')}
             disabled={!product.in_stock}
             className="min-h-[48px] px-6 rounded-md bg-primary-container hover:bg-primary text-on-primary font-semibold text-xs shadow-md flex items-center gap-2 transition-all disabled:opacity-50"
           >
-            <ShoppingCart className="w-4 h-4" />
-            <span>Add to Cart</span>
+            <Pill className="w-4 h-4" />
+            <span>Order Now</span>
           </button>
         </div>
       </div>

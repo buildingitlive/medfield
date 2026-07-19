@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Package, Truck, RotateCcw, Eye, Loader2 } from 'lucide-react';
+import { Package, Truck, RotateCcw, Eye, Loader2, FileImage } from 'lucide-react';
 import { useOrders } from '../hooks/useOrders';
+import { supabase } from '../lib/supabase';
 
 interface OrdersScreenProps {
   onNavigate: (route: string) => void;
@@ -61,7 +62,7 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onNavigate }) => {
           </div>
         ) : (
           displayedOrders.map((order) => {
-            const isOngoing = order.status !== 'Delivered';
+            const isOngoing = order.status.toLowerCase() !== 'delivered' && order.status.toLowerCase() !== 'cancelled';
             return (
               <div
                 key={order.id}
@@ -79,20 +80,66 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onNavigate }) => {
 
                     <div className="mt-3">
                       <p className="text-sm font-semibold text-on-surface dark:text-zinc-100">
-                        {order.items.length} items
+                        {order.items.length > 0 ? `${order.items.length} items` : 'Prescription Order'}
+                      </p>
+                      <p className="text-xs text-on-surface-variant mt-0.5">
+                        Placed on: {new Date(order.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </p>
                       <p className="text-xs text-on-surface-variant mt-0.5">
                         {isOngoing
                           ? `Estimated arrival: ${order.estimated_delivery || 'Pending'}`
-                          : `Delivered on: ${new Date(order.created_at).toLocaleDateString()}`}
+                          : `Delivered on: ${new Date(order.updated_at || order.created_at).toLocaleDateString()}`}
                       </p>
                     </div>
                   </div>
 
-                  <span className="text-lg font-bold text-primary-container dark:text-emerald-400">
-                    ₹{order.total.toFixed(2)}
-                  </span>
+                  {/* Price Breakdown */}
+                  <div className="text-right flex flex-col items-end gap-0.5">
+                    {order.discount_percent > 0 ? (
+                      <>
+                        <span className="text-xs text-on-surface-variant line-through">
+                          ₹{(order.total / (1 - order.discount_percent / 100)).toFixed(2)}
+                        </span>
+                        <span className="text-[10px] font-bold text-secondary-container bg-primary/10 px-1.5 py-0.5 rounded-full">
+                          {order.discount_percent}% OFF
+                        </span>
+                        <span className="text-lg font-bold text-primary dark:text-emerald-400">
+                          ₹{order.total.toFixed(2)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-lg font-bold text-primary dark:text-emerald-400">
+                        {order.total > 0 ? `₹${order.total.toFixed(2)}` : 'Pending'}
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                {/* Prescription Image Preview */}
+                {order.prescription_url && (
+                  <div className="mt-2 flex items-center gap-3 p-3 bg-surface-container-low dark:bg-zinc-800/50 rounded-xl border border-surface-variant/50">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden border border-surface-variant bg-white flex-shrink-0">
+                      <img
+                        src={supabase.storage.from('prescriptions').getPublicUrl(order.prescription_url).data.publicUrl}
+                        alt="Prescription"
+                        className="w-full h-full object-cover cursor-pointer"
+                        onClick={() => window.open(supabase.storage.from('prescriptions').getPublicUrl(order.prescription_url!).data.publicUrl, '_blank')}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+                        <FileImage className="w-3.5 h-3.5 text-primary" />
+                        Prescription Uploaded
+                      </p>
+                      <button
+                        onClick={() => window.open(supabase.storage.from('prescriptions').getPublicUrl(order.prescription_url!).data.publicUrl, '_blank')}
+                        className="text-[11px] text-primary font-medium mt-0.5 hover:underline"
+                      >
+                        View full image →
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Action Buttons matching Reference Design */}
                 <div className="pt-3 border-t border-surface-variant dark:border-zinc-800 flex items-center gap-3">

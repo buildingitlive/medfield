@@ -7,9 +7,10 @@ interface ManageAddressesScreenProps {
 }
 
 export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () => {
-  const { addresses, defaultAddress, loading, addAddress, deleteAddress, setDefault } = useAddresses();
+  const { addresses, defaultAddress, loading, addAddress, updateAddress, deleteAddress, setDefault } = useAddresses();
   const defaultAddressId = defaultAddress?.id;
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
   const [newRecipientName, setNewRecipientName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [newLabel, setNewLabel] = useState('Home');
@@ -18,6 +19,33 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
   const [newState, setNewState] = useState('');
   const [newZip, setNewZip] = useState('');
   const [locating, setLocating] = useState(false);
+  const [_error, setError] = useState<string | null>(null);
+
+  const openAddForm = () => {
+    setEditId(null);
+    setNewRecipientName('');
+    setNewPhone('');
+    setNewLabel('Home');
+    setNewStreet('');
+    setNewCity('');
+    setNewState('');
+    setNewZip('');
+    setError(null);
+    setShowForm(true);
+  };
+
+  const openEditForm = (addr: any) => {
+    setEditId(addr.id);
+    setNewRecipientName(addr.recipient_name || '');
+    setNewPhone(addr.phone || '');
+    setNewLabel(addr.label || 'Home');
+    setNewStreet(addr.street || '');
+    setNewCity(addr.city || '');
+    setNewState(addr.state || '');
+    setNewZip(addr.zip || '');
+    setError(null);
+    setShowForm(true);
+  };
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -56,11 +84,16 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
     );
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newStreet || !newCity || !newState || !newZip) return;
+    if (!newStreet || !newCity || !newState || !newZip) {
+      setError('Please fill in all required fields.');
+      return;
+    }
     
-    await addAddress({
+    setError(null);
+    
+    const payload = {
       recipient_name: newRecipientName || 'Customer Address',
       phone: newPhone || '+91 00000 00000',
       label: newLabel,
@@ -68,15 +101,21 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
       city: newCity,
       state: newState,
       zip: newZip,
-      is_default: false,
-    });
+    };
 
-    setNewPhone('');
-    setNewStreet('');
-    setNewCity('');
-    setNewState('');
-    setNewZip('');
-    setShowAddForm(false);
+    let result;
+    if (editId) {
+      result = await updateAddress(editId, payload);
+    } else {
+      result = await addAddress({ ...payload, is_default: false });
+    }
+
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    setShowForm(false);
   };
 
   return (
@@ -146,7 +185,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // placeholder edit action
+                        openEditForm(addr);
                       }}
                       className="inline-flex items-center gap-1 text-primary hover:underline"
                     >
@@ -173,9 +212,9 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
         })}
       </div>
 
-      {!showAddForm ? (
+      {!showForm ? (
         <button
-          onClick={() => setShowAddForm(true)}
+          onClick={() => openAddForm()}
           className="w-full min-h-[48px] border-2 border-primary text-primary font-semibold text-xs rounded-md flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -183,7 +222,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
         </button>
       ) : (
         <form
-          onSubmit={handleCreate}
+          onSubmit={handleSave}
           className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant p-5 rounded-brand shadow-sm space-y-4"
         >
           <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
@@ -309,7 +348,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => setShowAddForm(false)}
+              onClick={() => setShowForm(false)}
               className="px-4 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface"
             >
               Cancel

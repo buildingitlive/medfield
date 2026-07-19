@@ -23,9 +23,9 @@ npm run build
 - **PWA Installation Modal (`InstallAppPopup.tsx`)**: Prompts users to install the PWA on Android/Chrome or iOS Safari with step-by-step instructions.
 - **`/` (Home)**: Asymmetric Bento CTAs, mobile-first address selector, delivery banner, reorder carousel, and trust strip.
 - **`/search`**: Catalog directory with live search, price sorting, and inline quantity stepper (`- 1 +`).
-- **`/medicine/:id`**: Product formulation detail with composition specs and sticky Add-to-Cart bar.
+- **`/medicine/:id`**: Product formulation detail with composition specs and Order Now CTA.
 - **`/login` & `/otp`**: Mobile number OTP login flow with trust badges.
-- **`/cart` & `/checkout`**: Cart review with delivery estimate and checkout with structured delivery address and payment methods.
+- **`/place-order` & `/prescriptions`**: 3-step prescription upload and medicine request flow, along with a dedicated Prescription History tab for instant reordering.
 - **`/orders` & `/orders/:id`**: Ongoing vs Past order tabs and real-time cold-chain courier tracking.
 - **`/profile`, `/addresses`, `/settings`, `/prescription-upload`**: Full clinical member management suite.
 
@@ -33,7 +33,7 @@ npm run build
 - **Auth**: Fully integrated Supabase OTP / Magic Link flow via `AuthContext`.
 - **Database**: 9 tables with Row-Level Security (RLS) policies defined in `supabase/schema.sql`.
 - **India Catalog Seed**: 15 top Indian clinical medicines (Dolo 650, Azithral, Pan-D, Shelcal, Augmentin, etc.) seeded via `supabase/seed.sql`.
-- **Hooks**: Data-fetching wrapped in robust custom React hooks (`useProducts`, `useCart`, `useAddresses`, `useOrders`, `useFavorites`) with optimistic updates and caching.
+- **Hooks**: Data-fetching wrapped in robust custom React hooks (`useProducts`, `usePrescriptions`, `useAddresses`, `useOrders`, `useFavorites`) with optimistic updates and caching.
 - **Storage**: Prescription image upload directly to Supabase Storage bucket (`prescriptions`).
 
 ## Localization & Production Deployment

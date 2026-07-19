@@ -3,7 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { DesktopSidebar } from './components/DesktopSidebar';
-import { ToastNotification } from './components/ToastNotification';
+
 import { InstallAppPopup } from './components/InstallAppPopup';
 import { SplashScreen } from './screens/SplashScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
@@ -11,18 +11,16 @@ import { AuthScreen } from './screens/AuthScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { MedicineDetailScreen } from './screens/MedicineDetailScreen';
 import { SearchScreen } from './screens/SearchScreen';
-import { CartScreen } from './screens/CartScreen';
-import { CheckoutScreen } from './screens/CheckoutScreen';
+import { PlaceOrderScreen } from './screens/PlaceOrderScreen';
+import { PrescriptionsScreen } from './screens/PrescriptionsScreen';
 import { OrdersScreen } from './screens/OrdersScreen';
 import { OrderTrackingScreen } from './screens/OrderTrackingScreen';
-import { PrescriptionUploadScreen } from './screens/PrescriptionUploadScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { ProfileEditScreen } from './screens/ProfileEditScreen';
 import { ManageAddressesScreen } from './screens/ManageAddressesScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { NotificationsScreen } from './screens/NotificationsScreen';
 import { OrderSuccessScreen } from './screens/OrderSuccessScreen';
-import { useCart } from './hooks/useCart';
 import { Loader2 } from 'lucide-react';
 
 function getRoute(): string {
@@ -36,10 +34,9 @@ function getRoute(): string {
       '/otp',
       '/register',
       '/search',
-      '/cart',
-      '/checkout',
+      '/place-order',
+      '/prescriptions',
       '/orders',
-      '/prescription-upload',
       '/profile',
       '/profile/edit',
       '/addresses',
@@ -57,13 +54,17 @@ function getRoute(): string {
 
 function AppContent() {
   const { user, loading: authLoading } = useAuth();
-  const { cartCount, addToCart } = useCart();
   
   // App State
   const [route, setRoute] = useState<string>(getRoute);
   const [history, setHistory] = useState<string[]>([]);
   const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [toast, setToast] = useState<{ message: string; subtitle?: string } | null>(null);
+
+  // Reorder data (passed from PrescriptionsScreen to PlaceOrderScreen)
+  const [reorderData, setReorderData] = useState<{
+    prescriptionId: string;
+    medicines: { name: string; quantity: number }[];
+  } | null>(null);
 
   // Handle browser / hardware back and forward button
   useEffect(() => {
@@ -93,12 +94,6 @@ function AppContent() {
     }
   }, [darkMode]);
 
-  const showToast = (message: string, subtitle?: string) => {
-    setToast({ message, subtitle });
-    setTimeout(() => {
-      setToast((current) => (current?.message === message ? null : current));
-    }, 3000);
-  };
 
   const handleNavigate = (newRoute: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -123,8 +118,13 @@ function AppContent() {
     }
   };
 
+  const handleReorder = (data: { prescriptionId: string; medicines: { name: string; quantity: number }[] }) => {
+    setReorderData(data);
+    handleNavigate('/place-order');
+  };
+
   // ─── Auth Guard ──────────────────────────────────────────────────────────
-  const protectedRoutes = ['/cart', '/checkout', '/orders', '/profile', '/addresses', '/settings', '/prescription-upload'];
+  const protectedRoutes = ['/place-order', '/prescriptions', '/orders', '/profile', '/addresses', '/settings'];
   const isProtectedRoute = protectedRoutes.some((r) => route === r || route.startsWith(`${r}/`));
 
   if (authLoading && route !== '/splash') {
@@ -156,7 +156,6 @@ function AppContent() {
       return (
         <HomeScreen
           onNavigate={handleNavigate}
-          onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }}
         />
       );
     }
@@ -164,7 +163,6 @@ function AppContent() {
       return (
         <SearchScreen
           onNavigate={handleNavigate}
-          onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }}
         />
       );
     }
@@ -174,21 +172,27 @@ function AppContent() {
         <MedicineDetailScreen
           productId={id}
           onNavigate={handleNavigate}
-          onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }}
         />
       );
     }
-    if (route === '/cart') {
+    if (route === '/place-order') {
+      const data = reorderData;
+      // Clear reorder data after using it
+      if (reorderData) {
+        setTimeout(() => setReorderData(null), 0);
+      }
       return (
-        <CartScreen
+        <PlaceOrderScreen
           onNavigate={handleNavigate}
+          reorderData={data}
         />
       );
     }
-    if (route === '/checkout') {
+    if (route === '/prescriptions') {
       return (
-        <CheckoutScreen
+        <PrescriptionsScreen
           onNavigate={handleNavigate}
+          onReorder={handleReorder}
         />
       );
     }
@@ -198,9 +202,6 @@ function AppContent() {
     if (route.startsWith('/orders/')) {
       const id = route.replace('/orders/', '');
       return <OrderTrackingScreen orderId={id} onNavigate={handleNavigate} />;
-    }
-    if (route === '/prescription-upload') {
-      return <PrescriptionUploadScreen onNavigate={handleNavigate} />;
     }
     if (route === '/profile') {
       return <ProfileScreen onNavigate={handleNavigate} />;
@@ -228,7 +229,7 @@ function AppContent() {
     }
 
     // 404 Fallback
-    return <HomeScreen onNavigate={handleNavigate} onAddToCart={(p, qty = 1) => { addToCart(p.id, qty); showToast('Added to Cart', p.name); }} />;
+    return <HomeScreen onNavigate={handleNavigate} />;
   };
 
   const isStandaloneScreen = ['/splash', '/onboarding', '/login', '/otp', '/register'].includes(route);
@@ -240,10 +241,8 @@ function AppContent() {
           <DesktopSidebar
             currentRoute={route}
             onNavigate={handleNavigate}
-            cartCount={cartCount}
           />
           <Navbar
-            cartCount={cartCount}
             darkMode={darkMode}
             onToggleDarkMode={() => setDarkMode(!darkMode)}
             onNavigate={handleNavigate}
@@ -260,15 +259,10 @@ function AppContent() {
         <BottomNav
           currentRoute={route}
           onNavigate={handleNavigate}
-          cartCount={cartCount}
         />
       )}
 
-      <ToastNotification
-        message={toast?.message || null}
-        subtitle={toast?.subtitle}
-        onViewCart={() => handleNavigate('/cart')}
-      />
+
 
       <InstallAppPopup />
     </div>

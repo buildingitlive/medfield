@@ -1,18 +1,16 @@
 import React from 'react';
-import { Home, Search, ShoppingCart, Receipt, User, ShieldCheck, Bell } from 'lucide-react';
+import { Home, Search, ClipboardList, Receipt, User, ShieldCheck, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
 
 interface DesktopSidebarProps {
   currentRoute: string;
   onNavigate: (route: string) => void;
-  cartCount: number;
 }
 
 export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   currentRoute,
   onNavigate,
-  cartCount,
 }) => {
   const { user, profile } = useAuth();
   const { unreadCount } = useNotifications();
@@ -25,7 +23,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   const navItems = [
     { label: 'Home', route: '/', icon: Home },
     { label: 'Pharmacy Catalog', route: '/search', icon: Search },
-    { label: 'My Cart', route: '/cart', icon: ShoppingCart, count: cartCount },
+    { label: 'Prescriptions', route: '/prescriptions', icon: ClipboardList },
     { label: 'Order History', route: '/orders', icon: Receipt },
     { label: 'Clinical Profile', route: '/profile', icon: User },
     { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true, count: unreadCount > 0 ? unreadCount : undefined },

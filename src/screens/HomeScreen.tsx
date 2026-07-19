@@ -13,10 +13,9 @@ import {
   ShieldCheck,
   Lock,
   Headphones,
-  Plus,
   Loader2,
 } from 'lucide-react';
-import type { Product } from '../types/database';
+
 import { useProducts } from '../hooks/useProducts';
 import { useAddresses } from '../hooks/useAddresses';
 import { VerifiedMark } from '../components/VerifiedMark';
@@ -24,7 +23,6 @@ import { supabase } from '../lib/supabase';
 
 interface HomeScreenProps {
   onNavigate: (route: string) => void;
-  onAddToCart: (product: Product, quantity?: number) => void;
 }
 
 function getContrastColor(hexColor: string | null): string {
@@ -43,7 +41,7 @@ function getContrastColor(hexColor: string | null): string {
   return luminance > 0.5 ? '#000000' : '#ffffff';
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [bannerSlide, setBannerSlide] = useState(0);
   const [banners, setBanners] = useState<any[]>([]);
@@ -240,7 +238,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
         {/* Asymmetric CTA Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
-            onClick={() => onNavigate('/prescription-upload')}
+            onClick={() => onNavigate('/place-order')}
             className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 flex flex-col gap-4 text-left shadow-sm hover:shadow transition-all relative overflow-hidden group"
           >
             <div className="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
@@ -248,14 +246,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
             </div>
             <div>
               <h2 className="font-heading text-lg font-bold text-on-surface dark:text-zinc-100 mb-1">
-                Upload Prescription
+                Order Now
               </h2>
               <p className="text-xs text-on-surface-variant">
-                Fast tracking for verified clinical orders.
+                Upload prescription or list medicines to place an order.
               </p>
             </div>
             <div className="mt-auto pt-2 flex items-center gap-1.5 text-primary text-xs font-bold">
-              <span>Upload Now</span>
+              <span>Start Order</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </button>
@@ -358,11 +356,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            onAddToCart(product);
+                            onNavigate(`/medicine/${product.id}`);
                           }}
                           className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors"
                         >
-                          <Plus className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -418,11 +416,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate, onAddToCart 
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onAddToCart(product);
+                          onNavigate(`/medicine/${product.id}`);
                         }}
                         className="min-h-[36px] px-3.5 rounded bg-primary hover:bg-primary/90 text-on-primary text-xs font-semibold shadow transition-all"
                       >
-                        Add to Cart
+                        View Details
                       </button>
                     </div>
                   </div>

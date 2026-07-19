@@ -10,9 +10,9 @@
 ## 2. Reference Screen Compliance Matrix (All 16 Screens Complete)
 1. **Home Screen (`/`)**: Mobile-first Address Sub-header, Delivery Banner (`Order before 6:00 PM...`), Inline Search trigger, Asymmetric Bento CTAs, Reorder Carousel, and Trust Strip.
 2. **Catalog Search (`/search`)**: Price Sorting (`Low to High`, `High to Low`), Category Chips, OTC/Rx filter pills, strikethrough MRP pricing badges (`Save 20%`), India-centric INR (`₹`) currency, and inline stepper controls (`- 1 +`).
-3. **Medicine Detail (`/medicine/:id`)**: Composition & Pack Size block (`15 Capsules / Strip`), dynamic Indian MRP pricing (`Save ₹...`), and sticky Add-to-Cart bottom bar.
+3. **Medicine Detail (`/medicine/:id`)**: Composition & Pack Size block (`15 Capsules / Strip`), dynamic Indian MRP pricing (`Save ₹...`), and sticky Order Now bottom bar.
 4. **Authentication (`/login`, `/otp`)**: Mobile number OTP flow with bottom trust badges (`Genuine Medicines • Same-Day Delivery • Pay on Delivery`).
-5. **Cart & Checkout (`/cart`, `/checkout`)**: Delivery estimate row (`Arrives today by 9 PM`), structured Delivery Address card with PIN Code, selectable COD & QR payment cards, and sticky Place Order bar.
+5. **Prescription Upload & Place Order (`/place-order`, `/prescriptions`)**: 3-step prescription upload flow, dynamic medicine request list, Delivery Address card with PIN Code, and a dedicated Prescription History tab for 1-tap reordering.
 6. **Orders & Tracking (`/orders`, `/orders/:id`)**: Ongoing vs Past order tabs, contextual action buttons (`Track Delivery`, `Reorder`), Courier Profile card (`Alex Mercer — MedField Courier`), and completed vs pending timeline step indicators.
 7. **Clinical Account & Settings (`/profile`, `/addresses`, `/settings`)**: Menu-list layout with `Sarah Jenkins` profile card, grouped Settings sections (`Notifications`, `Appearance`, `Preferences`, `About`), and radio-selectable Delivery Addresses.
 8. **Prescription Upload (`/prescription-upload`)**: 3-step progress indicator (`1 Upload -> 2 Review -> 3 Confirmed`), Clarity Checklist (`Well-lit and easily readable`), and sticky bottom Submit button.
@@ -22,7 +22,7 @@
 - **Mobile Viewport**: Persistent bottom navigation bar (`BottomNav.tsx`).
 - **Desktop Viewport (`lg+`)**: Dedicated fixed left navigation drawer (`DesktopSidebar.tsx`) displaying profile summary and navigation items.
 - **PWA Installation Prompt Modal (`InstallAppPopup.tsx`)**: Frosted glassmorphism modal (`useInstallPrompt.ts`) detecting iOS Safari 3-step instructions or native Chrome/Edge `beforeinstallprompt` trigger.
-- **Floating Toast Feedback (`ToastNotification.tsx`)**: Auto-dismissing floating visual confirmations on cart additions and order submissions.
+- **Floating Toast Feedback (`ToastNotification.tsx`)**: Auto-dismissing floating visual confirmations on order submissions.
 
 ## 4. Upcoming Geolocation & Mapping Features
 - **Smart Address Capture**: Modals for parsing Google Maps sharing links and utilizing the native HTML5 Geolocation API (`navigator.geolocation`) to auto-fill latitude/longitude.

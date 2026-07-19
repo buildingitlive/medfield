@@ -1,13 +1,15 @@
 /**
  * Supabase Database type definitions.
- * Maps to the PostgreSQL schema defined in supabase/schema.sql.
+ * Maps to the PostgreSQL schema defined in supabase/ SQL files.
  */
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type ProductForm = 'Tablet' | 'Capsule' | 'Tincture' | 'Extract' | 'Topical';
-export type ProductCategory = 'Botanical' | 'Analgesic' | 'Cardiac' | 'Immunology' | 'Wellness';
+export type ProductForm = 'Tablet' | 'Capsule' | 'Syrup' | 'Injection' | 'Tincture' | 'Extract' | 'Topical' | 'Powder' | 'Drop';
+export type ProductCategory = 'Botanical' | 'Allopathy' | 'Ayush' | 'Analgesic' | 'Cardiac' | 'Immunology' | 'Wellness';
 export type OrderStatus =
+  | 'Pending Confirmation'
+  | 'Order Confirmed'
   | 'Order Placed'
   | 'Verified by Pharmacy'
   | 'Dispatched from Field Warehouse'
@@ -120,24 +122,6 @@ export interface Database {
         };
         Update: Partial<Omit<Database['public']['Tables']['addresses']['Insert'], 'user_id'>>;
       };
-      cart_items: {
-        Row: {
-          id: string;
-          user_id: string;
-          product_id: string;
-          quantity: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          product_id: string;
-          quantity: number;
-        };
-        Update: {
-          quantity?: number;
-        };
-      };
       orders: {
         Row: {
           id: string;
@@ -148,21 +132,34 @@ export interface Database {
           estimated_delivery: string;
           payment_method: PaymentMethod;
           address_snapshot: Json;
+          prescription_url: string | null;
+          prescription_id: string | null;
+          medicine_text: string | null;
+          notes: string | null;
+          discount_percent: number;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
           user_id: string;
           status?: OrderStatus;
-          total: number;
-          delivery_fee: number;
-          estimated_delivery: string;
-          payment_method: PaymentMethod;
-          address_snapshot: Json;
+          total?: number;
+          delivery_fee?: number;
+          estimated_delivery?: string;
+          payment_method?: PaymentMethod;
+          address_snapshot?: Json;
+          prescription_url?: string | null;
+          prescription_id?: string | null;
+          medicine_text?: string | null;
+          notes?: string | null;
+          discount_percent?: number;
         };
         Update: {
           status?: OrderStatus;
+          total?: number;
           estimated_delivery?: string;
+          discount_percent?: number;
         };
       };
       order_items: {
@@ -181,6 +178,28 @@ export interface Database {
           product_snapshot: Json;
           quantity: number;
           unit_price: number;
+        };
+        Update: Record<string, never>;
+      };
+      order_confirmed_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          medicine_name: string;
+          company: string | null;
+          quantity: number;
+          mrp: number;
+          price: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          medicine_name: string;
+          company?: string | null;
+          quantity?: number;
+          mrp?: number;
+          price?: number;
         };
         Update: Record<string, never>;
       };
@@ -222,27 +241,63 @@ export interface Database {
         };
         Update: Record<string, never>;
       };
-      prescriptions: {
+      user_prescriptions: {
         Row: {
           id: string;
           user_id: string;
-          file_url: string;
-          file_name: string;
-          status: PrescriptionStatus;
+          patient_name: string;
+          prescription_url: string | null;
           notes: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           user_id: string;
-          file_url: string;
-          file_name: string;
-          status?: PrescriptionStatus;
+          patient_name?: string;
+          prescription_url?: string | null;
           notes?: string | null;
         };
         Update: {
-          status?: PrescriptionStatus;
+          patient_name?: string;
           notes?: string | null;
+        };
+      };
+      user_prescription_items: {
+        Row: {
+          id: string;
+          prescription_id: string;
+          medicine_name: string;
+          quantity: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          prescription_id: string;
+          medicine_name: string;
+          quantity?: number;
+        };
+        Update: Record<string, never>;
+      };
+      admin_products: {
+        Row: {
+          id: string;
+          medicine_name: string;
+          company: string | null;
+          mrp: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          medicine_name: string;
+          company?: string | null;
+          mrp?: number;
+        };
+        Update: {
+          medicine_name?: string;
+          company?: string | null;
+          mrp?: number;
+          updated_at?: string;
         };
       };
     };
@@ -257,22 +312,22 @@ export interface Database {
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 export type Product = Database['public']['Tables']['products']['Row'];
 export type Address = Database['public']['Tables']['addresses']['Row'];
-export type CartItemRow = Database['public']['Tables']['cart_items']['Row'];
 export type Order = Database['public']['Tables']['orders']['Row'];
 export type OrderItem = Database['public']['Tables']['order_items']['Row'];
+export type OrderConfirmedItem = Database['public']['Tables']['order_confirmed_items']['Row'];
 export type OrderTrackingStep = Database['public']['Tables']['order_tracking_steps']['Row'];
 export type Favorite = Database['public']['Tables']['favorites']['Row'];
-export type Prescription = Database['public']['Tables']['prescriptions']['Row'];
+export type UserPrescription = Database['public']['Tables']['user_prescriptions']['Row'];
+export type UserPrescriptionItem = Database['public']['Tables']['user_prescription_items']['Row'];
+export type AdminProduct = Database['public']['Tables']['admin_products']['Row'];
 
 // Joined types for UI consumption
-export interface CartItemWithProduct {
-  id: string;
-  product_id: string;
-  quantity: number;
-  product: Product;
+export interface PrescriptionWithItems extends UserPrescription {
+  items: UserPrescriptionItem[];
 }
 
 export interface OrderWithItems extends Order {
   items: (OrderItem & { product?: Product })[];
+  confirmed_items?: OrderConfirmedItem[];
   tracking_steps: OrderTrackingStep[];
 }

@@ -1,11 +1,10 @@
 import React from 'react';
-import { Search, ShoppingBag, Moon, Sun, ShieldCheck, Bell } from 'lucide-react';
+import { Search, Pill, Moon, Sun, ShieldCheck, Bell } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 
 interface NavbarProps {
   currentRoute: string;
   onNavigate: (route: string) => void;
-  cartCount: number;
   darkMode: boolean;
   onToggleDarkMode: () => void;
 }
@@ -13,7 +12,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   currentRoute,
   onNavigate,
-  cartCount,
   darkMode,
   onToggleDarkMode,
 }) => {
@@ -55,18 +53,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Search className="w-5 h-5" />
           </button>
 
-          {/* Cart Shortcut with Badge - Hidden on Mobile */}
+          {/* Order Now Shortcut - Hidden on Mobile */}
           <button
-            onClick={() => onNavigate('/cart')}
-            aria-label="View shopping cart"
-            className="hidden sm:flex relative min-h-[48px] min-w-[48px] items-center justify-center rounded-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-colors"
+            onClick={() => onNavigate('/place-order')}
+            aria-label="Place a new order"
+            className="hidden sm:flex min-h-[48px] px-4 items-center justify-center gap-2 rounded-full bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-colors shadow-sm"
           >
-            <ShoppingBag className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-on-primary shadow">
-                {cartCount}
-              </span>
-            )}
+            <Pill className="w-4 h-4" />
+            <span>Order Now</span>
           </button>
 
           {/* Notifications - Visible on all devices */}
