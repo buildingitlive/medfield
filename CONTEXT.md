@@ -23,6 +23,7 @@ MedField is a progressive web application (PWA) delivering verified clinical-gra
 ## Next Phase / Ongoing Maintenance
 - **Post-Launch Enhancements**:
   - **Geofencing & Smart Dispatch**: Integrate Geolocation API to capture precise coordinates during checkout and map them against partner locations to auto-tag regional zones (e.g., North, South) for optimized delivery routing.
+  - **Dynamic Medicine Dataset Growth**: When the admin confirms an order and manually enters medicine names, companies, and prices, save these unique entries to a database table to organically grow the medicine dataset. In the future, this will allow for an autofill/dropdown experience when typing medicine names in the admin panel. If an admin enters a new MRP for an existing autofilled medicine, update that record's MRP in the database automatically.
   - Monitoring live Supabase analytics & Vercel deployment metrics.
   - Ongoing PWA manifest optimization for app store submissions.
 

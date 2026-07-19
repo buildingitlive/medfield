@@ -107,6 +107,8 @@ export interface Database {
           zip: string;
           is_default: boolean;
           created_at: string;
+          latitude: number | null;
+          longitude: number | null;
         };
         Insert: {
           id?: string;
@@ -119,6 +121,8 @@ export interface Database {
           state: string;
           zip: string;
           is_default?: boolean;
+          latitude?: number | null;
+          longitude?: number | null;
         };
         Update: Partial<Omit<Database['public']['Tables']['addresses']['Insert'], 'user_id'>>;
       };

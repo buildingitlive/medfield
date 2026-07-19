@@ -20,6 +20,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
   const [newZip, setNewZip] = useState('');
   const [locating, setLocating] = useState(false);
   const [_error, setError] = useState<string | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const openAddForm = () => {
     setEditId(null);
@@ -30,6 +31,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
     setNewCity('');
     setNewState('');
     setNewZip('');
+    setCoords(null);
     setError(null);
     setShowForm(true);
   };
@@ -43,6 +45,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
     setNewCity(addr.city || '');
     setNewState(addr.state || '');
     setNewZip(addr.zip || '');
+    setCoords(addr.latitude && addr.longitude ? { lat: addr.latitude, lng: addr.longitude } : null);
     setError(null);
     setShowForm(true);
   };
@@ -64,12 +67,10 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
           const data = await res.json();
           const addr = data.address || {};
 
-          setNewStreet(
-            [addr.road, addr.neighbourhood, addr.suburb].filter(Boolean).join(', ') || data.display_name?.split(',').slice(0, 2).join(',') || '',
-          );
           setNewCity(addr.city || addr.town || addr.village || addr.county || '');
           setNewState(addr.state || '');
           setNewZip(addr.postcode || '');
+          setCoords({ lat: latitude, lng: longitude });
         } catch {
           alert('Could not fetch address from your location. Please enter manually.');
         } finally {
@@ -93,7 +94,7 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
     
     setError(null);
     
-    const payload = {
+    const payload: any = {
       recipient_name: newRecipientName || 'Customer Address',
       phone: newPhone || '+91 00000 00000',
       label: newLabel,
@@ -101,6 +102,8 @@ export const ManageAddressesScreen: React.FC<ManageAddressesScreenProps> = () =>
       city: newCity,
       state: newState,
       zip: newZip,
+      latitude: coords?.lat ?? null,
+      longitude: coords?.lng ?? null,
     };
 
     let result;

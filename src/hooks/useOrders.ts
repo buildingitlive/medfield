@@ -125,6 +125,8 @@ export function useOrders() {
             city: address.city,
             state: address.state,
             zip: address.zip,
+            latitude: (address as any).latitude || null,
+            longitude: (address as any).longitude || null,
           },
         } as any)
         .select()
