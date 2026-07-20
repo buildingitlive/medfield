@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Save, Loader2, User, Phone, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, User, Phone, CheckCircle2, Mail } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface ProfileEditScreenProps {
@@ -73,6 +73,25 @@ export const ProfileEditScreen: React.FC<ProfileEditScreenProps> = ({ onNavigate
 
       {/* Form */}
       <div className="space-y-5">
+        {/* Email (Read-Only) */}
+        <div>
+          <label className="block text-xs font-semibold text-on-surface-variant mb-1.5 ml-1">
+            Email Address
+          </label>
+          <div className="relative">
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant/70" />
+            <input
+              type="email"
+              value={user.email || 'No email associated'}
+              disabled
+              className="w-full min-h-[48px] bg-surface-container/50 dark:bg-zinc-800/50 border border-outline-variant/60 dark:border-zinc-700/60 rounded-md pl-10 pr-4 text-sm text-on-surface-variant dark:text-zinc-400 cursor-not-allowed select-all font-medium"
+            />
+          </div>
+          <p className="text-[11px] text-on-surface-variant/70 dark:text-zinc-500 mt-1 ml-1">
+            This is the verified email associated with your MedField account and cannot be changed.
+          </p>
+        </div>
+
         {/* Name */}
         <div>
           <label

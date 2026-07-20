@@ -5,6 +5,7 @@ import { BottomNav } from './components/BottomNav';
 import { DesktopSidebar } from './components/DesktopSidebar';
 
 import { InstallAppPopup } from './components/InstallAppPopup';
+import { GoogleAuthOnboardingModal } from './components/GoogleAuthOnboardingModal';
 import { SplashScreen } from './screens/SplashScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
 import { AuthScreen } from './screens/AuthScreen';
@@ -265,6 +266,7 @@ function AppContent() {
 
 
       <InstallAppPopup />
+      <GoogleAuthOnboardingModal />
     </div>
   );
 }
