@@ -73,6 +73,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
   // General
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const steps = [
     { num: 1, label: 'Prescription', icon: FileText },
@@ -583,13 +584,34 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
 
           {/* Place Order */}
           <div className="fixed bottom-16 lg:bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-zinc-900 border-t border-surface-variant dark:border-zinc-800 p-4 pb-safe z-40 shadow-lg">
-            <div className="max-w-2xl mx-auto flex flex-col gap-2">
+            <div className="max-w-2xl mx-auto flex flex-col gap-3">
+              <label className="flex items-start gap-2.5 cursor-pointer group">
+                <div className="relative flex items-center justify-center mt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="peer appearance-none w-4 h-4 border-2 border-outline-variant rounded bg-surface-container-lowest checked:bg-primary checked:border-primary transition-colors cursor-pointer"
+                  />
+                  <div className="absolute inset-0 pointer-events-none opacity-0 peer-checked:opacity-100 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-on-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <span className="text-[11px] text-on-surface-variant leading-relaxed">
+                  I confirm that the uploaded prescription is valid, and I agree to the{' '}
+                  <button onClick={(e) => { e.preventDefault(); onNavigate('/terms-of-service'); }} className="text-primary hover:underline font-semibold">Terms of Service</button> and{' '}
+                  <button onClick={(e) => { e.preventDefault(); onNavigate('/privacy-policy'); }} className="text-primary hover:underline font-semibold">Privacy Policy</button>.
+                </span>
+              </label>
+
               <p className="text-[10px] text-on-surface-variant text-center">
                 💊 Pricing will be confirmed by our pharmacist after review
               </p>
               <button
                 onClick={handlePlaceOrder}
-                disabled={!selectedAddressId || isSubmitting}
+                disabled={!selectedAddressId || !agreedToTerms || isSubmitting}
                 className="w-full min-h-[48px] bg-primary hover:bg-primary-container text-on-primary font-semibold rounded-md flex items-center justify-center gap-2 shadow text-sm transition-all disabled:opacity-50"
               >
                 {isSubmitting ? (

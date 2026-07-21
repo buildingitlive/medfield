@@ -52,14 +52,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
       route: '#',
     },
     {
-      label: 'Help & Support (9389407550)',
+      label: 'Help & Support',
+      sublabel: '9389407550',
       icon: HelpCircle,
       route: 'tel:9389407550',
     },
     {
       label: 'About MedField',
       icon: Info,
-      route: '#',
+      route: '/terms-of-service',
     },
   ];
 
@@ -125,9 +126,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
                 <div className="w-9 h-9 rounded-full bg-surface-container dark:bg-zinc-800 flex items-center justify-center text-primary">
                   <Icon className="w-4 h-4" />
                 </div>
-                <span className="font-semibold text-sm text-on-surface dark:text-zinc-100">
-                  {item.label}
-                </span>
+                <div>
+                  <span className="font-semibold text-sm text-on-surface dark:text-zinc-100">
+                    {item.label}
+                  </span>
+                  {(item as any).sublabel && (
+                    <p className="text-xs text-primary font-semibold mt-0.5">{(item as any).sublabel}</p>
+                  )}
+                </div>
               </div>
               <ChevronRight className="w-4 h-4 text-on-surface-variant" />
             </button>

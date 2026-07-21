@@ -22,6 +22,8 @@ import { ManageAddressesScreen } from './screens/ManageAddressesScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { NotificationsScreen } from './screens/NotificationsScreen';
 import { OrderSuccessScreen } from './screens/OrderSuccessScreen';
+import { TermsOfServiceScreen } from './screens/TermsOfServiceScreen';
+import { PrivacyPolicyScreen } from './screens/PrivacyPolicyScreen';
 import { Loader2 } from 'lucide-react';
 
 function getRoute(): string {
@@ -43,6 +45,8 @@ function getRoute(): string {
       '/addresses',
       '/notifications',
       '/settings',
+      '/terms-of-service',
+      '/privacy-policy',
     ].includes(path) ||
     path.startsWith('/medicine/') ||
     path.startsWith('/orders/') ||
@@ -225,8 +229,15 @@ function AppContent() {
         <SettingsScreen
           isDarkMode={darkMode}
           onToggleTheme={() => setDarkMode(!darkMode)}
+          onNavigate={handleNavigate}
         />
       );
+    }
+    if (route === '/terms-of-service') {
+      return <TermsOfServiceScreen onNavigate={handleNavigate} />;
+    }
+    if (route === '/privacy-policy') {
+      return <PrivacyPolicyScreen onNavigate={handleNavigate} />;
     }
 
     // 404 Fallback

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Bell, Palette, Sliders, Info, Lock, ChevronRight, ExternalLink } from 'lucide-react';
+import { Bell, Palette, Sliders, Info, Lock, ChevronRight, FileText, Shield } from 'lucide-react';
 
 interface SettingsScreenProps {
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  onNavigate: (route: string) => void;
 }
 
-export const SettingsScreen: React.FC<SettingsScreenProps> = ({ isDarkMode, onToggleTheme }) => {
+export const SettingsScreen: React.FC<SettingsScreenProps> = ({ isDarkMode, onToggleTheme, onNavigate }) => {
   const [promotionalOffers, setPromotionalOffers] = useState(false);
 
   return (
@@ -114,19 +115,40 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ isDarkMode, onTo
           </button>
         </section>
 
-        {/* About Section */}
+        {/* About & Legal Section */}
         <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-5 shadow-sm">
           <div className="flex items-center gap-2 text-on-surface dark:text-zinc-100 font-bold text-base mb-4">
             <Info className="w-5 h-5 text-primary" />
-            <h2>About</h2>
+            <h2>About & Legal</h2>
           </div>
 
-          <button className="w-full flex items-center justify-between text-left">
-            <span className="text-sm font-semibold text-on-surface dark:text-zinc-100">
-              Privacy Policy
-            </span>
-            <ExternalLink className="w-4 h-4 text-on-surface-variant" />
-          </button>
+          <div className="space-y-1">
+            <button
+              onClick={() => onNavigate('/terms-of-service')}
+              className="w-full flex items-center justify-between text-left py-3 px-1 rounded-lg hover:bg-surface-container/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-on-surface dark:text-zinc-100">
+                  Terms of Service
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-on-surface-variant" />
+            </button>
+
+            <button
+              onClick={() => onNavigate('/privacy-policy')}
+              className="w-full flex items-center justify-between text-left py-3 px-1 rounded-lg hover:bg-surface-container/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Shield className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-on-surface dark:text-zinc-100">
+                  Privacy Policy
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-on-surface-variant" />
+            </button>
+          </div>
         </section>
       </div>
     </main>
