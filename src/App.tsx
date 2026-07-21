@@ -24,6 +24,7 @@ import { NotificationsScreen } from './screens/NotificationsScreen';
 import { OrderSuccessScreen } from './screens/OrderSuccessScreen';
 import { TermsOfServiceScreen } from './screens/TermsOfServiceScreen';
 import { PrivacyPolicyScreen } from './screens/PrivacyPolicyScreen';
+import { RefundPolicyScreen } from './screens/RefundPolicyScreen';
 import { Loader2 } from 'lucide-react';
 
 function getRoute(): string {
@@ -47,6 +48,7 @@ function getRoute(): string {
       '/settings',
       '/terms-of-service',
       '/privacy-policy',
+      '/refund-policy',
     ].includes(path) ||
     path.startsWith('/medicine/') ||
     path.startsWith('/orders/') ||
@@ -238,6 +240,9 @@ function AppContent() {
     }
     if (route === '/privacy-policy') {
       return <PrivacyPolicyScreen onNavigate={handleNavigate} />;
+    }
+    if (route === '/refund-policy') {
+      return <RefundPolicyScreen onNavigate={handleNavigate} />;
     }
 
     // 404 Fallback

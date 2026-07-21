@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Palette, Sliders, Info, Lock, ChevronRight, FileText, Shield } from 'lucide-react';
+import { Bell, Palette, Sliders, Info, Lock, ChevronRight, FileText, Shield, RefreshCw } from 'lucide-react';
 
 interface SettingsScreenProps {
   isDarkMode: boolean;
@@ -144,6 +144,19 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ isDarkMode, onTo
                 <Shield className="w-4 h-4 text-primary" />
                 <span className="text-sm font-semibold text-on-surface dark:text-zinc-100">
                   Privacy Policy
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-on-surface-variant" />
+            </button>
+
+            <button
+              onClick={() => onNavigate('/refund-policy')}
+              className="w-full flex items-center justify-between text-left py-3 px-1 rounded-lg hover:bg-surface-container/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <RefreshCw className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-on-surface dark:text-zinc-100">
+                  Return, Refund & Cancellation
                 </span>
               </div>
               <ChevronRight className="w-4 h-4 text-on-surface-variant" />

@@ -25,7 +25,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     { label: 'Pharmacy Catalog', route: '/search', icon: Search },
     { label: 'Prescriptions', route: '/prescriptions', icon: ClipboardList },
     { label: 'Order History', route: '/orders', icon: Receipt },
-    { label: 'Clinical Profile', route: '/profile', icon: User },
+    { label: 'Profile', route: '/profile', icon: User },
     { label: 'Notifications', route: '/notifications', icon: Bell, highlight: true, count: unreadCount > 0 ? unreadCount : undefined },
   ];
 

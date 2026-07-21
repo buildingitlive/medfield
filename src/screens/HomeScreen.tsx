@@ -10,8 +10,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  ShieldCheck,
-  Lock,
+  Zap,
+  Tag,
   Headphones,
   Loader2,
 } from 'lucide-react';
@@ -433,13 +433,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         {/* Trust Strip */}
         <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 flex flex-col sm:flex-row justify-around items-center gap-4 mt-6">
           <div className="flex items-center gap-2 text-on-surface-variant">
-            <ShieldCheck className="w-5 h-5 text-primary" />
-            <span className="text-xs font-semibold">FDA Certified</span>
+            <Zap className="w-5 h-5 text-primary" />
+            <span className="text-xs font-semibold">Same Day Delivery</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-outline-variant" />
           <div className="flex items-center gap-2 text-on-surface-variant">
-            <Lock className="w-5 h-5 text-primary" />
-            <span className="text-xs font-semibold">Secure Checkout</span>
+            <Tag className="w-5 h-5 text-primary" />
+            <span className="text-xs font-semibold">No Delivery Charges</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-outline-variant" />
           <div className="flex items-center gap-2 text-on-surface-variant">

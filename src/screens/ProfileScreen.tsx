@@ -9,6 +9,8 @@ import {
   ChevronRight,
   Edit2,
   LogOut,
+  Shield,
+  RefreshCw,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -58,9 +60,24 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
       route: 'tel:9389407550',
     },
     {
+      label: 'Terms of Service',
+      icon: FileText,
+      route: '/terms-of-service',
+    },
+    {
+      label: 'Privacy Policy',
+      icon: Shield,
+      route: '/privacy-policy',
+    },
+    {
+      label: 'Return & Refund Policy',
+      icon: RefreshCw,
+      route: '/refund-policy',
+    },
+    {
       label: 'About MedField',
       icon: Info,
-      route: '/terms-of-service',
+      route: '#',
     },
   ];
 
