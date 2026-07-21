@@ -172,6 +172,21 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
           </div>
         </button>
       </div>
+
+      {/* Footer Branding */}
+      <div className="mt-8 mb-4">
+        <div className="bg-surface-container dark:bg-zinc-800/80 p-3 rounded text-[11px] text-on-surface-variant text-center border border-surface-variant dark:border-zinc-800/50 max-w-[200px] mx-auto shadow-sm">
+          <span>Developed & Maintained by</span>
+          <a
+            href="https://buildingitlive.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold block text-on-surface dark:text-zinc-200 mt-0.5 hover:text-primary transition-colors hover:underline"
+          >
+            BuildingItLive
+          </a>
+        </div>
+      </div>
     </main>
   );
 };

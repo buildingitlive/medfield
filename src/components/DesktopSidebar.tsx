@@ -97,10 +97,15 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
       {/* Footer / Certification Badge */}
       <div className="px-6 pt-4 border-t border-surface-variant dark:border-zinc-800">
         <div className="bg-surface-container dark:bg-zinc-800/80 p-3 rounded text-[11px] text-on-surface-variant">
-          <span className="font-bold block text-on-surface dark:text-zinc-200">
-            MedField PWA Clinical v1.4
-          </span>
-          <span>100% Genuine Medicines Delivered</span>
+          <span>Developed & Maintained by</span>
+          <a
+            href="https://buildingitlive.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold block text-on-surface dark:text-zinc-200 mt-0.5 hover:text-primary transition-colors hover:underline"
+          >
+            BuildingItLive
+          </a>
         </div>
       </div>
     </aside>
