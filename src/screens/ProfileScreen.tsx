@@ -46,7 +46,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
     {
       label: 'Saved Prescriptions',
       icon: FileText,
-      route: '/prescription-upload',
+      route: '/prescriptions',
     },
     {
       label: 'Refer & Earn',
