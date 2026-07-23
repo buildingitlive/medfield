@@ -335,23 +335,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                           Verified
                         </span>
                       </div>
-                      <div className="w-full aspect-square bg-surface-container-low dark:bg-zinc-800 rounded mb-2.5 overflow-hidden flex items-center justify-center p-2">
-                        <img
-                          src={product.image_url || undefined}
-                          alt={product.name}
-                          className="w-full h-full object-cover rounded"
-                        />
-                      </div>
-                      <h3 className="font-semibold text-xs text-on-surface dark:text-zinc-100 truncate">
-                        {product.name}
-                      </h3>
-                      <div className="flex items-center gap-1 text-[11px] text-on-surface-variant mb-3">
-                        <span>{product.dosage}</span>
-                        <VerifiedMark size={13} />
+                      <div className="mb-2.5">
+                        <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-2">
+                          {product.name}
+                        </h3>
+                        <p className="text-xs text-on-surface-variant mt-1 line-clamp-1">
+                          {product.grower_name || product.generic_name || 'Verified Supplier'}
+                        </p>
                       </div>
                       <div className="mt-auto flex items-center justify-between">
                         <span className="font-bold text-xs text-on-surface dark:text-zinc-100">
-                          ₹{product.price.toFixed(2)}
+                          ₹{product.mrp.toFixed(2)}
                         </span>
                         <button
                           onClick={(e) => {
@@ -390,28 +384,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                     className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 shadow-sm hover:shadow flex flex-col justify-between cursor-pointer transition-all"
                   >
                     <div>
-                      <div className="w-full h-36 bg-surface-container-low dark:bg-zinc-800 rounded overflow-hidden mb-3">
-                        <img
-                          src={product.image_url || undefined}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex items-center gap-1 text-[11px] font-semibold text-primary-container mb-0.5">
+                      <div className="flex items-center gap-1 text-[11px] font-semibold text-primary-container mb-1">
                         <span>{product.grower_name || 'Verified Supplier'}</span>
                         <VerifiedMark size={14} />
                       </div>
-                      <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-1">
+                      <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-2">
                         {product.name}
                       </h3>
-                      <p className="text-xs text-on-surface-variant line-clamp-1">
-                        {product.generic_name} • {product.dosage}
+                      <p className="text-xs text-on-surface-variant line-clamp-1 mt-0.5">
+                        {product.generic_name}
                       </p>
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 flex items-center justify-between">
                       <span className="font-bold text-sm text-primary-container dark:text-emerald-400">
-                        ₹{product.price.toFixed(2)}
+                        ₹{product.mrp.toFixed(2)}
                       </span>
                       <button
                         onClick={(e) => {

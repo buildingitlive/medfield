@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, ShieldCheck, Share2, CheckCircle2, Pill, Loader2 } from 'lucide-react';
+import { ArrowLeft, Share2, Pill, Loader2, MessageCircle, Bot } from 'lucide-react';
 
 import { useProducts } from '../hooks/useProducts';
 import { VerifiedMark } from '../components/VerifiedMark';
@@ -28,23 +28,21 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
-        <p className="text-on-surface-variant font-medium mb-4">Medication assay not found</p>
+        <p className="text-on-surface-variant font-medium mb-4">Medication not found</p>
         <button
           onClick={() => onNavigate('/')}
           className="px-4 py-2 bg-primary-container text-on-primary rounded text-xs font-semibold"
         >
-          Return to Catalog
+          Return to Home
         </button>
       </div>
     );
   }
 
-  const mrpPrice = (product.mrp || product.price).toFixed(2);
-
   return (
     <main className="min-h-screen pb-44 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       {/* Top Bar */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => onNavigate('BACK')}
           className="min-h-[44px] min-w-[44px] flex items-center justify-center text-on-surface hover:bg-surface-container rounded-full transition-colors"
@@ -53,7 +51,6 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
-
           <button
             onClick={() => {
               if (navigator.share) {
@@ -67,97 +64,71 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
         </div>
       </div>
 
-
-      {/* Hero Image Card */}
-      <div className="w-full h-72 sm:h-96 bg-surface-container-low dark:bg-zinc-900 rounded-brand overflow-hidden mb-6 flex items-center justify-center border border-surface-variant relative shadow-sm">
-        <img
-          src={product.image_url || undefined}
-          alt={product.name}
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Title & Grower */}
-      <div className="mb-6">
-        <div className="flex items-center gap-1.5 text-sm font-semibold text-primary-container mb-1">
-          <span>By {product.grower_name || 'Verified Supplier'}</span>
+      {/* Medicine Info Card */}
+      <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 mb-6">
+        <div className="flex items-center gap-1.5 text-sm font-semibold text-primary-container mb-2">
+          <span>{product.grower_name || 'Verified Supplier'}</span>
           <VerifiedMark size={16} />
         </div>
         <h1 className="font-heading text-2xl sm:text-3xl font-bold text-on-surface dark:text-zinc-100 mb-1">
           {product.name}
         </h1>
-        <p className="text-xs text-on-surface-variant">
-          {product.generic_name} • Formulation Batch #{product.batch_number || 'N/A'}
-        </p>
-      </div>
+        {product.generic_name && (
+          <p className="text-sm text-on-surface-variant mb-4">
+            {product.generic_name}
+          </p>
+        )}
 
-      {/* Composition & Pack Size Card */}
-      <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-md p-4 mb-6 space-y-4">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-primary-container mt-0.5 flex-shrink-0" />
-          <div>
-            <h3 className="font-semibold text-xs text-on-surface dark:text-zinc-100">
-              Composition
-            </h3>
-            <p className="text-xs text-on-surface-variant mt-0.5">
-              {product.generic_name} ({product.dosage})
-            </p>
-          </div>
-        </div>
-        <div className="border-t border-surface-variant dark:border-zinc-800 pt-3 flex items-start gap-3">
-          <CheckCircle2 className="w-5 h-5 text-primary-container mt-0.5 flex-shrink-0" />
-          <div>
-            <h3 className="font-semibold text-xs text-on-surface dark:text-zinc-100">
-              Pack Size
-            </h3>
-            <p className="text-xs text-on-surface-variant mt-0.5">
-              15 Capsules / Strip • Tamper-evident clinical foil seal
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Pricing Info Block */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs line-through text-on-surface-variant">MRP ₹{mrpPrice}</span>
-          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-secondary-container px-2 py-0.5 rounded-full">
-            Save ₹{(product.mrp - product.price).toFixed(2)}
-          </span>
-        </div>
-        <div className="flex items-baseline justify-between">
+        <div className="flex items-baseline justify-between pt-4 border-t border-surface-variant dark:border-zinc-800">
           <div>
             <span className="text-3xl font-bold text-primary-container dark:text-emerald-400">
-              ₹{product.price.toFixed(2)}
+              ₹{product.mrp.toFixed(2)}
             </span>
             <span className="text-xs text-on-surface-variant block mt-0.5">
-              INCLUSIVE OF ALL TAXES
+              MRP • INCLUSIVE OF ALL TAXES
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold">
-            <CheckCircle2 className="w-3.5 h-3.5" /> In Stock
-          </span>
+          {product.category && (
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary/5 text-primary border border-primary/10">
+              {product.category}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Clinical Assay & HPLC Profile Details */}
-      <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-md p-5 mb-8">
-        <h2 className="font-heading text-sm font-bold text-on-surface dark:text-zinc-100 mb-3">
-          Pharmacological Profile & Cultivation Metadata
-        </h2>
-        <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-          {product.description}
-        </p>
-        <div className="grid grid-cols-2 gap-4 text-xs">
-          <div className="bg-surface-container-low dark:bg-zinc-800 p-3 rounded">
-            <span className="text-on-surface-variant block">Terpene Profile</span>
-            <span className="font-semibold text-on-surface dark:text-zinc-100">Myrcene / Limonene Dominant</span>
+      {/* MedBuddy AI Chat Placeholder */}
+      <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <Bot className="w-5 h-5 text-primary" />
           </div>
-          <div className="bg-surface-container-low dark:bg-zinc-800 p-3 rounded">
-            <span className="text-on-surface-variant block">Extraction Purity</span>
-            <span className="font-semibold text-on-surface dark:text-zinc-100">99.4% HPLC Certified</span>
+          <div>
+            <h2 className="font-heading text-sm font-bold text-on-surface dark:text-zinc-100">
+              MedBuddy AI
+            </h2>
+            <p className="text-[11px] text-on-surface-variant">
+              Your personal medicine assistant
+            </p>
           </div>
         </div>
+
+        <div className="bg-surface-container-low dark:bg-zinc-800 rounded-lg p-4 mb-4 min-h-[120px] flex flex-col items-center justify-center text-center">
+          <MessageCircle className="w-8 h-8 text-on-surface-variant/30 mb-2" />
+          <p className="text-sm text-on-surface-variant">
+            Have questions about <span className="font-semibold text-on-surface dark:text-zinc-200">{product.name}</span>?
+          </p>
+          <p className="text-xs text-on-surface-variant/70 mt-1">
+            Ask about dosage, side effects, interactions, and more.
+          </p>
+        </div>
+
+        <button
+          disabled
+          className="w-full min-h-[48px] rounded-lg bg-primary/10 text-primary font-semibold text-sm flex items-center justify-center gap-2 border border-primary/20 cursor-not-allowed opacity-70"
+        >
+          <Bot className="w-4 h-4" />
+          Ask MedBuddy — Coming Soon
+        </button>
       </div>
 
       {/* Sticky Bottom Bar */}
@@ -165,7 +136,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
           <div>
             <span className="text-lg font-bold text-primary-container dark:text-emerald-400 block">
-              ₹{product.price.toFixed(2)}
+              ₹{product.mrp.toFixed(2)}
             </span>
             <button
               onClick={() => onNavigate('/prescriptions')}
@@ -176,8 +147,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
           </div>
           <button
             onClick={() => onNavigate('/place-order')}
-            disabled={!product.in_stock}
-            className="min-h-[48px] px-6 rounded-md bg-primary-container hover:bg-primary text-on-primary font-semibold text-xs shadow-md flex items-center gap-2 transition-all disabled:opacity-50"
+            className="min-h-[48px] px-6 rounded-md bg-primary-container hover:bg-primary text-on-primary font-semibold text-xs shadow-md flex items-center gap-2 transition-all"
           >
             <Pill className="w-4 h-4" />
             <span>Order Now</span>
