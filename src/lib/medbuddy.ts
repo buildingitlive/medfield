@@ -7,12 +7,7 @@ export interface MedBuddyInfo {
   alternatives: string[];
 }
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const MODEL = 'gemini-3.5-flash-lite';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-export async function fetchMedBuddyInfo(medicineName: string): Promise<MedBuddyInfo> {
-  const prompt = `You are a licensed pharmacist AI assistant. For the medicine "${medicineName}", provide accurate pharmaceutical information in the following JSON format only. Do not include any text outside the JSON.
+const GEMINI_PROMPT = (medicineName: string) => `You are a licensed pharmacist AI assistant. For the medicine "${medicineName}", provide accurate pharmaceutical information in the following JSON format only. Do not include any text outside the JSON.
 
 {
   "salt": "The active salt/composition of this medicine",
@@ -25,36 +20,60 @@ export async function fetchMedBuddyInfo(medicineName: string): Promise<MedBuddyI
 
 Important: Only return valid JSON. No markdown, no code fences, no extra text.`;
 
-  const response = await fetch(API_URL, {
+export async function fetchMedBuddyInfo(medicineName: string): Promise<MedBuddyInfo> {
+  // In production (Vercel), use the serverless function (API key stays server-side)
+  // In dev, fall back to direct Gemini call via VITE_ env var
+  try {
+    const response = await fetch('/api/medbuddy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ medicineName }),
+    });
+
+    if (response.ok) {
+      return response.json();
+    }
+
+    // If serverless function isn't available (local dev), try direct
+    if (response.status === 404) {
+      return fetchDirectFromGemini(medicineName);
+    }
+
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || `API error: ${response.status}`);
+  } catch (err: any) {
+    // Network error in dev (no API route) → try direct
+    if (err.message?.includes('Failed to fetch') || err.message?.includes('404')) {
+      return fetchDirectFromGemini(medicineName);
+    }
+    throw err;
+  }
+}
+
+async function fetchDirectFromGemini(medicineName: string): Promise<MedBuddyInfo> {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Gemini API not available');
+  }
+
+  const MODEL = 'gemini-3.5-flash-lite';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+
+  const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 1024,
-      },
+      contents: [{ parts: [{ text: GEMINI_PROMPT(medicineName) }] }],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`Gemini API error: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`Gemini API error: ${response.status}`);
 
   const data = await response.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('No response from Gemini');
 
-  if (!text) {
-    throw new Error('No response from Gemini');
-  }
-
-  // Clean any markdown code fences if present
   const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-
-  try {
-    const parsed: MedBuddyInfo = JSON.parse(cleaned);
-    return parsed;
-  } catch {
-    throw new Error('Failed to parse Gemini response');
-  }
+  return JSON.parse(cleaned);
 }
