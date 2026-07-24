@@ -1,8 +1,10 @@
-import React from 'react';
-import { ArrowLeft, Share2, Pill, Loader2, MessageCircle, Bot } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Share2, Pill, Loader2, Bot, Beaker, Building2, ClipboardList, Syringe, AlertTriangle, RefreshCw } from 'lucide-react';
 
 import { useProducts } from '../hooks/useProducts';
 import { VerifiedMark } from '../components/VerifiedMark';
+import { fetchMedBuddyInfo } from '../lib/medbuddy';
+import type { MedBuddyInfo } from '../lib/medbuddy';
 
 interface MedicineDetailScreenProps {
   productId: string;
@@ -14,6 +16,9 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
   onNavigate,
 }) => {
   const { products, loading } = useProducts();
+  const [medInfo, setMedInfo] = useState<MedBuddyInfo | null>(null);
+  const [medLoading, setMedLoading] = useState(false);
+  const [medError, setMedError] = useState<string | null>(null);
   
   if (loading) {
     return (
@@ -39,8 +44,30 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
     );
   }
 
+  const handleAskMedBuddy = async () => {
+    setMedLoading(true);
+    setMedError(null);
+    try {
+      const info = await fetchMedBuddyInfo(product.name);
+      setMedInfo(info);
+    } catch (err: any) {
+      setMedError(err.message || 'Something went wrong');
+    } finally {
+      setMedLoading(false);
+    }
+  };
+
+  const infoSections = medInfo ? [
+    { icon: <Beaker className="w-4 h-4" />, label: 'Salt / Composition', value: medInfo.salt },
+    { icon: <Building2 className="w-4 h-4" />, label: 'Other Companies', value: medInfo.other_companies?.join(', ') || 'N/A' },
+    { icon: <ClipboardList className="w-4 h-4" />, label: 'Usage', value: medInfo.usage },
+    { icon: <Syringe className="w-4 h-4" />, label: 'Dosage', value: medInfo.dosage },
+    { icon: <AlertTriangle className="w-4 h-4" />, label: 'Side Effects', value: medInfo.side_effects },
+    { icon: <RefreshCw className="w-4 h-4" />, label: 'Alternatives', value: medInfo.alternatives?.join(', ') || 'N/A' },
+  ] : [];
+
   return (
-    <main className="min-h-screen pb-44 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+    <main className="min-h-screen pb-60 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-6">
         <button
@@ -96,7 +123,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
         </div>
       </div>
 
-      {/* MedBuddy AI Chat Placeholder */}
+      {/* MedBuddy AI Section */}
       <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 mb-8">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -112,23 +139,83 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
           </div>
         </div>
 
-        <div className="bg-surface-container-low dark:bg-zinc-800 rounded-lg p-4 mb-4 min-h-[120px] flex flex-col items-center justify-center text-center">
-          <MessageCircle className="w-8 h-8 text-on-surface-variant/30 mb-2" />
-          <p className="text-sm text-on-surface-variant">
-            Have questions about <span className="font-semibold text-on-surface dark:text-zinc-200">{product.name}</span>?
-          </p>
-          <p className="text-xs text-on-surface-variant/70 mt-1">
-            Ask about dosage, side effects, interactions, and more.
-          </p>
-        </div>
+        {/* State: Not asked yet */}
+        {!medInfo && !medLoading && !medError && (
+          <>
+            <div className="bg-surface-container-low dark:bg-zinc-800 rounded-lg p-4 mb-4 min-h-[100px] flex flex-col items-center justify-center text-center">
+              <p className="text-sm text-on-surface-variant">
+                Get detailed info about <span className="font-semibold text-on-surface dark:text-zinc-200">{product.name}</span>
+              </p>
+              <p className="text-xs text-on-surface-variant/70 mt-1">
+                Salt, usage, dosage, side effects, alternatives & more
+              </p>
+            </div>
+            <button
+              onClick={handleAskMedBuddy}
+              className="w-full min-h-[48px] rounded-lg bg-primary text-on-primary font-semibold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-primary/90 transition-colors"
+            >
+              <Bot className="w-4 h-4" />
+              Ask MedBuddy
+            </button>
+          </>
+        )}
 
-        <button
-          disabled
-          className="w-full min-h-[48px] rounded-lg bg-primary/10 text-primary font-semibold text-sm flex items-center justify-center gap-2 border border-primary/20 cursor-not-allowed opacity-70"
-        >
-          <Bot className="w-4 h-4" />
-          Ask MedBuddy — Coming Soon
-        </button>
+        {/* State: Loading */}
+        {medLoading && (
+          <div className="bg-surface-container-low dark:bg-zinc-800 rounded-lg p-8 flex flex-col items-center justify-center text-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
+            <p className="text-sm font-semibold text-on-surface dark:text-zinc-200">
+              Asking MedBuddy...
+            </p>
+            <p className="text-xs text-on-surface-variant mt-1">
+              Fetching info for {product.name}
+            </p>
+          </div>
+        )}
+
+        {/* State: Error */}
+        {medError && !medLoading && (
+          <>
+            <div className="bg-error-container/10 dark:bg-red-900/20 rounded-lg p-4 mb-4 text-center">
+              <p className="text-sm text-error font-semibold mb-1">Something went wrong</p>
+              <p className="text-xs text-on-surface-variant">{medError}</p>
+            </div>
+            <button
+              onClick={handleAskMedBuddy}
+              className="w-full min-h-[48px] rounded-lg bg-primary text-on-primary font-semibold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-primary/90 transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry
+            </button>
+          </>
+        )}
+
+        {/* State: Results */}
+        {medInfo && !medLoading && (
+          <div className="space-y-3">
+            {infoSections.map((section, idx) => (
+              <div
+                key={idx}
+                className="bg-surface-container-low dark:bg-zinc-800 rounded-lg p-4"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-primary">{section.icon}</span>
+                  <h3 className="text-xs font-bold text-on-surface dark:text-zinc-100 uppercase tracking-wider">
+                    {section.label}
+                  </h3>
+                </div>
+                <p className="text-sm text-on-surface-variant leading-relaxed break-words overflow-hidden">
+                  {section.value}
+                </p>
+              </div>
+            ))}
+
+            {/* Disclaimer */}
+            <p className="text-[10px] text-on-surface-variant/50 text-center pt-2 italic">
+              ⚕️ This information is AI-generated and for reference only. Always consult a qualified healthcare professional before taking any medication.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Sticky Bottom Bar */}
