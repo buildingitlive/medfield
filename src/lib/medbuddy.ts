@@ -22,32 +22,26 @@ Important: Only return valid JSON. No markdown, no code fences, no extra text.`;
 
 export async function fetchMedBuddyInfo(medicineName: string): Promise<MedBuddyInfo> {
   // In production (Vercel), use the serverless function (API key stays server-side)
-  // In dev, fall back to direct Gemini call via VITE_ env var
-  try {
-    const response = await fetch('/api/medbuddy', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ medicineName }),
-    });
+  const isDev = import.meta.env.DEV;
 
-    if (response.ok) {
-      return response.json();
-    }
-
-    // If serverless function isn't available (local dev), try direct
-    if (response.status === 404) {
-      return fetchDirectFromGemini(medicineName);
-    }
-
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error || `API error: ${response.status}`);
-  } catch (err: any) {
-    // Network error in dev (no API route) → try direct
-    if (err.message?.includes('Failed to fetch') || err.message?.includes('404')) {
-      return fetchDirectFromGemini(medicineName);
-    }
-    throw err;
+  // In dev, go straight to direct Gemini call (no serverless function available)
+  if (isDev) {
+    return fetchDirectFromGemini(medicineName);
   }
+
+  // In production (Vercel), use the serverless function (key stays server-side)
+  const response = await fetch('/api/medbuddy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ medicineName }),
+  });
+
+  if (response.ok) {
+    return response.json();
+  }
+
+  const err = await response.json().catch(() => ({}));
+  throw new Error(err.error || `API error: ${response.status}`);
 }
 
 async function fetchDirectFromGemini(medicineName: string): Promise<MedBuddyInfo> {
