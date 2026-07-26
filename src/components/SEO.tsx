@@ -20,7 +20,7 @@ export const SEO: React.FC<SEOProps> = ({
   const defaultKeywords = 'pharmacy, buy medicine online, prescriptions, MedField, pharmacy delivery, healthcare, drugs';
 
   const seo = {
-    title: title ? `${title} | ${siteName}` : defaultTitle,
+    title: title ? `${siteName} | ${title}` : defaultTitle,
     description: description || defaultDescription,
     keywords: keywords || defaultKeywords,
     url: url || window.location.href,
