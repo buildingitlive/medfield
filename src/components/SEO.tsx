@@ -15,7 +15,7 @@ export const SEO: React.FC<SEOProps> = ({
   url 
 }) => {
   const siteName = 'MedField';
-  const defaultTitle = `${siteName} — Online Pharmacy & Medicine Delivery`;
+  const defaultTitle = `${siteName} | Online Pharmacy & Medicine Delivery`;
   const defaultDescription = 'Order medicines online with fast delivery. MedField provides genuine medicines, prescriptions, and healthcare products straight to your door.';
   const defaultKeywords = 'pharmacy, buy medicine online, prescriptions, MedField, pharmacy delivery, healthcare, drugs';
 
