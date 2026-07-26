@@ -12,7 +12,7 @@ import {
   ArrowRight,
   Zap,
   Tag,
-  Headphones,
+  Percent,
   Loader2,
 } from 'lucide-react';
 
@@ -418,20 +418,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         )}
 
         {/* Trust Strip */}
-        <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 flex flex-col sm:flex-row justify-around items-center gap-4 mt-6">
-          <div className="flex items-center gap-2 text-on-surface-variant">
+        <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 flex flex-col sm:flex-row items-center mt-6">
+          <div className="flex-1 flex justify-center items-center gap-2 text-on-surface-variant w-full py-2 sm:py-0">
             <Zap className="w-5 h-5 text-primary" />
             <span className="text-xs font-semibold">Same Day Delivery</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-outline-variant" />
-          <div className="flex items-center gap-2 text-on-surface-variant">
+          <div className="flex-1 flex justify-center items-center gap-2 text-on-surface-variant w-full py-2 sm:py-0">
             <Tag className="w-5 h-5 text-primary" />
             <span className="text-xs font-semibold">No Delivery Charges</span>
           </div>
           <div className="hidden sm:block w-px h-6 bg-outline-variant" />
-          <div className="flex items-center gap-2 text-on-surface-variant">
-            <Headphones className="w-5 h-5 text-primary" />
-            <span className="text-xs font-semibold">24/7 Support (9389407550)</span>
+          <div className="flex-1 flex justify-center items-center gap-2 text-on-surface-variant w-full py-2 sm:py-0">
+            <Percent className="w-5 h-5 text-primary" />
+            <span className="text-xs font-semibold">Upto 15% off</span>
           </div>
         </section>
       </div>
