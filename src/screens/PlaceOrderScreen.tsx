@@ -33,7 +33,7 @@ type Step = 1 | 2 | 3;
 interface MedicineRow {
   id: string;
   name: string;
-  quantity: number;
+  quantity: number | '';
 }
 
 export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
@@ -164,7 +164,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
     // Build medicine text
     const validMeds = reorderData?.medicines || medicines.filter((m) => m.name.trim() !== '');
     const medicineText = validMeds
-      .map((m) => `${m.name} × ${m.quantity}`)
+      .map((m) => `${m.name} × ${Number(m.quantity) || 1}`)
       .join('\n');
 
     // Save prescription to history
@@ -174,7 +174,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
         patientName: patientName || 'Self',
         prescriptionUrl: uploadedUrl,
         notes: orderNotes || null,
-        medicines: validMeds.map((m) => ({ name: m.name, quantity: m.quantity })),
+        medicines: validMeds.map((m) => ({ name: m.name, quantity: Number(m.quantity) || 1 })),
       });
       prescriptionId = newRxId;
     }
@@ -331,6 +331,23 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
             </div>
           )}
 
+          {/* Notes */}
+          <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <StickyNote className="w-4 h-4 text-primary" />
+              <span className="text-xs font-bold text-on-surface dark:text-zinc-100">
+                Note for Pharmacist (optional)
+              </span>
+            </div>
+            <textarea
+              value={orderNotes}
+              onChange={(e) => setOrderNotes(e.target.value)}
+              placeholder="Medicine no. 1 - 4 strips&#10;Medicine no. 2 - 2 strips&#10;Medicine no. 3 - 1 strip"
+              rows={3}
+              className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface dark:bg-zinc-800 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors resize-none"
+            />
+          </div>
+
           {/* Actions */}
           <div className="space-y-3">
             <button
@@ -402,9 +419,11 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
                   type="number"
                   min="1"
                   value={med.quantity}
-                  onChange={(e) =>
-                    updateMedicine(med.id, 'quantity', parseInt(e.target.value) || 1)
-                  }
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    updateMedicine(med.id, 'quantity', isNaN(val) ? '' : val);
+                  }}
                   className="w-14 sm:w-16 flex-shrink-0 min-h-[44px] px-1 text-center rounded-xl border border-outline-variant bg-surface dark:bg-zinc-800 text-sm text-on-surface focus:outline-none focus:border-primary transition-colors"
                 />
                 {medicines.length > 1 && (
@@ -427,22 +446,6 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
             </button>
           </div>
 
-          {/* Notes */}
-          <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-2xl p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <StickyNote className="w-4 h-4 text-primary" />
-              <span className="text-xs font-bold text-on-surface dark:text-zinc-100">
-                Note for Pharmacist (optional)
-              </span>
-            </div>
-            <textarea
-              value={orderNotes}
-              onChange={(e) => setOrderNotes(e.target.value)}
-              placeholder="e.g. Need generic alternatives if available, or deliver after 5 PM..."
-              rows={3}
-              className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface dark:bg-zinc-800 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors resize-none"
-            />
-          </div>
 
           {/* Pharmacist reassurance */}
           <div className="flex items-start gap-3 bg-primary/5 border border-primary/10 rounded-xl p-4">
@@ -569,7 +572,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
                     .map((m, i) => (
                       <div key={i} className="flex items-center justify-between text-xs text-on-surface-variant">
                         <span>{m.name}</span>
-                        <span className="font-semibold">× {m.quantity}</span>
+                        <span className="font-semibold">× {Number(m.quantity) || 1}</span>
                       </div>
                     ))}
                 </div>
