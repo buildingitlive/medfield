@@ -75,6 +75,14 @@ export const RefundPolicyScreen: React.FC<RefundPolicyScreenProps> = ({ onNaviga
                 Once an order has been assigned to a delivery partner, the order is considered confirmed by the Vendor and can no longer be canceled.
               </p>
             </div>
+            <div>
+              <h3 className="text-xs font-bold text-on-surface dark:text-zinc-200 mb-0.5">
+                Doorstep Refusals
+              </h3>
+              <p className="text-xs text-on-surface-variant leading-relaxed">
+                Because orders cannot be canceled post-assignment, refusing to accept and pay for a confirmed Cash on Delivery (COD) order at your doorstep causes financial loss to our Vendors. Repeated doorstep refusals will result in the permanent suspension of your MedField account.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -159,7 +167,7 @@ export const RefundPolicyScreen: React.FC<RefundPolicyScreenProps> = ({ onNaviga
                 <li className="flex items-start gap-2">
                   <span className="text-error text-xs mt-0.5">✕</span>
                   <span className="text-[11px] text-on-surface-variant leading-relaxed">
-                    Any medication or pills have been taken out.
+                    Any medication or pills have been removed from their packaging.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
@@ -200,7 +208,7 @@ export const RefundPolicyScreen: React.FC<RefundPolicyScreenProps> = ({ onNaviga
               <li className="flex items-start gap-2">
                 <span className="text-xs font-bold text-primary bg-primary/8 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">1</span>
                 <span className="text-xs text-on-surface-variant leading-relaxed">
-                  If your order meets the replacement criteria, you must report the issue to MedField support <span className="font-semibold text-on-surface dark:text-zinc-200">immediately upon delivery</span>.
+                  If your order meets the replacement criteria, you must report the issue, along with clear photos of the delivered items, to MedField support within 24 hours of delivery.
                 </span>
               </li>
               <li className="flex items-start gap-2">

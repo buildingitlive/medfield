@@ -18,7 +18,7 @@ export const PrivacyPolicyScreen: React.FC<PrivacyPolicyScreenProps> = ({ onNavi
           text: 'Name, delivery address, and phone number.',
         },
         {
-          label: 'Sensitive Personal Data (SPDI)',
+          label: 'Health and Prescription Data',
           text: 'Images of medical prescriptions uploaded to the Platform and the list of medications requested.',
         },
       ],
@@ -38,13 +38,13 @@ export const PrivacyPolicyScreen: React.FC<PrivacyPolicyScreenProps> = ({ onNavi
       icon: Share2,
       number: '3',
       title: 'Data Sharing and Third Parties',
-      content: 'To execute our service, we must share your uploaded prescription, phone number, and delivery location with our registered Vendor pharmacies and their delivery personnel. By using MedField, you consent to this bipartite data sharing. We do not sell your personal data or prescriptions to external marketing agencies or third-party data brokers.',
+      content: 'To execute our service, we must share your uploaded prescription, phone number, and delivery location with our registered Vendor pharmacies and their delivery personnel. By using MedField, you consent to sharing this data with our network of third-party Vendors. We do not sell your personal data or prescriptions to external marketing agencies or third-party data brokers.',
     },
     {
       icon: Lock,
       number: '4',
       title: 'Data Security and Retention',
-      content: 'We implement standard security protocols to protect your data. We will retain your personal data and uploaded prescriptions securely on our servers indefinitely, or until you explicitly request us to delete them.',
+      content: 'We implement standard security protocols to protect your data. We will retain your personal data and uploaded prescriptions securely only for as long as necessary to provide our services, or until you explicitly request us to delete them.',
       alert: {
         label: 'Legal Exception',
         text: 'To comply with the Indian Drugs and Cosmetics Act and IT intermediary guidelines, certain transaction histories and prescription records must legally be retained for a period of up to 3 years. If a deletion request is made, your active account will be removed, but these specific logs will be securely archived for the mandatory period before being permanently destroyed.',
@@ -55,6 +55,20 @@ export const PrivacyPolicyScreen: React.FC<PrivacyPolicyScreenProps> = ({ onNavi
       number: '5',
       title: 'Your Rights and Contact Information',
       content: 'Under the Digital Personal Data Protection (DPDP) Act, you have the right to request access to the personal data we hold about you and request the deletion of your account and prescription history.',
+      subsections: [
+        {
+          label: 'Grievance Officer',
+          text: (
+            <>
+              In accordance with the Information Technology Act, 2000 and the Digital Personal Data Protection (DPDP) Act, the contact details of the Grievance Officer are provided below:<br/>
+              <strong>Name:</strong> Rajiva<br/>
+              <strong>Email:</strong> buildingitlive@gmail.com<br/>
+              <strong>Address:</strong> Gorakhpur, U.P.<br/>
+              The Grievance Officer will acknowledge your dispute within 24 hours and resolve it within 15 days.
+            </>
+          ),
+        }
+      ],
       contact: {
         label: 'For Support & Data Deletion Requests',
         email: 'buildingitlive@gmail.com',

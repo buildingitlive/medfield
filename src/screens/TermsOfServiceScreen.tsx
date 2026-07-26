@@ -44,7 +44,7 @@ export const TermsOfServiceScreen: React.FC<TermsOfServiceScreenProps> = ({ onNa
         },
         {
           label: 'Pricing',
-          text: 'MedField guarantees a minimum 15% discount on the Maximum Retail Price (MRP). The final price is calculated and displayed on your user dashboard before fulfillment.',
+          text: 'MedField offers up to a 15% discount on the Maximum Retail Price (MRP). The final price is calculated and displayed on your user dashboard before fulfillment.',
         },
         {
           label: 'Delivery',
