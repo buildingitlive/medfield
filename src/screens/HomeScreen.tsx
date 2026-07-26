@@ -15,6 +15,7 @@ import {
   Percent,
   Loader2,
 } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 import { useProducts } from '../hooks/useProducts';
 import { useAddresses } from '../hooks/useAddresses';
@@ -128,8 +129,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   };
 
   return (
-    <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
-      {/* Address Selector Sub-header */}
+    <>
+      <SEO 
+        title="Pharmacy Delivery & Health Products" 
+        description="Shop for medicines, healthcare products, and upload prescriptions for lightning-fast delivery to your doorstep."
+        keywords="pharmacy, online pharmacy, buy medicine, home delivery pharmacy, health products"
+      />
+      <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
+        {/* Address Selector Sub-header */}
       <div
         onClick={() => onNavigate('/addresses')}
         className="bg-surface dark:bg-zinc-900 border-b border-surface-variant dark:border-zinc-800 px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2.5 cursor-pointer hover:bg-surface-container-lowest transition-colors"
@@ -436,5 +443,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         </section>
       </div>
     </main>
+    </>
   );
 };

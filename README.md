@@ -23,7 +23,8 @@ npm run build
 - **PWA Installation Modal (`InstallAppPopup.tsx`)**: Prompts users to install the PWA on Android/Chrome or iOS Safari with step-by-step instructions.
 - **`/` (Home)**: Asymmetric Bento CTAs, mobile-first address selector, delivery banner, reorder carousel, and trust strip.
 - **`/search`**: Catalog directory with live search, price sorting, and inline quantity stepper (`- 1 +`).
-- **`/medicine/:id`**: Product formulation detail with composition specs and Order Now CTA.
+- **`/medicine/:id` & MedBuddy AI**: Product formulation detail featuring **MedBuddy AI**, powered by Google's Gemini 3.5 Flash Lite API, which instantly generates clinical summaries (dosage, usage, side effects) for any requested medicine on the fly.
+- **Dynamic SEO Strategy**: Integrated `react-helmet-async` for page-by-page SEO generation (e.g. injecting targeted keywords based on dynamic drug names).
 - **`/login` & `/otp`**: Mobile number OTP login flow with trust badges.
 - **`/place-order` & `/prescriptions`**: 3-step prescription upload and medicine request flow, along with a dedicated Prescription History tab for instant reordering.
 - **`/orders` & `/orders/:id`**: Ongoing vs Past order tabs and real-time cold-chain courier tracking.

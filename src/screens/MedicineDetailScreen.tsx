@@ -5,6 +5,7 @@ import { useProducts } from '../hooks/useProducts';
 import { VerifiedMark } from '../components/VerifiedMark';
 import { fetchMedBuddyInfo } from '../lib/medbuddy';
 import type { MedBuddyInfo } from '../lib/medbuddy';
+import { SEO } from '../components/SEO';
 
 interface MedicineDetailScreenProps {
   productId: string;
@@ -67,6 +68,12 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
   ] : [];
 
   return (
+    <>
+    <SEO 
+      title={product.name}
+      description={product.description || `Buy ${product.name} online at MedField. Fast delivery and best prices.`}
+      keywords={`${product.name}, order ${product.name}, ${product.name} delivery, ${product.name} discounted`}
+    />
     <main className="min-h-screen pb-60 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-6">
@@ -242,5 +249,6 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
         </div>
       </div>
     </main>
+    </>
   );
 };

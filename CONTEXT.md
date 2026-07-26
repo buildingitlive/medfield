@@ -29,6 +29,8 @@ MedField is a progressive web application (PWA) delivering verified clinical-gra
 
 ## Recent Updates
 - **Prescription-First Ordering Flow**: The old cart-based flow has been completely replaced with a 3-step prescription upload and medicine request flow. The old 254k-row medicine catalog was deleted in favor of a self-growing `admin_products` table built organically via the admin's Confirm Order panel.
+- **MedBuddy AI Integration**: Replaced static placeholders with a live integration to the **Gemini 3.5 Flash Lite API**. Users can now tap a button on any medicine page to instantly fetch clinical info (Salt, Usage, Dosage, Side Effects, Alternatives) directly from the LLM, formatted automatically into a clean UI.
+- **Dynamic SEO Strategy**: Implemented hybrid SEO. A strong global fallback was added to `index.html`, and `react-helmet-async` was configured for dynamic page-by-page SEO. Medicine detail pages now dynamically inject product-specific keywords (e.g., "order Pan-D, Pan-D delivery") into the `<head>` for optimal indexing.
 - **Pricing & Discounts**: Implemented accurate MRP display pulling from the database (`product.mrp`), and added a visual-only delivery fee discount (₹50 crossed out to FREE) in the PWA for marketing, while keeping actual `delivery_fee` cleanly as 0 in the backend.
 - **Admin Layout**: Locked global app widths to prevent mobile horizontal scroll overflow (`overflow-x: hidden`).
 - **Revenue Tracking**: Updated admin Dashboard revenue calculation to use `updated_at` to correctly attribute revenue to the day orders are delivered.
