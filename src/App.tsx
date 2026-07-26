@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { DesktopSidebar } from './components/DesktopSidebar';
+import { usePushNotification } from './hooks/usePushNotification';
+import { useRefillReminder } from './hooks/useRefillReminder';
 
 import { InstallAppPopup } from './components/InstallAppPopup';
 import { GoogleAuthOnboardingModal } from './components/GoogleAuthOnboardingModal';
@@ -63,6 +65,10 @@ function getRoute(): string {
 function AppContent() {
   const { user, loading: authLoading } = useAuth();
   
+  // Background Services
+  usePushNotification();
+  useRefillReminder();
+
   // App State
   const [route, setRoute] = useState<string>(getRoute);
   const [history, setHistory] = useState<string[]>([]);
