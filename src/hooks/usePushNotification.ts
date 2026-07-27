@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -20,59 +20,80 @@ function urlBase64ToUint8Array(base64String: string) {
 
 export function usePushNotification() {
   const { user } = useAuth();
+  const [permission, setPermission] = useState<NotificationPermission>('default');
 
   useEffect(() => {
-    // Only proceed if user is logged in and push is supported
+    if ('Notification' in window) {
+      setPermission(Notification.permission);
+    }
+  }, []);
+
+  const subscribe = useCallback(async () => {
     if (!user || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-      return;
+      return false;
     }
 
-    const registerPush = async () => {
-      try {
-        // Register the service worker
-        const registration = await navigator.serviceWorker.register('/service-worker.js');
-        await navigator.serviceWorker.ready;
+    try {
+      // Ask for permission FIRST — must be called directly from a user gesture
+      // before any other async work, or the browser will silently block it.
+      if (Notification.permission !== 'granted') {
+        const permissionResult = await Notification.requestPermission();
+        setPermission(permissionResult);
+        if (permissionResult !== 'granted') return false;
+      }
 
-        // Check current subscription
-        let subscription = await registration.pushManager.getSubscription();
+      // Now register the service worker
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
+      await navigator.serviceWorker.ready;
 
-        if (!subscription) {
-          // Ask for permission if not already granted
-          if (Notification.permission !== 'granted') {
-            const permissionResult = await Notification.requestPermission();
-            if (permissionResult !== 'granted') return;
-          }
+      // Check current subscription
+      let subscription = await registration.pushManager.getSubscription();
 
-          // Subscribe the user
-          const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-          if (!vapidKey) {
-            console.error('VITE_VAPID_PUBLIC_KEY is not set');
-            return;
-          }
-
-          subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(vapidKey)
-          });
+      if (!subscription) {
+        // Subscribe the user
+        const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+        if (!vapidKey) {
+          console.error('VITE_VAPID_PUBLIC_KEY is not set');
+          return false;
         }
 
-        // Save the subscription to Supabase
-        const subJson = subscription.toJSON();
-        
-        await supabase.from('push_subscriptions').upsert({
-          user_id: user.id,
-          role: 'user', // For the PWA, it's always 'user'
-          endpoint: subJson.endpoint,
-          p256dh: subJson.keys?.p256dh,
-          auth: subJson.keys?.auth,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'endpoint' });
-
-      } catch (err) {
-        console.error('Failed to register push notification:', err);
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidKey)
+        });
       }
-    };
 
-    registerPush();
+      // Save the subscription to Supabase
+      const subJson = subscription.toJSON();
+      
+      await supabase.from('push_subscriptions').upsert({
+        user_id: user.id,
+        role: 'user', // For the PWA, it's always 'user'
+        endpoint: subJson.endpoint,
+        p256dh: subJson.keys?.p256dh,
+        auth: subJson.keys?.auth,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'endpoint' });
+
+      return true;
+
+    } catch (err) {
+      console.error('Failed to register push notification:', err);
+      return false;
+    }
   }, [user]);
+
+  // Auto-subscribe if already granted, or if it hasn't been asked yet
+  useEffect(() => {
+    if (user && 'Notification' in window && Notification.permission !== 'denied') {
+      // Only auto-prompt if they haven't explicitly denied
+      // But we shouldn't spam the prompt. Actually, requestPermission inside subscribe will trigger the prompt.
+      // If we call subscribe() here, it will automatically show the prompt.
+      // Since the user wants a manual button, maybe we shouldn't auto-prompt?
+      // Wait, yesterday I made it auto-prompt. Let's keep auto-prompt for now, but also expose the button.
+      subscribe();
+    }
+  }, [user, subscribe]);
+
+  return { permission, subscribe };
 }

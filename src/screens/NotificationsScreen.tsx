@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Package, Pill, Gift, Stethoscope, Settings, ArrowLeft, ArrowRight, CheckCheck, CheckCircle2, Bell, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { usePushNotification } from '../hooks/usePushNotification';
 
 interface NotificationsScreenProps {
   onNavigate?: (route: string) => void;
@@ -21,6 +22,7 @@ interface NotificationItem {
 
 export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ onNavigate }) => {
   const { user } = useAuth();
+  const { permission, subscribe } = usePushNotification();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -178,6 +180,30 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ onNavi
             className="text-sm font-semibold text-primary hover:text-primary-container transition-colors flex items-center gap-1"
           >
             <CheckCheck className="w-4 h-4" /> Mark all as read
+          </button>
+        </div>
+      )}
+
+      {/* Push Notification Prompt */}
+      {permission !== 'granted' && (
+        <div className="mx-4 md:mx-0 mb-6 bg-primary/10 border border-primary/20 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
+              <Bell className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-on-surface dark:text-zinc-100">Never miss an update</h3>
+              <p className="text-xs text-on-surface-variant dark:text-zinc-400 mt-0.5">
+                Enable push notifications for order tracking and refill reminders.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={subscribe}
+            disabled={permission === 'denied'}
+            className="w-full sm:w-auto px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            {permission === 'denied' ? 'Notifications Blocked' : 'Enable Notifications'}
           </button>
         </div>
       )}
