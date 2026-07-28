@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Share2, Pill, Loader2, Bot, Beaker, Building2, ClipboardList, Syringe, AlertTriangle, RefreshCw } from 'lucide-react';
 
 import { useProducts } from '../hooks/useProducts';
-import { VerifiedMark } from '../components/VerifiedMark';
+
 import { fetchMedBuddyInfo } from '../lib/medbuddy';
 import type { MedBuddyInfo } from '../lib/medbuddy';
 import { SEO } from '../components/SEO';
@@ -100,18 +100,12 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
 
       {/* Medicine Info Card */}
       <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-6 mb-6">
-        <div className="flex items-center gap-1.5 text-sm font-semibold text-primary-container mb-2">
-          <span>{product.grower_name || 'Verified Supplier'}</span>
-          <VerifiedMark size={16} />
-        </div>
         <h1 className="font-heading text-2xl sm:text-3xl font-bold text-on-surface dark:text-zinc-100 mb-1">
           {product.name}
         </h1>
-        {product.generic_name && (
-          <p className="text-sm text-on-surface-variant mb-4">
-            {product.generic_name}
-          </p>
-        )}
+        <p className="text-sm text-on-surface-variant mb-4">
+          {product.grower_name || 'Unknown Company'}
+        </p>
 
         <div className="flex items-baseline justify-between pt-4 border-t border-surface-variant dark:border-zinc-800">
           <div>

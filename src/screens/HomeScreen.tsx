@@ -19,7 +19,6 @@ import { SEO } from '../components/SEO';
 
 import { useProducts } from '../hooks/useProducts';
 import { useAddresses } from '../hooks/useAddresses';
-import { VerifiedMark } from '../components/VerifiedMark';
 import { supabase } from '../lib/supabase';
 
 interface HomeScreenProps {
@@ -347,7 +346,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                           {product.name}
                         </h3>
                         <p className="text-xs text-on-surface-variant mt-1 line-clamp-1">
-                          {product.grower_name || product.generic_name || 'Verified Supplier'}
+                          {product.grower_name || 'Unknown Company'}
                         </p>
                       </div>
                       <div className="mt-auto flex items-center justify-between">
@@ -391,15 +390,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                     className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 shadow-sm hover:shadow flex flex-col justify-between cursor-pointer transition-all"
                   >
                     <div>
-                      <div className="flex items-center gap-1 text-[11px] font-semibold text-primary-container mb-1">
-                        <span>{product.grower_name || 'Verified Supplier'}</span>
-                        <VerifiedMark size={14} />
-                      </div>
                       <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-2">
                         {product.name}
                       </h3>
                       <p className="text-xs text-on-surface-variant line-clamp-1 mt-0.5">
-                        {product.generic_name}
+                        {product.grower_name || 'Unknown Company'}
                       </p>
                     </div>
 
