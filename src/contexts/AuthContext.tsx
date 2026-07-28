@@ -35,6 +35,8 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Pick<Profile, 'name' | 'phone' | 'avatar_url'>>) => Promise<{ error: string | null }>;
   refreshProfile: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (password: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -247,6 +249,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user, fetchProfile]);
 
+  // ── Reset Password (Forgot Password) ──
+  const resetPassword = useCallback(async (email: string): Promise<{ error: string | null }> => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+    return { error: error ? error.message : null };
+  }, []);
+
+  // ── Update Password (After Reset) ──
+  const updatePassword = useCallback(async (password: string): Promise<{ error: string | null }> => {
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: error ? error.message : null };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -261,6 +277,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         updateProfile,
         refreshProfile,
+        resetPassword,
+        updatePassword,
       }}
     >
       {children}

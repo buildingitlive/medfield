@@ -7,8 +7,8 @@ interface AuthScreenProps {
 }
 
 export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
-  const { signIn, signUp, signInWithGoogle } = useAuth();
-  const [mode, setMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
+  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
+  const [mode, setMode] = useState<'LOGIN' | 'REGISTER' | 'FORGOT_PASSWORD'>('LOGIN');
 
   // Form fields
   const [name, setName] = useState('');
@@ -21,6 +21,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,9 +60,27 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  const toggleMode = () => {
-    setMode(mode === 'LOGIN' ? 'REGISTER' : 'LOGIN');
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
     setErrorMsg(null);
+    setSuccessMsg(null);
+    if (!email) return;
+
+    setLoading(true);
+    const { error } = await resetPassword(email);
+    setLoading(false);
+
+    if (error) {
+      setErrorMsg(error);
+    } else {
+      setSuccessMsg('Check your email for the reset link!');
+    }
+  };
+
+  const toggleMode = (newMode: 'LOGIN' | 'REGISTER' | 'FORGOT_PASSWORD') => {
+    setMode(newMode);
+    setErrorMsg(null);
+    setSuccessMsg(null);
   };
 
   const handleGoogleSignIn = async () => {
@@ -85,15 +104,18 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
           </div>
 
           <h1 className="font-heading text-2xl font-bold text-primary dark:text-emerald-400 mb-1 text-center">
-            {mode === 'LOGIN' ? 'Welcome Back' : 'Create Your Account'}
+            {mode === 'LOGIN' ? 'Welcome Back' : mode === 'FORGOT_PASSWORD' ? 'Reset Password' : 'Create Your Account'}
           </h1>
           <p className="text-sm text-on-surface-variant dark:text-zinc-400 mb-6 text-center">
             {mode === 'LOGIN'
               ? 'Sign in to access your MedField account'
+              : mode === 'FORGOT_PASSWORD'
+              ? 'Enter your email to receive a password reset link'
               : 'Join MedField for verified medicine delivery across India'}
           </p>
 
           {/* Google Sign In Button */}
+          {mode !== 'FORGOT_PASSWORD' && (
           <button
             type="button"
             onClick={handleGoogleSignIn}
@@ -114,8 +136,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
               </>
             )}
           </button>
+          )}
 
           {/* Divider */}
+          {mode !== 'FORGOT_PASSWORD' && (
           <div className="w-full flex items-center gap-3 mb-5">
             <div className="flex-1 h-px bg-outline-variant/50 dark:bg-zinc-700" />
             <span className="text-xs font-semibold text-on-surface-variant dark:text-zinc-500 uppercase tracking-wide">
@@ -123,16 +147,22 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
             </span>
             <div className="flex-1 h-px bg-outline-variant/50 dark:bg-zinc-700" />
           </div>
+          )}
 
-          {/* Error Alert */}
+          {/* Error & Success Alerts */}
           {errorMsg && (
             <div className="w-full mb-4 p-3 rounded-md bg-error-container/30 border border-error/20 text-xs text-error font-semibold text-center">
               {errorMsg}
             </div>
           )}
+          {successMsg && (
+            <div className="w-full mb-4 p-3 rounded-md bg-secondary-container/30 border border-secondary/20 text-xs text-secondary font-semibold text-center">
+              {successMsg}
+            </div>
+          )}
 
           <form
-            onSubmit={mode === 'LOGIN' ? handleLogin : handleRegister}
+            onSubmit={mode === 'LOGIN' ? handleLogin : mode === 'REGISTER' ? handleRegister : handleForgotPassword}
             className="w-full space-y-4"
           >
             {/* Name (Register only) */}
@@ -202,6 +232,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
             )}
 
             {/* Password */}
+            {mode !== 'FORGOT_PASSWORD' && (
             <div>
               <label
                 htmlFor="password"
@@ -257,7 +288,20 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                   </span>
                 </div>
               )}
+              {/* Forgot Password link (Login only) */}
+              {mode === 'LOGIN' && (
+                <div className="mt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => toggleMode('FORGOT_PASSWORD')}
+                    className="text-xs text-primary hover:underline font-semibold"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              )}
             </div>
+            )}
 
             {/* Submit */}
             <button
@@ -269,7 +313,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <span>{mode === 'LOGIN' ? 'Sign In' : 'Create Account'}</span>
+                  <span>{mode === 'LOGIN' ? 'Sign In' : mode === 'REGISTER' ? 'Create Account' : 'Send Reset Link'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -283,7 +327,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                 Don't have an account?{' '}
                 <button
                   type="button"
-                  onClick={toggleMode}
+                  onClick={() => toggleMode('REGISTER')}
                   className="text-primary hover:underline font-semibold"
                 >
                   Register
@@ -294,7 +338,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                 Already have an account?{' '}
                 <button
                   type="button"
-                  onClick={toggleMode}
+                  onClick={() => toggleMode('LOGIN')}
                   className="text-primary hover:underline font-semibold"
                 >
                   Sign In

@@ -28,38 +28,12 @@ import { OrderSuccessScreen } from './screens/OrderSuccessScreen';
 import { TermsOfServiceScreen } from './screens/TermsOfServiceScreen';
 import { PrivacyPolicyScreen } from './screens/PrivacyPolicyScreen';
 import { RefundPolicyScreen } from './screens/RefundPolicyScreen';
+import { NotFoundScreen } from './screens/NotFoundScreen';
+import { UpdatePasswordScreen } from './screens/UpdatePasswordScreen';
 import { Loader2 } from 'lucide-react';
 
 function getRoute(): string {
-  const path = window.location.pathname;
-  if (
-    [
-      '/',
-      '/splash',
-      '/onboarding',
-      '/login',
-      '/otp',
-      '/register',
-      '/search',
-      '/place-order',
-      '/prescriptions',
-      '/orders',
-      '/profile',
-      '/profile/edit',
-      '/addresses',
-      '/notifications',
-      '/settings',
-      '/terms-of-service',
-      '/privacy-policy',
-      '/refund-policy',
-    ].includes(path) ||
-    path.startsWith('/medicine/') ||
-    path.startsWith('/orders/') ||
-    path.startsWith('/order-success/')
-  ) {
-    return path;
-  }
-  return '/splash';
+  return window.location.pathname;
 }
 
 function AppContent() {
@@ -251,12 +225,15 @@ function AppContent() {
     if (route === '/refund-policy') {
       return <RefundPolicyScreen onNavigate={handleNavigate} />;
     }
+    if (route === '/update-password') {
+      return <UpdatePasswordScreen onNavigate={handleNavigate} />;
+    }
 
     // 404 Fallback
-    return <HomeScreen onNavigate={handleNavigate} />;
+    return <NotFoundScreen onNavigate={handleNavigate} />;
   };
 
-  const isStandaloneScreen = ['/splash', '/onboarding', '/login', '/otp', '/register'].includes(route);
+  const isStandaloneScreen = ['/splash', '/onboarding', '/login', '/otp', '/register', '/update-password'].includes(route);
 
   return (
     <div className="min-h-screen bg-surface dark:bg-zinc-950 text-on-surface dark:text-zinc-100 flex flex-col font-sans transition-colors duration-200">
