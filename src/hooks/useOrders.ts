@@ -159,7 +159,7 @@ export function useOrders() {
           title: `New Order Request #${shortId} 📋`,
           description: `A customer has submitted a new order request. Please review and confirm pricing.`,
           type: 'order_placed',
-          link: '/orders',
+          link: `/orders?id=${order.id}`,
           is_read: false,
         },
         {
@@ -168,7 +168,7 @@ export function useOrders() {
           title: 'Order Request Submitted! 📋',
           description: `Your order #${shortId} has been sent to our pharmacist. We'll confirm your order shortly.`,
           type: 'order_placed',
-          link: '/orders',
+          link: `/orders?id=${order.id}`,
           is_read: false,
         },
       ]);

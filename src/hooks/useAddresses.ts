@@ -53,12 +53,12 @@ export function useAddresses() {
   const defaultAddress = addresses.find((a) => a.is_default) || addresses[0] || null;
 
   const addAddress = useCallback(
-    async (addr: Omit<Address, 'id' | 'user_id' | 'created_at'>) => {
-      if (!user) return { error: 'Not authenticated' };
+    async (addr: Omit<Address, 'id' | 'user_id' | 'created_at' | 'is_default' | 'latitude' | 'longitude'> & { is_default?: boolean, latitude?: number | null, longitude?: number | null }) => {
+      if (!user) return { error: 'Not authenticated', data: null };
 
       const { data, error } = await supabase
         .from('addresses')
-        .insert({ ...addr, user_id: user.id } as any)
+        .insert({ is_default: false, latitude: null, longitude: null, ...addr, user_id: user.id } as any)
         .select()
         .single();
 
@@ -70,7 +70,7 @@ export function useAddresses() {
         });
       }
 
-      return { error: error?.message || null };
+      return { error: error?.message || null, data: data || null };
     },
     [user]
   );

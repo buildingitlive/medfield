@@ -28,6 +28,9 @@ MedField is a progressive web application (PWA) delivering verified clinical-gra
   - Ongoing PWA manifest optimization for app store submissions.
 
 ## Recent Updates
+- **Security Audit & RLS Patch**: Completed a comprehensive database lockdown. Eliminated vulnerable `USING (true)` policies on `user_prescription_items`, `order_confirmed_items`, `admin_products`, and `notifications`. Replaced with strict `SECURITY DEFINER` RLS policies utilizing verified `is_admin()` and `is_partner()` helper functions.
+- **Inline Address Creation**: Upgraded the checkout flow (`PlaceOrderScreen`) so users can seamlessly add new delivery addresses inline without navigating away, preserving their uploaded prescriptions and active checkout state.
+- **Deep-Linked Notifications**: Configured the customer app to properly attach full UUIDs to notifications (`link: '/orders?id=ORDER_ID'`), powering one-click modal openings in the admin panel.
 - **Prescription-First Ordering Flow**: The old cart-based flow has been completely replaced with a 3-step prescription upload and medicine request flow. The old 254k-row medicine catalog was deleted in favor of a self-growing `admin_products` table built organically via the admin's Confirm Order panel.
 - **MedBuddy AI Integration**: Replaced static placeholders with a live integration to the **Gemini 3.5 Flash Lite API**. Users can now tap a button on any medicine page to instantly fetch clinical info (Salt, Usage, Dosage, Side Effects, Alternatives) directly from the LLM, formatted automatically into a clean UI.
 - **Dynamic SEO Strategy**: Implemented hybrid SEO. A strong global fallback was added to `index.html`, and `react-helmet-async` was configured for dynamic page-by-page SEO. Medicine detail pages now dynamically inject product-specific keywords (e.g., "order Pan-D, Pan-D delivery") into the `<head>` for optimal indexing.

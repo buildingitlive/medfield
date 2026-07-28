@@ -41,7 +41,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
   reorderData,
 }) => {
   const { user } = useAuth();
-  const { defaultAddress, addresses } = useAddresses();
+  const { defaultAddress, addresses, addAddress } = useAddresses();
   const { placeOrderRequest } = useOrders();
   const { createPrescription } = usePrescriptions();
 
@@ -74,6 +74,48 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // Inline Address Form
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [newStreet, setNewStreet] = useState('');
+  const [newCity, setNewCity] = useState('');
+  const [newState, setNewState] = useState('');
+  const [newZip, setNewZip] = useState('');
+  const [newPhone, setNewPhone] = useState('');
+  const [savingAddress, setSavingAddress] = useState(false);
+
+  const handleSaveAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStreet || !newCity || !newState || !newZip) {
+      setErrorMsg('Please fill in all address fields.');
+      return;
+    }
+    setSavingAddress(true);
+    setErrorMsg(null);
+    const { error, data } = await addAddress({
+      label: 'Home',
+      recipient_name: patientName || 'Customer',
+      phone: newPhone || user?.phone || '',
+      street: newStreet,
+      city: newCity,
+      state: newState,
+      zip: newZip,
+    });
+    setSavingAddress(false);
+    if (error) {
+      setErrorMsg(error);
+    } else {
+      setIsAddingAddress(false);
+      if (data?.id) {
+        setSelectedAddressId(data.id);
+      }
+      setNewStreet('');
+      setNewCity('');
+      setNewState('');
+      setNewZip('');
+      setNewPhone('');
+    }
+  };
 
   const steps = [
     { num: 1, label: 'Prescription', icon: FileText },
@@ -489,13 +531,33 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
           {addresses.length === 0 ? (
             <div className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant rounded-2xl p-6 text-center shadow-sm">
               <MapPin className="w-8 h-8 text-outline-variant mx-auto mb-2" />
-              <p className="text-sm font-semibold text-on-surface mb-3">No saved addresses</p>
-              <button
-                onClick={() => onNavigate('/addresses')}
-                className="min-h-[44px] px-6 rounded-md bg-primary text-on-primary text-xs font-semibold shadow"
-              >
-                Add Address
-              </button>
+              {isAddingAddress ? (
+                <form onSubmit={handleSaveAddress} className="text-left space-y-3 mt-4">
+                  <input type="text" value={newStreet} onChange={e => setNewStreet(e.target.value)} placeholder="Street Address" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" value={newCity} onChange={e => setNewCity(e.target.value)} placeholder="City" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                    <input type="text" value={newState} onChange={e => setNewState(e.target.value)} placeholder="State" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" value={newZip} onChange={e => setNewZip(e.target.value)} placeholder="ZIP / PIN Code" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                    <input type="tel" value={newPhone} onChange={e => setNewPhone(e.target.value)} placeholder="Phone Number" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button type="button" onClick={() => setIsAddingAddress(false)} className="flex-1 py-2 rounded-lg border border-outline-variant text-sm font-semibold hover:bg-surface-container transition-colors">Cancel</button>
+                    <button type="submit" disabled={savingAddress} className="flex-1 py-2 rounded-lg bg-primary text-on-primary text-sm font-semibold shadow disabled:opacity-50 flex justify-center items-center gap-2">{savingAddress ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}</button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <p className="text-sm font-semibold text-on-surface mb-3">No saved addresses</p>
+                  <button
+                    onClick={() => setIsAddingAddress(true)}
+                    className="min-h-[44px] px-6 rounded-md bg-primary text-on-primary text-xs font-semibold shadow"
+                  >
+                    Add Address
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-3">
@@ -543,13 +605,32 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
                 );
               })}
 
-              <button
-                onClick={() => onNavigate('/addresses')}
-                className="w-full min-h-[44px] border border-dashed border-primary/40 text-primary font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 hover:bg-primary/5 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add New Address</span>
-              </button>
+              {isAddingAddress ? (
+                <form onSubmit={handleSaveAddress} className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant p-4 rounded-xl shadow-sm space-y-3">
+                  <h3 className="text-sm font-semibold text-on-surface">New Address</h3>
+                  <input type="text" value={newStreet} onChange={e => setNewStreet(e.target.value)} placeholder="Street Address" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" value={newCity} onChange={e => setNewCity(e.target.value)} placeholder="City" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                    <input type="text" value={newState} onChange={e => setNewState(e.target.value)} placeholder="State" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" value={newZip} onChange={e => setNewZip(e.target.value)} placeholder="ZIP / PIN Code" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" required />
+                    <input type="tel" value={newPhone} onChange={e => setNewPhone(e.target.value)} placeholder="Phone Number" className="w-full px-3 py-2 rounded-lg border border-outline-variant bg-surface text-sm focus:border-primary focus:outline-none" />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button type="button" onClick={() => setIsAddingAddress(false)} className="flex-1 py-2 rounded-lg border border-outline-variant text-sm font-semibold hover:bg-surface-container transition-colors">Cancel</button>
+                    <button type="submit" disabled={savingAddress} className="flex-1 py-2 rounded-lg bg-primary text-on-primary text-sm font-semibold shadow disabled:opacity-50 flex justify-center items-center gap-2">{savingAddress ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Address'}</button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  onClick={() => setIsAddingAddress(true)}
+                  className="w-full min-h-[44px] border border-dashed border-primary/40 text-primary font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 hover:bg-primary/5 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add New Address</span>
+                </button>
+              )}
             </div>
           )}
 
