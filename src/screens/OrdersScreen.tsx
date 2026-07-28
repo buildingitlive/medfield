@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Package, Truck, RotateCcw, Eye, Loader2, FileImage } from 'lucide-react';
+import { Package, Truck, RotateCcw, Eye, Loader2, FileImage, XCircle } from 'lucide-react';
 import { useOrders } from '../hooks/useOrders';
 import { supabase } from '../lib/supabase';
 
@@ -73,8 +73,15 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onNavigate }) => {
                     <span className="text-xs font-bold text-on-surface-variant block mb-1">
                       Order #{order.id}
                     </span>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-secondary-container text-on-secondary-container">
-                      <span className="w-2 h-2 rounded-full bg-primary" />
+                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                      order.status.toLowerCase() === 'cancelled'
+                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        : 'bg-secondary-container text-on-secondary-container'
+                    }`}>
+                      {order.status.toLowerCase() === 'cancelled'
+                        ? <XCircle className="w-3 h-3" />
+                        : <span className="w-2 h-2 rounded-full bg-primary" />
+                      }
                       <span>{order.status}</span>
                     </div>
 
@@ -88,8 +95,19 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onNavigate }) => {
                       <p className="text-xs text-on-surface-variant mt-0.5">
                         {isOngoing
                           ? `Estimated arrival: ${order.estimated_delivery || 'Pending'}`
-                          : `Delivered on: ${new Date(order.updated_at || order.created_at).toLocaleDateString()}`}
+                          : order.status.toLowerCase() === 'cancelled'
+                            ? `Cancelled on: ${new Date(order.updated_at || order.created_at).toLocaleDateString()}`
+                            : `Delivered on: ${new Date(order.updated_at || order.created_at).toLocaleDateString()}`}
                       </p>
+
+                      {/* Cancellation reason */}
+                      {order.status.toLowerCase() === 'cancelled' && (order as any).notes && (order as any).notes.startsWith('[Cancelled]') && (
+                        <div className="mt-2 p-2.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg">
+                          <p className="text-xs text-red-700 dark:text-red-400 font-medium">
+                            Reason: {(order as any).notes.replace('[Cancelled] ', '')}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
