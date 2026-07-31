@@ -137,6 +137,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           "@context": "https://schema.org",
           "@type": "Pharmacy",
           "name": "MedField",
+          "image": "https://medfield.in/logo.png",
           "description": "Online pharmacy delivering genuine medicines and healthcare products with fast delivery.",
           "url": "https://medfield.in",
           "telephone": "+91 9389407550",
