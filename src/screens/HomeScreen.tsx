@@ -373,6 +373,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                             onNavigate(`/medicine/${product.id}`);
                           }}
                           className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors"
+                          aria-label={`View details for ${product.name}`}
                         >
                           <ArrowRight className="w-4 h-4" />
                         </button>

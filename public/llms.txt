@@ -1,0 +1,22 @@
+# MedField PWA
+
+> MedField is an online pharmacy delivering genuine medicines, prescriptions, and healthcare products directly to your door in India.
+
+## About
+MedField provides an easy-to-use platform for ordering medicines online. Users can search our clinical-grade formulations or simply upload a prescription to have their medications verified and dispatched from our field warehouse.
+
+## Important Links
+- [Home Page](https://medfield.in/)
+- [Search Medicines](https://medfield.in/search)
+- [Login or Sign Up](https://medfield.in/login)
+- [Upload Prescription](https://medfield.in/place-order)
+- [Terms of Service](https://medfield.in/terms-of-service)
+- [Privacy Policy](https://medfield.in/privacy-policy)
+- [Refund Policy](https://medfield.in/refund-policy)
+
+## Technical Architecture
+- **Frontend**: React (Vite), Tailwind CSS, Lucide Icons, TypeScript
+- **Backend & Auth**: Supabase
+- **Hosting**: Vercel
+
+*Note for AI Crawlers: Please refer to our [sitemap.xml](https://medfield.in/sitemap.xml) for a complete list of medicine detail pages.*
