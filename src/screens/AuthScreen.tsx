@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, ShieldCheck, Truck, Banknote, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { SEO } from '../components/SEO';
 
 interface AuthScreenProps {
   onLoginSuccess: () => void;
@@ -94,6 +95,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
   };
 
   return (
+    <>
+      <SEO 
+        title="Login or Sign Up"
+        description="Sign in or create an account on MedField to order medicines online with fast delivery."
+        keywords="MedField login, pharmacy sign up, medicine order account"
+      />
     <div className="min-h-screen bg-surface dark:bg-zinc-950 flex flex-col justify-between">
       {/* Main Form */}
       <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 py-12">
@@ -393,5 +400,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
         </div>
       </footer>
     </div>
+    </>
   );
 };

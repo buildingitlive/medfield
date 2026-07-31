@@ -1,5 +1,6 @@
 import React from 'react';
 import { Construction } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 interface SearchScreenProps {
   onNavigate: (route: string) => void;
@@ -7,6 +8,12 @@ interface SearchScreenProps {
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate }) => {
   return (
+    <>
+      <SEO 
+        title="Search Medicines"
+        description="Search our complete catalog of clinical-grade medicines and formulations. Find genuine medicines at the best prices."
+        keywords="search medicine, medicine catalog, buy medicine online, MedField pharmacy"
+      />
     <main className="min-h-screen pb-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-bold text-on-surface dark:text-zinc-100 mb-1">
@@ -33,5 +40,6 @@ export const SearchScreen: React.FC<SearchScreenProps> = ({ onNavigate }) => {
         </button>
       </div>
     </main>
+    </>
   );
 };

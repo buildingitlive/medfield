@@ -18,6 +18,7 @@ import { useAddresses } from '../hooks/useAddresses';
 import { useOrders } from '../hooks/useOrders';
 import { usePrescriptions } from '../hooks/usePrescriptions';
 import { supabase } from '../lib/supabase';
+import { SEO } from '../components/SEO';
 
 interface PlaceOrderScreenProps {
   onNavigate: (route: string) => void;
@@ -240,6 +241,12 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
 
   // ─── Render ────────────────────────────────────
   return (
+    <>
+      <SEO 
+        title="Upload Prescription & Order Medicines"
+        description="Upload your prescription and request medicines for fast delivery. MedField makes ordering medicines simple and secure."
+        keywords="upload prescription, order medicine online, prescription upload, MedField order"
+      />
     <main className="min-h-screen pb-44 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       {/* Top Bar */}
       <div className="flex items-center gap-4 mb-6">
@@ -712,5 +719,6 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
         </div>
       )}
     </main>
+    </>
   );
 };
