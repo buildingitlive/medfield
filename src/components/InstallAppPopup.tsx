@@ -29,6 +29,7 @@ export const InstallAppPopup: React.FC = () => {
           <button
             onClick={dismiss}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-surface-container dark:bg-zinc-800 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors"
+            aria-label="Close popup"
           >
             <X className="w-4 h-4" />
           </button>
