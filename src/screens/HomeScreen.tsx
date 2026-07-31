@@ -139,12 +139,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           "name": "MedField",
           "description": "Online pharmacy delivering genuine medicines and healthcare products with fast delivery.",
           "url": "https://medfield.in",
-          "telephone": "+91-0000000000",
+          "telephone": "+91 9389407550",
           "address": {
             "@type": "PostalAddress",
+            "streetAddress": "P86, Shakti Nagar Colony, Bagha Baba Road, Rustampur (south)",
+            "addressLocality": "Gorakhpur",
+            "postalCode": "273016",
             "addressCountry": "IN"
           },
-          "priceRange": "₹₹",
+          "priceRange": "₹10 - ₹2000",
           "openingHours": "Mo-Su 00:00-23:59"
         }}
       />
