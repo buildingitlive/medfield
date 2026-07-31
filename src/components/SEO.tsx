@@ -6,13 +6,15 @@ interface SEOProps {
   description?: string;
   keywords?: string;
   url?: string;
+  schema?: Record<string, unknown>;
 }
 
 export const SEO: React.FC<SEOProps> = ({ 
   title, 
   description, 
   keywords,
-  url 
+  url,
+  schema
 }) => {
   const siteName = 'MedField';
   const defaultTitle = `${siteName} | Online Pharmacy & Medicine Delivery`;
@@ -43,6 +45,13 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:url" content={seo.url} />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
+
+      {/* JSON-LD Structured Data */}
+      {schema && (
+        <script type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      )}
     </Helmet>
   );
 };

@@ -73,6 +73,23 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
       title={product.name}
       description={product.description || `Buy ${product.name} online at MedField. Fast delivery and best prices.`}
       keywords={`${product.name}, order ${product.name}, ${product.name} delivery, ${product.name} discounted`}
+      schema={{
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description || `Buy ${product.name} online at MedField.`,
+        "brand": {
+          "@type": "Brand",
+          "name": product.grower_name || "MedField"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": `https://medfield.vercel.app/medicine/${product.id}`,
+          "priceCurrency": "INR",
+          "price": product.mrp,
+          "availability": "https://schema.org/InStock"
+        }
+      }}
     />
     <main className="min-h-screen pb-60 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       {/* Top Bar */}

@@ -133,6 +133,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         title="Pharmacy Delivery & Health Products" 
         description="Shop for medicines, healthcare products, and upload prescriptions for lightning-fast delivery to your doorstep."
         keywords="pharmacy, online pharmacy, buy medicine, home delivery pharmacy, health products"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Pharmacy",
+          "name": "MedField",
+          "description": "Online pharmacy delivering genuine medicines and healthcare products with fast delivery.",
+          "url": "https://medfield.vercel.app",
+          "telephone": "+91-0000000000",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "IN"
+          },
+          "priceRange": "₹₹",
+          "openingHours": "Mo-Su 00:00-23:59"
+        }}
       />
       <main className="min-h-screen pb-24 lg:pb-12 max-w-7xl mx-auto flex flex-col">
         {/* Address Selector Sub-header */}

@@ -1,0 +1,14 @@
+# MedField PWA — Robots.txt
+# Allow all crawlers to index public pages.
+# Block private user-specific routes.
+
+User-agent: *
+Allow: /
+Disallow: /orders
+Disallow: /profile
+Disallow: /prescriptions
+Disallow: /addresses
+Disallow: /settings
+Disallow: /prescription-upload
+
+Sitemap: https://medfield.vercel.app/sitemap.xml
