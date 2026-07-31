@@ -7,6 +7,7 @@ MedField provides an easy-to-use platform for ordering medicines online. Users c
 
 ## Important Links
 - [Home Page](https://medfield.in/)
+- [About MedField](https://medfield.in/about)
 - [Search Medicines](https://medfield.in/search)
 - [Login or Sign Up](https://medfield.in/login)
 - [Upload Prescription](https://medfield.in/place-order)

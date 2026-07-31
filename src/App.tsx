@@ -32,6 +32,7 @@ import { PrivacyPolicyScreen } from './screens/PrivacyPolicyScreen';
 import { RefundPolicyScreen } from './screens/RefundPolicyScreen';
 import { NotFoundScreen } from './screens/NotFoundScreen';
 import { UpdatePasswordScreen } from './screens/UpdatePasswordScreen';
+import { AboutScreen } from './screens/AboutScreen';
 import { Loader2 } from 'lucide-react';
 
 function getRoute(): string {
@@ -230,6 +231,9 @@ function AppContent() {
     }
     if (route === '/update-password') {
       return <UpdatePasswordScreen onNavigate={handleNavigate} />;
+    }
+    if (route === '/about') {
+      return <AboutScreen onNavigate={handleNavigate} />;
     }
 
     // 404 Fallback

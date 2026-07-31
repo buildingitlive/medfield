@@ -77,7 +77,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate }) => {
     {
       label: 'About MedField',
       icon: Info,
-      route: '#',
+      route: '/about',
     },
   ];
 

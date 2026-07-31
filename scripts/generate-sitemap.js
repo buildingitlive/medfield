@@ -40,6 +40,7 @@ async function generateSitemap() {
 
     const staticRoutes = [
         { url: '/', changefreq: 'daily', priority: '1.0' },
+        { url: '/about', changefreq: 'monthly', priority: '0.9' },
         { url: '/search', changefreq: 'weekly', priority: '0.8' },
         { url: '/login', changefreq: 'monthly', priority: '0.5' },
         { url: '/place-order', changefreq: 'monthly', priority: '0.7' },
