@@ -13,11 +13,12 @@ import {
   Zap,
   Tag,
   Percent,
-  Loader2,
+  Phone,
+  CheckCircle,
+  Package,
 } from 'lucide-react';
 import { SEO } from '../components/SEO';
 
-import { useProducts } from '../hooks/useProducts';
 import { useAddresses } from '../hooks/useAddresses';
 import { supabase } from '../lib/supabase';
 
@@ -42,7 +43,6 @@ function getContrastColor(hexColor: string | null): string {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [bannerSlide, setBannerSlide] = useState(0);
   const [banners, setBanners] = useState<any[]>([]);
   const [bannersLoading, setBannersLoading] = useState(true);
@@ -50,23 +50,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   
-  const { products, loading } = useProducts({
-    category: selectedCategory === 'ALL' ? undefined : selectedCategory,
-  });
-  
   const { defaultAddress } = useAddresses();
-
-  const categories = [
-    'ALL',
-    'Vitamins',
-    'First Aid',
-    'Heart Health',
-    'Allergy',
-    'Diabetes Care',
-  ];
-
-  const reorderItems = products.slice(0, 4);
-  const displayedProducts = products;
 
   // Fetch active banners
   React.useEffect(() => {
@@ -304,139 +288,88 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        {/* Category Chips */}
-        <div className="space-y-2.5">
-          <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-            Categories
-          </h3>
-          <div className="flex overflow-x-auto no-scrollbar gap-2.5 pb-1">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap min-h-[40px] px-4 rounded-full text-xs font-semibold transition-colors ${
-                  selectedCategory === cat
-                    ? 'bg-secondary-container text-on-secondary-container font-bold'
-                    : 'bg-surface-container dark:bg-zinc-800 text-on-surface border border-outline-variant dark:border-zinc-700 hover:bg-surface-container-high'
-                }`}
-              >
-                {cat === 'ALL' ? 'All Catalog' : cat}
-              </button>
+        {/* How It Works — Order Flow */}
+        <section className="space-y-5 pt-2">
+          <div className="flex items-center gap-2">
+            <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
+              How It Works
+            </h2>
+            <div className="flex-1 h-px bg-surface-variant dark:bg-zinc-700" />
+          </div>
+
+          <div className="space-y-0">
+            {[
+              {
+                step: 1,
+                icon: FileText,
+                title: 'Place Your Order',
+                desc: 'Upload your prescription or share the list of medicines with quantity.',
+                color: 'bg-primary/10 text-primary',
+              },
+              {
+                step: 2,
+                icon: Phone,
+                title: 'Pharmacist Calls You',
+                desc: 'Our pharmacist will call you to verify and confirm your order.',
+                color: 'bg-primary/15 text-primary',
+              },
+              {
+                step: 3,
+                icon: CheckCircle,
+                title: 'Discount & Total Confirmed',
+                desc: 'Your applicable discount and the final bill amount will be confirmed.',
+                color: 'bg-primary/20 text-primary',
+              },
+              {
+                step: 4,
+                icon: Package,
+                title: 'Order Dispatched',
+                desc: 'The delivery of your order will be initiated right away.',
+                color: 'bg-primary/30 text-primary',
+              },
+              {
+                step: 5,
+                icon: Truck,
+                title: 'Delivered to Your Door',
+                desc: 'Your order will be delivered on the same day or the very next day.',
+                color: 'bg-primary text-on-primary',
+              },
+            ].map((item, idx, arr) => (
+              <div key={item.step} className="flex gap-4">
+                {/* Timeline line + circle */}
+                <div className="flex flex-col items-center">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${item.color}`}>
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  {idx < arr.length - 1 && (
+                    <div className="w-0.5 flex-1 min-h-[24px] bg-surface-variant dark:bg-zinc-700" />
+                  )}
+                </div>
+                {/* Content */}
+                <div className="pb-6">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">
+                    Step {item.step}
+                  </p>
+                  <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
-        </div>
 
-        {loading ? (
-          <div className="py-12 flex justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          </div>
-        ) : (
-          <>
-            {/* Reorder Routine Horizontal Carousel */}
-            {reorderItems.length > 0 && (
-              <section className="space-y-3 pt-1">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
-                    Reorder Routine
-                  </h2>
-                  <button
-                    onClick={() => onNavigate('/orders')}
-                    className="text-xs font-semibold text-primary hover:underline"
-                  >
-                    View All
-                  </button>
-                </div>
-
-                <div className="flex overflow-x-auto no-scrollbar gap-4 pb-2">
-                  {reorderItems.map((product) => (
-                    <div
-                      key={`reorder-${product.id}`}
-                      onClick={() => onNavigate(`/medicine/${product.id}`)}
-                      className="min-w-[165px] w-[165px] sm:min-w-[190px] sm:w-[190px] bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-3 flex flex-col shadow-sm cursor-pointer hover:border-primary transition-all relative"
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
-                          Verified
-                        </span>
-                      </div>
-                      <div className="mb-2.5">
-                        <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-2">
-                          {product.name}
-                        </h3>
-                        <p className="text-xs text-on-surface-variant mt-1 line-clamp-1">
-                          {product.grower_name || 'Unknown Company'}
-                        </p>
-                      </div>
-                      <div className="mt-auto flex items-center justify-between">
-                        <span className="font-bold text-xs text-on-surface dark:text-zinc-100">
-                          ₹{product.mrp.toFixed(2)}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onNavigate(`/medicine/${product.id}`);
-                          }}
-                          className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors"
-                          aria-label={`View details for ${product.name}`}
-                        >
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Featured Botanical Catalog Grid */}
-            <section className="space-y-4 pt-2">
-              <div className="flex items-center justify-between">
-                <h2 className="font-heading text-base font-bold text-on-surface dark:text-zinc-100">
-                  {selectedCategory === 'ALL'
-                    ? 'Popular Medicines'
-                    : `${selectedCategory} Formulations`}
-                </h2>
-                <span className="text-xs text-on-surface-variant">
-                  {displayedProducts.length} verified items
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {displayedProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    onClick={() => onNavigate(`/medicine/${product.id}`)}
-                    className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 shadow-sm hover:shadow flex flex-col justify-between cursor-pointer transition-all"
-                  >
-                    <div>
-                      <h3 className="font-semibold text-sm text-on-surface dark:text-zinc-100 line-clamp-2">
-                        {product.name}
-                      </h3>
-                      <p className="text-xs text-on-surface-variant line-clamp-1 mt-0.5">
-                        {product.grower_name || 'Unknown Company'}
-                      </p>
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-surface-variant dark:border-zinc-800 flex items-center justify-between">
-                      <span className="font-bold text-sm text-primary-container dark:text-emerald-400">
-                        ₹{product.mrp.toFixed(2)}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onNavigate(`/medicine/${product.id}`);
-                        }}
-                        className="min-h-[36px] px-3.5 rounded bg-primary hover:bg-primary/90 text-on-primary text-xs font-semibold shadow transition-all"
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </>
-        )}
+          {/* CTA after flow */}
+          <button
+            onClick={() => onNavigate('/place-order')}
+            className="w-full min-h-[48px] rounded-brand bg-primary hover:bg-primary/90 text-on-primary font-semibold text-sm shadow-md flex items-center justify-center gap-2 transition-all"
+          >
+            <FileText className="w-5 h-5" />
+            Place Your Order Now
+          </button>
+        </section>
 
         {/* Trust Strip */}
         <section className="bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-brand p-4 flex flex-col sm:flex-row items-center mt-6">
