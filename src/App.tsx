@@ -9,6 +9,8 @@ import { useRefillReminder } from './hooks/useRefillReminder';
 
 import { InstallAppPopup } from './components/InstallAppPopup';
 import { GoogleAuthOnboardingModal } from './components/GoogleAuthOnboardingModal';
+import { CookieConsent } from './components/CookieConsent';
+import { trackPageView } from './lib/analytics';
 import { SplashScreen } from './screens/SplashScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
 import { AuthScreen } from './screens/AuthScreen';
@@ -103,6 +105,7 @@ function AppContent() {
       setHistory((curr) => [...curr, route]);
       window.history.pushState({}, '', newRoute);
       setRoute(newRoute);
+      trackPageView(newRoute);
     }
   };
 
@@ -267,6 +270,7 @@ function AppContent() {
 
       <InstallAppPopup />
       <GoogleAuthOnboardingModal />
+      <CookieConsent />
     </div>
   );
 }
