@@ -17,9 +17,9 @@ export const SEO: React.FC<SEOProps> = ({
   schema
 }) => {
   const siteName = 'MedField';
-  const defaultTitle = `${siteName} | Online Pharmacy & Medicine Delivery`;
-  const defaultDescription = 'Order medicines online with fast delivery. MedField provides genuine medicines, prescriptions, and healthcare products straight to your door.';
-  const defaultKeywords = 'pharmacy, buy medicine online, prescriptions, MedField, pharmacy delivery, healthcare, drugs';
+  const defaultTitle = `${siteName} | Genuine Medicine Delivery`;
+  const defaultDescription = 'MedField delivers genuine medicines to your door. Get up to 15% discount, same-day delivery, and no delivery charges on every order.';
+  const defaultKeywords = 'pharmacy, buy medicine online, MedField, pharmacy delivery, healthcare, fast medicine delivery, genuine medicines';
 
   const seo = {
     title: title ? `${siteName} | ${title}` : defaultTitle,

@@ -114,15 +114,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   return (
     <>
       <SEO 
-        title="Pharmacy Delivery & Health Products" 
-        description="Shop for medicines, healthcare products, and upload prescriptions for lightning-fast delivery to your doorstep."
-        keywords="pharmacy, online pharmacy, buy medicine, home delivery pharmacy, health products"
+        title="Genuine Medicine Delivery" 
+        description="MedField delivers genuine medicines to your door. Get up to 15% discount, same-day delivery, and no delivery charges on every order."
+        keywords="pharmacy, online pharmacy, buy medicine, home delivery pharmacy, genuine medicines, fast delivery"
         schema={{
           "@context": "https://schema.org",
           "@type": "Pharmacy",
           "name": "MedField",
           "image": "https://medfield.in/logo.png",
-          "description": "Online pharmacy delivering genuine medicines and healthcare products with fast delivery.",
+          "description": "Online pharmacy delivering genuine medicines with up to 15% discount, same-day delivery, and no delivery charges.",
           "url": "https://medfield.in",
           "telephone": "+91 9389407550",
           "address": {
