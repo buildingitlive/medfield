@@ -84,7 +84,7 @@ export const MedicineDetailScreen: React.FC<MedicineDetailScreenProps> = ({
         },
         "offers": {
           "@type": "Offer",
-          "url": `https://medfield.vercel.app/medicine/${product.id}`,
+          "url": `https://medfield.in/medicine/${product.id}`,
           "priceCurrency": "INR",
           "price": product.mrp,
           "availability": "https://schema.org/InStock"

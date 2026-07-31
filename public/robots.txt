@@ -11,4 +11,4 @@ Disallow: /addresses
 Disallow: /settings
 Disallow: /prescription-upload
 
-Sitemap: https://medfield.vercel.app/sitemap.xml
+Sitemap: https://medfield.in/sitemap.xml

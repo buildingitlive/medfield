@@ -138,7 +138,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           "@type": "Pharmacy",
           "name": "MedField",
           "description": "Online pharmacy delivering genuine medicines and healthcare products with fast delivery.",
-          "url": "https://medfield.vercel.app",
+          "url": "https://medfield.in",
           "telephone": "+91-0000000000",
           "address": {
             "@type": "PostalAddress",
