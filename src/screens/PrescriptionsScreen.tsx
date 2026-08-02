@@ -178,24 +178,31 @@ export const PrescriptionsScreen: React.FC<PrescriptionsScreenProps> = ({
             <div className="mb-6 bg-surface-container-lowest dark:bg-zinc-900 border border-surface-variant dark:border-zinc-800 rounded-2xl p-4 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-bold text-on-surface dark:text-zinc-100 mb-3">
                 <FileImage className="w-4 h-4 text-primary" />
-                Prescription Image
+                Prescription Media
               </div>
-              <div
-                className="rounded-xl overflow-hidden border border-surface-variant bg-white cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => setImageModal(getPrescriptionImageUrl(selectedRx.prescription_url!))}
-              >
-                <img
-                  src={getPrescriptionImageUrl(selectedRx.prescription_url)}
-                  alt="Prescription"
-                  className="w-full max-h-64 object-contain"
-                />
+              <div className="flex flex-wrap gap-3">
+                {selectedRx.prescription_url.split(',').map((url, idx) => (
+                  <div key={idx} className="relative w-full max-w-[200px]">
+                    <div
+                      className="rounded-xl overflow-hidden border border-surface-variant bg-white cursor-pointer hover:opacity-90 transition-opacity h-32"
+                      onClick={() => url.toLowerCase().endsWith('.pdf') ? window.open(getPrescriptionImageUrl(url), '_blank') : setImageModal(getPrescriptionImageUrl(url))}
+                    >
+                      {url.toLowerCase().endsWith('.pdf') ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-100 text-zinc-500">
+                          <span className="font-bold text-sm">PDF</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={getPrescriptionImageUrl(url)}
+                          alt={`Prescription ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <button
-                onClick={() => setImageModal(getPrescriptionImageUrl(selectedRx.prescription_url!))}
-                className="text-[11px] text-primary font-semibold mt-2 hover:underline"
-              >
-                Tap to view full size →
-              </button>
+              <p className="text-[11px] text-on-surface-variant mt-2">Tap an image to view full size</p>
             </div>
           )}
 
@@ -326,12 +333,22 @@ export const PrescriptionsScreen: React.FC<PrescriptionsScreenProps> = ({
                   <div className="p-4 flex items-start gap-3" onClick={() => openPrescription(rx)}>
                     {/* Prescription Thumbnail */}
                     {rx.prescription_url ? (
-                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-surface-variant bg-white flex-shrink-0">
-                        <img
-                          src={getPrescriptionImageUrl(rx.prescription_url)}
-                          alt="Rx"
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="flex gap-1 -space-x-4 flex-shrink-0">
+                        {rx.prescription_url.split(',').slice(0, 3).map((url, idx) => (
+                          <div key={idx} className="w-14 h-14 rounded-lg overflow-hidden border-2 border-surface-container-lowest bg-white z-10" style={{ zIndex: 10 - idx }}>
+                            {url.toLowerCase().endsWith('.pdf') ? (
+                              <div className="w-full h-full flex items-center justify-center bg-zinc-100">
+                                <span className="text-[10px] font-bold text-zinc-500">PDF</span>
+                              </div>
+                            ) : (
+                              <img
+                                src={getPrescriptionImageUrl(url)}
+                                alt="Rx"
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                          </div>
+                        ))}
                       </div>
                     ) : (
                       <div className="w-14 h-14 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0">

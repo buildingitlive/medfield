@@ -135,26 +135,31 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onNavigate }) => {
 
                 {/* Prescription Image Preview */}
                 {order.prescription_url && (
-                  <div className="mt-2 flex items-center gap-3 p-3 bg-surface-container-low dark:bg-zinc-800/50 rounded-xl border border-surface-variant/50">
-                    <div className="w-14 h-14 rounded-lg overflow-hidden border border-surface-variant bg-white flex-shrink-0">
-                      <img
-                        src={supabase.storage.from('prescriptions').getPublicUrl(order.prescription_url).data.publicUrl}
-                        alt="Prescription"
-                        className="w-full h-full object-cover cursor-pointer"
-                        onClick={() => window.open(supabase.storage.from('prescriptions').getPublicUrl(order.prescription_url!).data.publicUrl, '_blank')}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-on-surface flex items-center gap-1.5">
-                        <FileImage className="w-3.5 h-3.5 text-primary" />
-                        Prescription Uploaded
-                      </p>
-                      <button
-                        onClick={() => window.open(supabase.storage.from('prescriptions').getPublicUrl(order.prescription_url!).data.publicUrl, '_blank')}
-                        className="text-[11px] text-primary font-medium mt-0.5 hover:underline"
-                      >
-                        View full image →
-                      </button>
+                  <div className="mt-2 flex flex-col gap-2 p-3 bg-surface-container-low dark:bg-zinc-800/50 rounded-xl border border-surface-variant/50">
+                    <p className="text-xs font-semibold text-on-surface flex items-center gap-1.5 mb-1">
+                      <FileImage className="w-3.5 h-3.5 text-primary" />
+                      Prescriptions Uploaded
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {order.prescription_url.split(',').map((url, idx) => (
+                        <div key={idx} className="w-14 h-14 rounded-lg overflow-hidden border border-surface-variant bg-white flex-shrink-0 relative group">
+                          {url.toLowerCase().endsWith('.pdf') ? (
+                            <div 
+                              className="w-full h-full flex items-center justify-center bg-zinc-100 cursor-pointer"
+                              onClick={() => window.open(supabase.storage.from('prescriptions').getPublicUrl(url).data.publicUrl, '_blank')}
+                            >
+                              <span className="text-[10px] font-bold text-zinc-500">PDF</span>
+                            </div>
+                          ) : (
+                            <img
+                              src={supabase.storage.from('prescriptions').getPublicUrl(url).data.publicUrl}
+                              alt={`Prescription ${idx + 1}`}
+                              className="w-full h-full object-cover cursor-pointer"
+                              onClick={() => window.open(supabase.storage.from('prescriptions').getPublicUrl(url).data.publicUrl, '_blank')}
+                            />
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}

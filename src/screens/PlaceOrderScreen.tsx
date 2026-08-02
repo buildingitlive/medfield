@@ -51,7 +51,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
   const [currentStep, setCurrentStep] = useState<Step>(initialStep);
 
   // Step 1: Prescription upload
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -126,29 +126,53 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
 
   // ─── File handling ─────────────────────────────
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setErrorMsg(null);
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      const validFiles = newFiles.filter(f => !f.type.startsWith('video/'));
+
+      if (validFiles.length < newFiles.length) {
+        setErrorMsg("Video files are not supported. Only images and PDFs are allowed.");
+      } else {
+        setErrorMsg(null);
+      }
+
+      setSelectedFiles(prev => {
+        const combined = [...prev, ...validFiles];
+        if (combined.length > 3) {
+          setErrorMsg("You can only upload up to 3 files maximum.");
+          return combined.slice(0, 3);
+        }
+        return combined;
+      });
+    }
+    // reset input so the same file can be selected again if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
   const uploadPrescription = async (): Promise<string | null> => {
-    if (!selectedFile || !user) return null;
+    if (selectedFiles.length === 0 || !user) return null;
 
-    const fileExt = selectedFile.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `${user.id}/${fileName}`;
+    const urls: string[] = [];
+    for (const file of selectedFiles) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
 
-    const { error } = await supabase.storage
-      .from('prescriptions')
-      .upload(filePath, selectedFile);
+      const { error } = await supabase.storage
+        .from('prescriptions')
+        .upload(filePath, file);
 
-    if (error) {
-      setErrorMsg('Failed to upload prescription: ' + error.message);
-      return null;
+      if (error) {
+        setErrorMsg('Failed to upload prescription: ' + error.message);
+        // Continue uploading remaining files even if one fails? Yes, but maybe break.
+      } else {
+        urls.push(filePath);
+      }
     }
 
-    return filePath;
+    return urls.length > 0 ? urls.join(',') : null;
   };
 
   // ─── Medicine row management ───────────────────
@@ -173,7 +197,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
   // ─── Step navigation ───────────────────────────
   const goToStep2 = async () => {
     // Upload file if selected
-    if (selectedFile) {
+    if (selectedFiles.length > 0) {
       setIsSubmitting(true);
       const url = await uploadPrescription();
       setIsSubmitting(false);
@@ -331,6 +355,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
               type="file"
               onChange={handleFileChange}
               accept="image/*,.pdf"
+              multiple
               className="absolute inset-0 opacity-0 cursor-pointer z-10"
             />
             <div className="w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto mb-4 shadow">
@@ -351,32 +376,43 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
           </div>
 
           {/* Preview */}
-          {selectedFile && (
-            <div className="relative inline-block">
-              <div className="w-full max-w-xs rounded-xl overflow-hidden border-2 border-primary/30 shadow-md bg-surface-container">
-                {selectedFile.type.startsWith('image/') ? (
-                  <img
-                    src={URL.createObjectURL(selectedFile)}
-                    alt="Prescription preview"
-                    className="w-full max-h-48 object-contain bg-white"
-                  />
-                ) : (
-                  <div className="w-full h-32 flex flex-col items-center justify-center gap-2 p-4">
-                    <FileText className="w-8 h-8 text-primary" />
-                    <span className="text-xs font-semibold text-on-surface text-center break-all">{selectedFile.name}</span>
-                  </div>
-                )}
-                <div className="px-3 py-2 bg-primary/5 flex items-center justify-between gap-2">
-                  <p className="text-[11px] font-medium text-on-surface-variant truncate flex-1">{selectedFile.name}</p>
-                  <button
-                    type="button"
-                    onClick={() => { setSelectedFile(null); setUploadedUrl(null); }}
-                    className="min-h-[28px] min-w-[28px] rounded-full bg-error/10 text-error flex items-center justify-center hover:bg-error/20 transition-colors"
+          {selectedFiles.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {selectedFiles.map((file, idx) => (
+                <div key={idx} className="relative inline-block w-full">
+                  <div 
+                    className="w-full rounded-xl overflow-hidden border-2 border-primary/30 shadow-md bg-surface-container cursor-pointer transition-transform hover:scale-[1.02]"
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Click to add/change files"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                    {file.type.startsWith('image/') ? (
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Prescription ${idx + 1}`}
+                        className="w-full h-32 object-cover bg-white"
+                      />
+                    ) : (
+                      <div className="w-full h-32 flex flex-col items-center justify-center gap-2 p-4">
+                        <FileText className="w-8 h-8 text-primary" />
+                        <span className="text-xs font-semibold text-on-surface text-center break-all line-clamp-2">{file.name}</span>
+                      </div>
+                    )}
+                    <div className="px-2 py-1.5 bg-primary/5 flex items-center justify-between gap-1">
+                      <p className="text-[10px] font-medium text-on-surface-variant truncate flex-1">{file.name}</p>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedFiles(prev => prev.filter((_, i) => i !== idx));
+                        }}
+                        className="min-h-[24px] min-w-[24px] rounded-full bg-error/10 text-error flex items-center justify-center hover:bg-error/20 transition-colors shrink-0"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           )}
 
@@ -408,7 +444,7 @@ export const PlaceOrderScreen: React.FC<PlaceOrderScreenProps> = ({
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <span>{selectedFile ? 'Upload & Continue' : 'Continue without Prescription'}</span>
+                  <span>{selectedFiles.length > 0 ? 'Upload & Continue' : 'Continue without Prescription'}</span>
                   <ChevronRight className="w-4 h-4" />
                 </>
               )}
