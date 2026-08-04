@@ -34,6 +34,7 @@ import { NotFoundScreen } from './screens/NotFoundScreen';
 import { UpdatePasswordScreen } from './screens/UpdatePasswordScreen';
 import { AboutScreen } from './screens/AboutScreen';
 import { Loader2 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 
 function getRoute(): string {
   return window.location.pathname;
@@ -284,6 +285,7 @@ export default function App() {
     <HelmetProvider>
       <AuthProvider>
         <AppContent />
+        <Analytics />
       </AuthProvider>
     </HelmetProvider>
   );
